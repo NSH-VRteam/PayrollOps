@@ -1,0 +1,2598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PayrollOps Strategy Presentation</title>
+<style>
+/* ========== CSS VARIABLES ========== */
+:root {
+  --bg: #0c0e14;
+  --bg2: #12151d;
+  --bg3: #1a1e28;
+  --bg4: #222836;
+  --fg: #e8eaf0;
+  --fg2: #9ba2b5;
+  --accent: #c9a44c;
+  --accent2: #a8873a;
+  --accent3: #d4b76a;
+  --green: #5a9e6f;
+  --green2: #4d8a60;
+  --red: #c45a5a;
+  --orange: #c9905a;
+  --blue: #5a8ec4;
+  --purple: #8a6fc4;
+  --border: #252a36;
+  --card: #141821;
+  --gold: #c9a44c;
+  --gold-light: rgba(201,164,76,0.12);
+  --gradient1: linear-gradient(135deg, #c9a44c 0%, #a8873a 100%);
+  --gradient2: linear-gradient(135deg, #5a9e6f 0%, #4d8a60 100%);
+  --gradient3: linear-gradient(135deg, #5a8ec4 0%, #4a7eb4 100%);
+  --shadow: 0 4px 24px rgba(0,0,0,0.3);
+  --shadow2: 0 8px 40px rgba(0,0,0,0.4);
+}
+
+/* ========== RESET & BASE ========== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  line-height: 1.65;
+  font-size: 15px;
+  overflow-x: hidden;
+}
+
+/* ========== SLIDE SYSTEM ========== */
+.slide {
+  min-height: 100vh;
+  width: 100%;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem 6%;
+  position: relative;
+  border-bottom: 1px solid var(--border);
+}
+.slide-content {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.slide.visible .slide-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ========== NAVIGATION ========== */
+.nav-dots {
+  position: fixed;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.nav-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  border: 1px solid var(--fg2);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.nav-dot.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: scale(1.3);
+}
+.nav-dot:hover { background: var(--accent); }
+
+/* Section label */
+.section-label {
+  position: absolute;
+  top: 1.5rem;
+  left: 6%;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity 1s ease-out;
+}
+.slide.visible .section-label {
+  opacity: 0.8;
+}
+
+/* Slide number */
+.slide-num {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 6%;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--fg2);
+  opacity: 0;
+  letter-spacing: 0.1em;
+  transition: opacity 1s ease-out;
+}
+.slide.visible .slide-num {
+  opacity: 0.5;
+}
+
+/* ========== PROGRESS BAR ========== */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--gradient1);
+  z-index: 300;
+  transition: width 0.3s ease;
+}
+
+/* ========== TYPOGRAPHY ========== */
+h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; }
+h2 { font-size: clamp(1.6rem, 3.5vw, 2.4rem); font-weight: 700; line-height: 1.2; letter-spacing: -0.015em; }
+h3 { font-size: 1.15rem; font-weight: 600; line-height: 1.3; }
+h4 { font-size: 0.95rem; font-weight: 600; }
+p { font-size: 0.95rem; color: var(--fg2); line-height: 1.7; }
+.subtitle { font-size: clamp(1rem, 2vw, 1.3rem); color: var(--fg2); font-weight: 400; line-height: 1.5; }
+
+/* ========== KEY MESSAGE ========== */
+.key-message {
+  background: var(--gold-light);
+  border-left: 3px solid var(--accent);
+  padding: 1rem 1.25rem;
+  border-radius: 0 8px 8px 0;
+  margin: 1.25rem 0;
+  font-size: 1rem;
+  color: var(--fg);
+  font-weight: 500;
+}
+
+/* ========== TAKEAWAY BOX ========== */
+.takeaway {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin-top: 1.25rem;
+}
+.takeaway-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+}
+.takeaway p { color: var(--fg); font-size: 0.9rem; }
+
+/* ========== CARDS ========== */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  margin: 1.25rem 0;
+}
+.card-grid-3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.card-grid-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.card-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.card-body { font-size: 0.88rem; color: var(--fg2); line-height: 1.6; }
+.card-icon { font-size: 1.4rem; }
+
+/* ========== BADGES ========== */
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 20px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-right: 0.35rem;
+  margin-bottom: 0.35rem;
+}
+.badge-verified { background: rgba(90,158,111,0.15); color: #6bbf7e; }
+.badge-review { background: rgba(90,142,196,0.15); color: #7ab0e0; }
+.badge-vendor { background: rgba(176,179,199,0.1); color: #b0b3c7; }
+.badge-strategy { background: rgba(138,111,196,0.15); color: #a88fe0; }
+.badge-validate { background: rgba(201,144,90,0.15); color: #e5a76a; }
+.badge-high { background: rgba(90,158,111,0.15); color: #6bbf7e; }
+.badge-medium { background: rgba(201,144,90,0.15); color: #e5a76a; }
+.badge-low { background: rgba(196,90,90,0.15); color: #e07a7a; }
+
+/* ========== COMPARISON / SCORECARD ========== */
+.score-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+  align-items: center;
+}
+.score-row.header { font-weight: 600; color: var(--accent); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; background: var(--bg3); border-radius: 6px 6px 0 0; }
+.score-row.highlight { background: var(--gold-light); }
+.score-bar-track {
+  height: 6px;
+  background: var(--bg4);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.score-bar-fill { height: 100%; border-radius: 3px; transition: width 1s ease; }
+.fill-high { background: var(--green); }
+.fill-medium { background: var(--orange); }
+.fill-low { background: var(--red); }
+
+/* ========== BAR CHARTS (CSS-only) ========== */
+.bar-chart { margin: 1.25rem 0; }
+.bar-row {
+  display: flex;
+  align-items: center;
+  margin: 0.55rem 0;
+  font-size: 0.85rem;
+}
+.bar-label {
+  width: 170px;
+  text-align: right;
+  padding-right: 1rem;
+  color: var(--fg2);
+  flex-shrink: 0;
+  font-size: 0.8rem;
+}
+.bar-track {
+  flex: 1;
+  height: 28px;
+  background: var(--bg3);
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #fff;
+  transition: width 1.2s ease;
+}
+.bar-fill.c1 { background: var(--green); }
+.bar-fill.c2 { background: var(--blue); }
+.bar-fill.c3 { background: var(--orange); }
+.bar-fill.c4 { background: var(--red); }
+.bar-fill.c5 { background: var(--purple); }
+.bar-fill.c6 { background: linear-gradient(90deg, var(--accent2), var(--accent)); }
+
+/* ========== TIMELINE ========== */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+  margin: 1.25rem 0;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+.timeline-item {
+  position: relative;
+  padding: 0.75rem 0 1.25rem;
+}
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -1.7rem;
+  top: 0.9rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+}
+.timeline-item.phase1::before { background: var(--green); }
+.timeline-item.phase2::before { background: var(--blue); }
+.timeline-item.phase3::before { background: var(--orange); }
+.timeline-item.phase4::before { background: var(--red); }
+.timeline-title { font-size: 0.9rem; font-weight: 600; color: var(--fg); }
+.timeline-desc { font-size: 0.82rem; color: var(--fg2); margin-top: 0.2rem; }
+
+/* ========== FUNNEL ========== */
+.funnel-step {
+  display: flex;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+.funnel-bar {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 1.25rem;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 5px;
+  transition: width 1s ease;
+}
+.funnel-label {
+  margin-left: 1rem;
+  font-size: 0.8rem;
+  color: var(--fg2);
+}
+
+/* ========== WORKFLOW ========== */
+.workflow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1.25rem 0;
+  justify-content: center;
+}
+.workflow-step {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--fg);
+  min-width: 110px;
+}
+.workflow-step .num {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 0.2rem;
+}
+.workflow-arrow {
+  color: var(--accent);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+/* ========== USP GRID ========== */
+.usp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+.usp-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.usp-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.4rem;
+}
+.usp-title { font-size: 0.88rem; font-weight: 600; color: var(--fg); line-height: 1.3; }
+.usp-pain { font-size: 0.78rem; color: var(--fg2); line-height: 1.5; margin-top: 0.3rem; }
+
+/* ========== HEATMAP ========== */
+.heat-grid {
+  display: grid;
+  grid-template-columns: 2fr repeat(3, 1fr);
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  margin: 1rem 0;
+}
+.heat-cell {
+  padding: 0.5rem;
+  text-align: center;
+  border-radius: 5px;
+  font-weight: 600;
+}
+.heat-high { background: rgba(196,90,90,0.22); color: #e07a7a; }
+.heat-medium { background: rgba(201,144,90,0.18); color: #e5a76a; }
+.heat-low { background: rgba(90,158,111,0.15); color: #6bbf7e; }
+
+/* ========== BEFORE/AFTER ========== */
+.before-after {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin: 1.25rem 0;
+}
+.before-box, .after-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem;
+}
+.before-box { border-left: 3px solid var(--red); }
+.after-box { border-left: 3px solid var(--green); }
+.before-title, .after-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.75rem;
+}
+.before-title { color: var(--red); }
+.after-title { color: var(--green); }
+
+/* ========== SOURCE CHIP ========== */
+.src-row {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.72rem;
+  color: var(--fg2);
+}
+.src-row a { color: var(--accent); text-decoration: none; }
+.src-row a:hover { text-decoration: underline; }
+
+/* ========== COMPETITOR LANDSCAPE ========== */
+.comp-tier {
+  margin: 1rem 0;
+}
+.comp-tier-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+}
+.comp-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.comp-tag {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.8rem;
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.comp-tag .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot-red { background: var(--red); }
+.dot-orange { background: var(--orange); }
+.dot-green { background: var(--green); }
+.dot-gray { background: var(--fg2); }
+
+/* ========== DECISION CARD ========== */
+.decision-card {
+  background: var(--gold-light);
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  margin: 1.5rem 0;
+}
+.decision-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+.decision-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 0.75rem;
+}
+
+/* ========== TITLE SLIDE ========== */
+.title-slide {
+  text-align: center;
+  align-items: center;
+}
+.title-slide h1 {
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  margin-bottom: 0.75rem;
+}
+.title-slide .accent-line {
+  width: 80px;
+  height: 3px;
+  background: var(--gradient1);
+  margin: 1.5rem auto;
+  border-radius: 2px;
+}
+.title-badge {
+  display: inline-block;
+  background: var(--accent);
+  color: var(--bg);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 0.4rem 1rem;
+  border-radius: 3px;
+  margin-bottom: 1.5rem;
+}
+
+/* ========== CLOSING SLIDE ========== */
+.closing-quote {
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--fg);
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.closing-quote .accent { color: var(--accent); }
+
+/* ========== ANIMATIONS ========== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+.animate-in {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .slide { padding: 3rem 5%; }
+  .nav-dots { display: none; }
+  .before-after { grid-template-columns: 1fr; }
+  .card-grid, .card-grid-3, .card-grid-4 { grid-template-columns: 1fr; }
+  .bar-label { width: 100px; font-size: 0.72rem; }
+  .heat-grid { grid-template-columns: 1fr repeat(3, 1fr); font-size: 0.72rem; }
+  .score-row { grid-template-columns: 1fr 0.7fr 0.7fr 0.7fr; font-size: 0.78rem; }
+  .workflow { flex-direction: column; }
+  .workflow-arrow { transform: rotate(90deg); }
+  .funnel-step { flex-direction: column; align-items: flex-start; }
+  .funnel-label { margin-left: 0; margin-top: 0.25rem; }
+}
+
+/* ========== PRINT ========== */
+@media print {
+  html { scroll-snap-type: none; }
+  .slide {
+    min-height: auto;
+    page-break-after: always;
+    opacity: 1 !important;
+    transform: none !important;
+    padding: 2rem;
+    border-bottom: 1px solid #ccc;
+  }
+  .nav-dots, .progress-bar { display: none; }
+  body { background: #fff; color: #000; }
+  .card, .before-box, .after-box { border: 1px solid #ccc; break-inside: avoid; }
+  .bar-fill { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+
+<nav style="background: var(--card); padding: 10px 15px; border: 1px solid var(--border); border-radius: 8px; display: flex; gap: 10px; z-index: 9999; position: fixed; top: 20px; right: 40px; font-size: 0.95rem; box-shadow: var(--shadow);">
+  <a href="PayrollOps_Strategy_Presentation.html" style="font-weight: bold; color: var(--accent); text-decoration: none; padding: 6px 16px; border-radius: 5px; background: rgba(201,164,76,0.1);">Main Report</a>
+  <a href="PayrollOps_Deep_Research_Report.html" style="font-weight: bold; color: var(--fg); text-decoration: none; padding: 6px 16px; border-radius: 5px; transition: background 0.3s;">Research report</a>
+</nav>
+
+<!-- ========== PROGRESS BAR ========== -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- ========== NAV DOTS ========== -->
+<div class="nav-dots" id="navDots"></div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 1 — TITLE -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide title-slide visible" id="slide1">
+  <div class="slide-content">
+    <div class="title-badge">Internal Strategy Presentation &mdash; June 2026</div>
+    <h1>PayrollOps Strategy Presentation</h1>
+    <div class="accent-line"></div>
+    <p class="subtitle" style="max-width:700px; margin:0 auto 2rem;">Building a Practical Payroll Service/SaaS Opportunity Using Frappe Payroll</p>
+    <p style="color:var(--fg2); font-size:0.88rem; margin-bottom:2rem;">A 90-day validation-ready strategy for India-first payroll operations</p>
+    <div style="margin-top:2rem; color:var(--fg2); font-size:0.8rem;">
+      <span style="display:inline-block; margin:0 1rem;">Phases Researched: 4</span>
+      <span style="display:inline-block; margin:0 1rem;">Competitors Analyzed: 20</span>
+      <span style="display:inline-block; margin:0 1rem;">Evidence Sources: 50+</span>
+    </div>
+  </div>
+  <div class="slide-num">01 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 2 — WHY WE RESEARCHED THIS -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide2">
+  <div class="section-label">Research Origin</div>
+  <div class="slide-content">
+    <h2>Why We Researched This</h2>
+    <div class="key-message">Before building anything, we needed to validate whether the market, the buyers, the gaps, and the strategy actually hold up to scrutiny.</div>
+    <div class="card-grid" style="margin-top:1.5rem;">
+      <div class="card">
+        <div class="card-title"><span class="card-icon">&#127942;</span> Our Goal</div>
+        <div class="card-body">Provide Payroll Service/SaaS using Frappe Payroll as the delivery engine for Indian companies stuck in Excel or misconfigured software.</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="card-icon">&#128202;</span> What We Did</div>
+        <div class="card-body">4 phases of research: market sizing, competitor intelligence, strategy formulation, and deep synthesis across 50+ sources.</div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="card-icon">&#9989;</span> What We Wanted</div>
+        <div class="card-body">Not paper confidence. Practical market entry evidence: real pain, real gaps, real pricing, real risks, and a real path to first revenue.</div>
+      </div>
+    </div>
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>This presentation summarizes 4 research phases into one decision-ready narrative. Every claim has a source. Every recommendation has a condition.</p>
+    </div>
+  </div>
+  <div class="slide-num">02 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 3 — WHAT PAYROLLOPS ACTUALLY IS -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide3">
+  <div class="section-label">Concept</div>
+  <div class="slide-content">
+    <h2>What PayrollOps Actually Is</h2>
+    <div class="key-message">PayrollOps is a payroll implementation and operations service powered by Frappe HR &mdash; not a SaaS product, not full outsourcing.</div>
+
+    <div class="workflow" style="margin:1.5rem 0;">
+      <div class="workflow-step"><span class="num">1</span>Client Payroll Data</div>
+      <span class="workflow-arrow">&rarr;</span>
+      <div class="workflow-step"><span class="num">2</span>PayrollOps Setup &amp; Config</div>
+      <span class="workflow-arrow">&rarr;</span>
+      <div class="workflow-step"><span class="num">3</span>HR Dashboard &amp; Workflow</div>
+      <span class="workflow-arrow">&rarr;</span>
+      <div class="workflow-step"><span class="num">4</span>Client HR Rolls Payroll</div>
+      <span class="workflow-arrow">&rarr;</span>
+      <div class="workflow-step"><span class="num">5</span>PayrollOps Supports Issues</div>
+    </div>
+
+    <div class="card-grid card-grid-4" style="margin-top:1.5rem;">
+      <div class="card"><div class="card-title">&#128100; Employee Data</div><div class="card-body">Master import, salary structures, PF/ESI/UAN/PAN</div></div>
+      <div class="card"><div class="card-title">&#128197; Pay Cycle</div><div class="card-body">Monthly frequency, pay dates, approval chains</div></div>
+      <div class="card"><div class="card-title">&#9200; Attendance / LOP</div><div class="card-body">Upload templates, leave integration, reconciliation</div></div>
+      <div class="card"><div class="card-title">&#128176; Salary Components</div><div class="card-body">Basic, HRA, allowances, deductions, bonuses</div></div>
+      <div class="card"><div class="card-title">&#128221; Taxable Data</div><div class="card-body">PF, ESI, PT, TDS configuration per employee</div></div>
+      <div class="card"><div class="card-title">&#128203; Payslips</div><div class="card-body">Custom HTML templates, bank-compliant formats</div></div>
+      <div class="card"><div class="card-title">&#128202; Excel Reports</div><div class="card-body">Salary sheets, bank files, cost summaries, TDS</div></div>
+      <div class="card"><div class="card-title">&#128481; Dashboards</div><div class="card-body">Payroll status, cost summary, exception flags</div></div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>PayrollOps configures the system, builds what the HR team needs, and stays available. The client&rsquo;s HR team runs payroll. The client&rsquo;s CA handles statutory filings.</p>
+    </div>
+  </div>
+  <div class="slide-num">03 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 4 — WHAT PAYROLLOPS IS NOT -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide4">
+  <div class="section-label">Boundaries</div>
+  <div class="slide-content">
+    <h2>What PayrollOps Is Not</h2>
+    <p style="margin-bottom:1.5rem; max-width:700px;">Clear boundaries protect the team from scope creep, legal liability, and competitive fights we cannot win. These are strategic choices, not temporary limitations.</p>
+
+    <div class="card-grid">
+      <div class="card" style="border-left:3px solid var(--red);">
+        <div class="card-title" style="color:var(--red);">&#10060; Not Full Payroll Outsourcing</div>
+        <div class="card-body">We do not own the payroll process. The client&rsquo;s HR team runs payroll. We configure and support.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red);">
+        <div class="card-title" style="color:var(--red);">&#10060; Not Statutory Filing Ownership</div>
+        <div class="card-body">We do not file PF/ESI/TDS returns. The client&rsquo;s CA does. We configure the system correctly so filings are accurate.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red);">
+        <div class="card-title" style="color:var(--red);">&#10060; Not an EOR</div>
+        <div class="card-body">We do not employ workers on behalf of clients. Deel/Remote own this space.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red);">
+        <div class="card-title" style="color:var(--red);">&#10060; Not Global Payroll (Yet)</div>
+        <div class="card-body">India-first for 24 months. Each country needs separate compliance expertise we do not have yet.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red);">
+        <div class="card-title" style="color:var(--red);">&#10060; Not Feature Competition</div>
+        <div class="card-body">We do not try to out-feature greytHR, Keka, Zoho, ADP, Gusto, Deel, or Rippling on feature count.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red);">
+        <div class="card-title" style="color:var(--red);">&#10060; Not Pure SaaS Initially</div>
+        <div class="card-body">There is no &ldquo;sign up and go live in 5 minutes.&rdquo; PayrollOps is a setup + support service first.</div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>These boundaries are not about what we aspire to. They are about what we can credibly deliver in Year 1. Violating them creates legal liability and competitive fights we will lose.</p>
+    </div>
+  </div>
+  <div class="slide-num">04 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 5 — MARKET REALITY -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide5">
+  <div class="section-label">Market</div>
+  <div class="slide-content">
+    <h2>Market Reality</h2>
+    <div class="key-message">The payroll market is large, growing, and crowded. But market size is not the opportunity. The opportunity is poor implementation and operations.</div>
+
+    <div class="card-grid" style="margin-top:1.5rem;">
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2rem; font-weight:700; color:var(--accent);">$29&ndash;42B</div>
+        <div style="font-size:0.82rem; color:var(--fg2); margin-top:0.3rem;">Global Payroll Software Market 2026</div>
+        <div style="font-size:0.72rem; color:var(--fg2); margin-top:0.3rem;">9&ndash;11% CAGR</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2rem; font-weight:700; color:var(--accent);">$1.91B</div>
+        <div style="font-size:0.82rem; color:var(--fg2); margin-top:0.3rem;">India Payroll Services 2026</div>
+        <div style="font-size:0.72rem; color:var(--fg2); margin-top:0.3rem;">7.41% CAGR (Mordor Intelligence)</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2rem; font-weight:700; color:var(--accent);">15+</div>
+        <div style="font-size:0.82rem; color:var(--fg2); margin-top:0.3rem;">Credible India Payroll Tools</div>
+        <div style="font-size:0.72rem; color:var(--fg2); margin-top:0.3rem;">greytHR to Darwinbox</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:2rem; font-weight:700; color:var(--green);">66%</div>
+        <div style="font-size:0.82rem; color:var(--fg2); margin-top:0.3rem;">Buyers Face Disruption Post-Purchase</div>
+        <div style="font-size:0.72rem; color:var(--fg2); margin-top:0.3rem;">Capterra 2026 Buying Trends</div>
+      </div>
+    </div>
+
+    <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.25rem; margin-top:1.25rem;">
+      <div style="font-size:0.82rem; color:var(--fg2); line-height:1.7;">
+        <strong style="color:var(--fg);">Caveat:</strong> Market size numbers are directional, not a business case. 
+        India SaaS payroll pricing is &#8377;40&ndash;300 PEPM. The question is not whether payroll is a big market. 
+        The question is whether companies will pay for <em>setup + configuration + support</em> when software alone is cheap.
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>Market size validates that payroll matters. It does not validate that PayrollOps can win. The winning argument is the 66% disruption rate &mdash; software alone is not enough.</p>
+    </div>
+    <div class="src-row">
+      Sources: <a href="https://www.mordorintelligence.com/industry-reports/india-payroll-market-industry" target="_blank">Mordor Intelligence</a> | <a href="https://www.thebusinessresearchcompany.com/report/hr-payroll-software-global-market-report" target="_blank">Business Research Company</a> | Capterra 2026 Buying Trends
+      <span class="badge badge-verified">Analyst Estimate</span> <span class="badge badge-review">Survey</span>
+    </div>
+  </div>
+  <div class="slide-num">05 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 6 — THE REAL MARKET OPENING -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide6">
+  <div class="section-label">Opportunity</div>
+  <div class="slide-content">
+    <h2>The Real Market Opening</h2>
+    <div class="key-message">Software is available everywhere. Correct setup, customization, dashboards, and human support are not.</div>
+
+    <div class="before-after">
+      <div class="before-box">
+        <div class="before-title">&#128308; Software Market (Crowded)</div>
+        <ul style="font-size:0.85rem; color:var(--fg2); padding-left:1.2rem; line-height:1.8;">
+          <li>greytHR: 20,000+ clients, free tier, &#8377;3,495/mo</li>
+          <li>Keka: 1,850+ G2 reviews, best India UX</li>
+          <li>Zoho Payroll: &#8377;40&ndash;80 PEPM, ecosystem lock-in</li>
+          <li>HROne: G2 #3 globally, mid-market strength</li>
+          <li>RazorpayX, factoHR, Qandle, Zimyo, Darwinbox...</li>
+          <li>ADP, Gusto, Rippling, Deel for global/enterprise</li>
+        </ul>
+        <p style="font-size:0.8rem; color:var(--red); margin-top:0.75rem; font-weight:600;">We cannot win a feature war against these players.</p>
+      </div>
+      <div class="after-box">
+        <div class="after-title">&#128994; Operations Gap (Open)</div>
+        <ul style="font-size:0.85rem; color:var(--fg2); padding-left:1.2rem; line-height:1.8;">
+          <li>No vendor provides dedicated setup + configuration</li>
+          <li>Custom reports require vendor intervention (if possible)</li>
+          <li>Payslip formats are locked in all major tools</li>
+          <li>Support fails during payroll week (documented pattern)</li>
+          <li>Labour Code 2025 reconfiguration not offered as service</li>
+          <li>HR teams trained on software, not on payroll operations</li>
+        </ul>
+        <p style="font-size:0.8rem; color:var(--green); margin-top:0.75rem; font-weight:600;">This is where PayrollOps competes and wins.</p>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>The opening is not a missing feature. It is the entire post-purchase experience: setup, configuration, customization, dashboarding, and support. 66% of buyers experience disruption after purchase. That is the market.</p>
+    </div>
+  </div>
+  <div class="slide-num">06 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 7 — CUSTOMER PAIN -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide7">
+  <div class="section-label">Customer Pain</div>
+  <div class="slide-content">
+    <h2>Customer Pain</h2>
+    <div class="key-message">Indian companies with 50&ndash;150 employees are running payroll systems that are suddenly misconfigured, non-compliant, or completely broken.</div>
+
+    <div class="card-grid card-grid-3">
+      <div class="card">
+        <div class="card-title">&#128196; Excel Payroll Chaos</div>
+        <div class="card-body">62% of Indian SMEs still rely on spreadsheets. The &ldquo;47-tab Excel workbook&rdquo; is real. One person holds all the knowledge.</div>
+        <span class="badge badge-high">High Confidence</span>
+      </div>
+      <div class="card">
+        <div class="card-title">&#128197; 3&ndash;5 Days Per Month</div>
+        <div class="card-body">Manual payroll for 50 employees wastes &#8377;5,500&ndash;9,500/month in HR time. That&rsquo;s 36&ndash;60 hours of productive work lost.</div>
+        <span class="badge badge-verified">Verified</span>
+      </div>
+      <div class="card">
+        <div class="card-title">&#128169; Salary Structure Confusion</div>
+        <div class="card-body">Labour Code Nov 2025 changed the 50% wages rule. Most salary structures designed before that are now non-compliant.</div>
+        <span class="badge badge-high">High Confidence</span>
+      </div>
+      <div class="card">
+        <div class="card-title">&#128202; Poor Report Visibility</div>
+        <div class="card-body">CFOs cannot see payroll cost by department, location, or role without asking HR to manually build Excel reports.</div>
+        <span class="badge badge-review">User Review</span>
+      </div>
+      <div class="card">
+        <div class="card-title">&#128211; Payslip Rejection</div>
+        <div class="card-body">Banks reject payslips for loan applications. Visa offices ask for specific formats. Standard templates fail.</div>
+        <span class="badge badge-verified">Verified</span>
+      </div>
+      <div class="card">
+        <div class="card-title">&#9203; Support Delays</div>
+        <div class="card-body">&ldquo;Not one month has passed where we have not raised a ticket.&rdquo; Support queues during payroll week are catastrophic.</div>
+        <span class="badge badge-review">User Review</span>
+      </div>
+      <div class="card">
+        <div class="card-title">&#9888; Compliance Anxiety</div>
+        <div class="card-body">Form 16 &rarr; Form 130 from April 2026. EPFO 3.0 API changes. Most HR teams don&rsquo;t know what they don&rsquo;t know.</div>
+        <span class="badge badge-high">High Confidence</span>
+      </div>
+      <div class="card">
+        <div class="card-title">&#128125; Key-Person Dependency</div>
+        <div class="card-body">When the HR manager who &ldquo;knows the Excel sheet&rdquo; leaves, payroll breaks. No documentation. No backup.</div>
+        <span class="badge badge-strategy">Strategy</span>
+      </div>
+      <div class="card">
+        <div class="card-title">&#128163; Post-Update Regressions</div>
+        <div class="card-body">Software vendors release updates that break existing workflows mid-payroll. Recovery takes days.</div>
+        <span class="badge badge-review">User Review</span>
+      </div>
+    </div>
+
+    <div class="src-row">
+      Sources: <a href="https://ezhrm.in/payroll-roi-calculator-india-2026-true-cost-manual-payroll/" target="_blank">EZHRM ROI</a> | <a href="https://www.indpayroll.com/blog/how-to-choose-payroll-software-india-2026" target="_blank">INDPayroll</a> | <a href="https://accountx.in/payroll-compliance-checklist-india-2026/" target="_blank">AccountX</a> | G2 greytHR/Keka Reviews | Capterra 2026
+    </div>
+  </div>
+  <div class="slide-num">07 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 8 — WHAT USERS COMPLAIN ABOUT -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide8">
+  <div class="section-label">Review Mining</div>
+  <div class="slide-content">
+    <h2>What Users Complain About</h2>
+    <div class="key-message">Review mining across G2, Capterra, Trustpilot, and GetApp reveals consistent complaint patterns &mdash; not isolated incidents.</div>
+
+    <div class="bar-chart" style="margin-top:1.5rem;">
+      <div class="bar-row"><div class="bar-label">Support failure</div><div class="bar-track"><div class="bar-fill c4" style="width:95%">#1</div></div></div>
+      <div class="bar-row"><div class="bar-label">Config dependency</div><div class="bar-track"><div class="bar-fill c3" style="width:88%">#2</div></div></div>
+      <div class="bar-row"><div class="bar-label">Custom reports missing</div><div class="bar-track"><div class="bar-fill c3" style="width:82%">#3</div></div></div>
+      <div class="bar-row"><div class="bar-label">Payslip limitations</div><div class="bar-track"><div class="bar-fill c2" style="width:75%">#4</div></div></div>
+      <div class="bar-row"><div class="bar-label">Pricing opacity</div><div class="bar-track"><div class="bar-fill c5" style="width:68%">#5</div></div></div>
+      <div class="bar-row"><div class="bar-label">Mobile app issues</div><div class="bar-track"><div class="bar-fill c2" style="width:62%">#6</div></div></div>
+      <div class="bar-row"><div class="bar-label">Post-update regressions</div><div class="bar-track"><div class="bar-fill c1" style="width:58%">#7</div></div></div>
+      <div class="bar-row"><div class="bar-label">Compliance update lag</div><div class="bar-track"><div class="bar-fill c1" style="width:52%">#8</div></div></div>
+    </div>
+
+    <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.25rem; margin-top:1.25rem;">
+      <div style="font-size:0.85rem; color:var(--fg2); line-height:1.7;">
+        <strong style="color:var(--fg);">Key quote:</strong> <em>&ldquo;Not one month has passed where we have not raised a ticket.&rdquo;</em> &mdash; Maheshkumar J., greytHR G2<br>
+        <strong style="color:var(--fg);">Key quote:</strong> <em>&ldquo;Service is decreasing day by day. Folks behind the chat window are not fully aware of the functionality.&rdquo;</em> &mdash; Keka G2, 2026<br>
+        <strong style="color:var(--fg);">Key quote:</strong> <em>&ldquo;Reporting configuration, TDS filing, revising of TDS is not possible.&rdquo;</em> &mdash; Krishnanand B., greytHR G2
+      </div>
+    </div>
+
+    <div class="src-row">
+      Sources: <a href="https://hrone.cloud/blog/switching-from-greythr-india/" target="_blank">HROne greytHR Analysis</a> | <a href="https://hrone.cloud/blog/keka-vs-greythr-india/" target="_blank">HROne Keka vs greytHR</a> | <a href="https://www.getapp.com/hr-employee-management-software/a/greythr/" target="_blank">GetApp greytHR</a> | G2 India HRMS Reviews
+      <span class="badge badge-review">User Review</span> <span class="badge badge-high">High Confidence</span>
+    </div>
+  </div>
+  <div class="slide-num">08 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 9 — WHAT USERS LOVE -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide9">
+  <div class="section-label">Honest Assessment</div>
+  <div class="slide-content">
+    <h2>What Users Love</h2>
+    <div class="key-message">We are not blindly negative about competitors. Users praise specific things &mdash; and PayrollOps should learn from them, not dismiss them.</div>
+
+    <div class="card-grid card-grid-3" style="margin-top:1.5rem;">
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#10004; Payroll Accuracy</div>
+        <div class="card-body">greytHR, Keka, HROne deliver reliable PF/ESI/PT/TDS calculations for standard salary structures. This is table stakes.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#10004; Employee Self-Service</div>
+        <div class="card-body">Employees submitting leave, viewing payslips, updating declarations without calling HR reduces admin burden.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#10004; One-Click Payroll</div>
+        <div class="card-body">Keka&rsquo;s payroll preview before finalization is consistently praised. Users finish payroll in under 5 minutes for simple cases.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#10004; Compliance Automation</div>
+        <div class="card-body">Auto-updated PF/ESI/PT/TDS rates without manual intervention. HROne and Keka receive specific praise for this.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#10004; Transparent Pricing</div>
+        <div class="card-body">Gusto&rsquo;s flat pricing ($49/mo + $6/emp) is cited in hundreds of positive reviews. Transparency creates disproportionate goodwill.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#10004; Dedicated Specialist</div>
+        <div class="card-body">Paychex: <em>&ldquo;Having my own personal paycheck specialist for many years.&rdquo;</em> Human support is the #1 loyalty driver.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#10004; Accounting Integration</div>
+        <div class="card-body">QuickBooks Payroll auto-sync with accounting eliminates manual journal entries. CFOs specifically praise this.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#10004; Free Tiers</div>
+        <div class="card-body">greytHR (25 free), Zoho (3 free), RazorpayX (free basic) lower the barrier. This is competitive reality.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#10004; Mobile Access</div>
+        <div class="card-body">When it works, mobile ESS is valued. Field teams need GPS attendance. Manufacturing needs biometric sync.</div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>Competitors are good at core payroll for simple structures. PayrollOps should respect that and avoid competing on their strengths. The gap is everything around the core: setup, customization, support, and complex cases.</p>
+    </div>
+  </div>
+  <div class="slide-num">09 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 10 — COMPETITOR REALITY -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide10">
+  <div class="section-label">Competitors</div>
+  <div class="slide-content">
+    <h2>Competitor Reality</h2>
+    <div class="key-message">The landscape has 20+ players. Most are not direct threats. The ones that matter are incumbents at the exact segment we target.</div>
+
+    <div class="comp-tier">
+      <div class="comp-tier-title">&#128308; India Core &mdash; Direct Threat (50&ndash;500 emp)</div>
+      <div class="comp-tags">
+        <span class="comp-tag"><span class="dot dot-red"></span>greytHR &mdash; 3,000+ G2, &#8377;3,495/mo</span>
+        <span class="comp-tag"><span class="dot dot-red"></span>Keka &mdash; 1,850+ G2, best UX</span>
+        <span class="comp-tag"><span class="dot dot-orange"></span>Zoho Payroll &mdash; free tier, ecosystem</span>
+        <span class="comp-tag"><span class="dot dot-orange"></span>HROne &mdash; G2 #3 globally</span>
+        <span class="comp-tag"><span class="dot dot-orange"></span>RazorpayX &mdash; fintech-first</span>
+        <span class="comp-tag"><span class="dot dot-green"></span>factoHR &mdash; manufacturing focus</span>
+        <span class="comp-tag"><span class="dot dot-green"></span>Qandle &mdash; modular, affordable</span>
+        <span class="comp-tag"><span class="dot dot-green"></span>Zimyo &mdash; budget player</span>
+        <span class="comp-tag"><span class="dot dot-green"></span>Saral PayPack &mdash; CA favourite</span>
+      </div>
+    </div>
+
+    <div class="comp-tier">
+      <div class="comp-tier-title">&#128309; Global Benchmarks &mdash; Not Direct Threat (Learn From Them)</div>
+      <div class="comp-tags">
+        <span class="comp-tag"><span class="dot dot-gray"></span>ADP &mdash; enterprise, quote-only</span>
+        <span class="comp-tag"><span class="dot dot-gray"></span>Gusto &mdash; 400K+ customers, US SMB</span>
+        <span class="comp-tag"><span class="dot dot-gray"></span>Paychex &mdash; dedicated specialist model</span>
+        <span class="comp-tag"><span class="dot dot-gray"></span>Rippling &mdash; unified HR+IT+payroll</span>
+      </div>
+    </div>
+
+    <div class="comp-tier">
+      <div class="comp-tier-title">&#9899; EOR / Global &mdash; Different Category Entirely</div>
+      <div class="comp-tags">
+        <span class="comp-tag"><span class="dot dot-gray"></span>Deel &mdash; $599/emp EOR</span>
+        <span class="comp-tag"><span class="dot dot-gray"></span>Remote &mdash; owned entities</span>
+        <span class="comp-tag"><span class="dot dot-gray"></span>Multiplier &mdash; SEA focus</span>
+      </div>
+    </div>
+
+    <div class="comp-tier">
+      <div class="comp-tier-title">&#128310; Enterprise &mdash; Above Our Tier</div>
+      <div class="comp-tags">
+        <span class="comp-tag"><span class="dot dot-gray"></span>Darwinbox &mdash; 500+ emp</span>
+        <span class="comp-tag"><span class="dot dot-gray"></span>Ramco Systems &mdash; managed payroll</span>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>greytHR and Keka are the real incumbents. Zoho is the price anchor. Everyone else is context. We cannot win by feature count against any of them.</p>
+    </div>
+  </div>
+  <div class="slide-num">10 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 11 — WHY NOT COMPETE HEAD-ON -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide11">
+  <div class="section-label">Strategy</div>
+  <div class="slide-content">
+    <h2>Why Not Compete Head-On</h2>
+    <div class="key-message">Competitors have multi-year head starts. PayrollOps has 2&ndash;4 people. The math is simple: we must win differently.</div>
+
+    <div class="card-grid" style="margin-top:1.5rem;">
+      <div class="card">
+        <div class="card-title">&#128170; What They Have</div>
+        <div class="card-body">
+          <ul style="padding-left:1.1rem; line-height:1.9;">
+            <li>More features (greytHR: 20+ modules)</li>
+            <li>More clients (greytHR: 20,000+)</li>
+            <li>Compliance teams updating rules</li>
+            <li>Employee mobile apps</li>
+            <li>Brand trust and review volume</li>
+            <li>Lower SaaS pricing (&#8377;2,450&ndash;5,000/mo)</li>
+            <li>Venture funding and marketing budgets</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">&#127919; Where We Win</div>
+        <div class="card-body">
+          <ul style="padding-left:1.1rem; line-height:1.9;">
+            <li>Setup quality (they don&rsquo;t do this)</li>
+            <li>Custom configuration per client</li>
+            <li>Custom payslips and Excel reports</li>
+            <li>HR dashboards built to spec</li>
+            <li>Human support during payroll week</li>
+            <li>No per-user licensing (Frappe advantage)</li>
+            <li>Labour Code 2025 audit + restructure</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--gold-light); border:1px solid var(--accent); border-radius:10px; padding:1.25rem; margin-top:1.25rem; text-align:center;">
+      <div style="font-size:1.05rem; font-weight:600; color:var(--fg);">
+        &ldquo;The competitive advantage is not technology. It is operational delivery.&rdquo;
+      </div>
+      <div style="font-size:0.82rem; color:var(--fg2); margin-top:0.5rem;">Paychex proved: dedicated specialist &gt; feature count</div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>PayrollOps must not try to build a better SaaS product. It must build a better payroll operations experience around an existing product (Frappe). Service quality is the moat.</p>
+    </div>
+  </div>
+  <div class="slide-num">11 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 12 — WHERE PAYROLLOPS CAN WIN -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide12">
+  <div class="section-label">Opportunity</div>
+  <div class="slide-content">
+    <h2>Where PayrollOps Can Win</h2>
+    <div class="key-message">Eight evidence-backed opportunity areas where no competitor offers a credible implementation + support service.</div>
+
+    <div class="card-grid card-grid-4" style="margin-top:1.5rem;">
+      <div class="card" style="border-top:3px solid var(--accent);">
+        <div class="card-title">1. Setup Quality</div>
+        <div class="card-body">Configure salary structures, PF/ESI/PT/TDS correctly from day one. Verified against Labour Code 2025.</div>
+        <span class="badge badge-high">High Confidence</span>
+      </div>
+      <div class="card" style="border-top:3px solid var(--accent);">
+        <div class="card-title">2. Excel-to-System Migration</div>
+        <div class="card-body">Structured data migration with parallel run validation. 62% of SMEs still on spreadsheets.</div>
+        <span class="badge badge-high">High Confidence</span>
+      </div>
+      <div class="card" style="border-top:3px solid var(--accent);">
+        <div class="card-title">3. Custom Dashboard</div>
+        <div class="card-body">HR + CFO dashboards built per client in Frappe. No competitor does this as a service.</div>
+        <span class="badge badge-medium">Medium Confidence</span>
+      </div>
+      <div class="card" style="border-top:3px solid var(--accent);">
+        <div class="card-title">4. Custom Payslip</div>
+        <div class="card-body">Jinja HTML templates for any bank, visa, or auditor requirement. Locked in all major tools.</div>
+        <span class="badge badge-high">High Confidence</span>
+      </div>
+      <div class="card" style="border-top:3px solid var(--accent);">
+        <div class="card-title">5. Custom Excel Reports</div>
+        <div class="card-body">Salary sheets, bank files, cost summaries, TDS working &mdash; built to CA/CFO specification.</div>
+        <span class="badge badge-high">High Confidence</span>
+      </div>
+      <div class="card" style="border-top:3px solid var(--accent);">
+        <div class="card-title">6. Human Support</div>
+        <div class="card-body">Named contact. Phone/WhatsApp during payroll week. 2&ndash;4 hour SLA. Not a ticket queue.</div>
+        <span class="badge badge-high">High Confidence</span>
+      </div>
+      <div class="card" style="border-top:3px solid var(--accent);">
+        <div class="card-title">7. Pre-Payroll Checks</div>
+        <div class="card-body">Monthly checklist review, exception flagging, validation before finalization. Error prevention.</div>
+        <span class="badge badge-high">High Confidence</span>
+      </div>
+      <div class="card" style="border-top:3px solid var(--accent);">
+        <div class="card-title">8. HR Training</div>
+        <div class="card-body">Documented SOPs, 3-session training, handover. Client team becomes self-sufficient.</div>
+        <span class="badge badge-medium">Medium Confidence</span>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>Every opportunity card above maps to a documented complaint pattern in competitor reviews. These are not speculative. They are evidence-backed service gaps.</p>
+    </div>
+  </div>
+  <div class="slide-num">12 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 13 — BEST FIRST ICP -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide13">
+  <div class="section-label">ICP</div>
+  <div class="slide-content">
+    <h2>Best First ICP</h2>
+    <div class="key-message">Indian companies, 50&ndash;150 employees, running Excel/CA/manual payroll or stuck in misconfigured software. Score: 75/90.</div>
+
+    <div style="background:var(--card); border:2px solid var(--accent); border-radius:12px; padding:1.5rem; margin:1.5rem 0;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
+        <div style="font-size:1.1rem; font-weight:700; color:var(--fg);">&#11088; Primary ICP: Excel/CA Payroll Companies</div>
+        <span class="badge badge-high">Score: 75/90</span>
+      </div>
+      <div style="font-size:0.88rem; color:var(--fg2); line-height:1.7;">
+        <strong style="color:var(--fg);">Profile:</strong> 50&ndash;100 employees (optimal), growing to 150. Tier 1 India cities (Bangalore, Mumbai, Hyderabad, Pune, Delhi NCR). IT services, SaaS, professional services, marketing, healthcare, retail.<br><br>
+        <strong style="color:var(--fg);">Current State:</strong> Running Excel payroll or CA-managed process. Monthly payroll takes 3&ndash;5 working days. Salary structures may be non-compliant post-Labour Code 2025.<br><br>
+        <strong style="color:var(--fg);">Pain:</strong> EPFO notice or near-miss. HR manager overwhelmed. No visibility for CFO. Key-person dependency on the &ldquo;Excel expert.&rdquo;
+      </div>
+    </div>
+
+    <div class="card-grid card-grid-3">
+      <div class="card">
+        <div class="card-title">&#128200; Why Now</div>
+        <div class="card-body">Labour Code penalties are immediate (&#8377;10,000&ndash;1,00,000 per violation). Form 130 replaces Form 16 from April 2026. Compliance anxiety is at peak.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">&#128176; Why They Can Pay</div>
+        <div class="card-body">Excel payroll wastes &#8377;5,500&ndash;9,500/month in HR time. Setup fee of &#8377;25,000&ndash;75,000 pays for itself in 3&ndash;6 months. Support at &#8377;5,000&ndash;15,000/mo is cheaper than outsourcing.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">&#9889; Why Frappe Works</div>
+        <div class="card-body">No per-user licensing means cost doesn&rsquo;t scale with headcount. Full customization for salary structures, reports, payslips. ERPNext integration for accounting.</div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>The 50&ndash;150 employee Excel payroll segment has the highest pain-urgency combination, the largest addressable population, and the least direct competition for implementation-as-a-service.</p>
+    </div>
+    <div class="src-row">
+      Source: <a href="https://ezhrm.in/payroll-roi-calculator-india-2026-true-cost-manual-payroll/" target="_blank">EZHRM ROI</a> | INDPayroll/NASSCOM 2026 | Phase 1 Segment Analysis
+      <span class="badge badge-verified">Verified</span> <span class="badge badge-high">High Confidence</span>
+    </div>
+  </div>
+  <div class="slide-num">13 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 14 — ICP SCORECARD -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide14">
+  <div class="section-label">ICP</div>
+  <div class="slide-content">
+    <h2>ICP Scorecard</h2>
+    <div class="key-message">Not all segments are equal. Score across pain, urgency, willingness to pay, fit for PayrollOps, and fit for Frappe.</div>
+
+    <div style="margin-top:1.5rem;">
+      <div class="score-row header">
+        <div>Segment</div>
+        <div>Score</div>
+        <div>Priority</div>
+        <div>Visual</div>
+      </div>
+      <div class="score-row highlight">
+        <div><strong>&#11088; Excel/CA Payroll, 50&ndash;150 emp</strong></div>
+        <div style="color:var(--green); font-weight:700;">75/90</div>
+        <div><span class="badge badge-high">PRIMARY</span></div>
+        <div><div class="score-bar-track"><div class="score-bar-fill fill-high" style="width:83%"></div></div></div>
+      </div>
+      <div class="score-row">
+        <div>Unhappy SaaS Switchers (greytHR/Keka)</div>
+        <div style="color:var(--orange); font-weight:600;">62/90</div>
+        <div><span class="badge badge-medium">SECONDARY</span></div>
+        <div><div class="score-bar-track"><div class="score-bar-fill fill-medium" style="width:69%"></div></div></div>
+      </div>
+      <div class="score-row">
+        <div>ERPNext / Frappe Users</div>
+        <div style="color:var(--orange); font-weight:600;">58/90</div>
+        <div><span class="badge badge-medium">TERTIARY</span></div>
+        <div><div class="score-bar-track"><div class="score-bar-fill fill-medium" style="width:64%"></div></div></div>
+      </div>
+      <div class="score-row">
+        <div>Multi-Entity SMBs</div>
+        <div style="color:var(--orange); font-weight:600;">60/90</div>
+        <div><span class="badge badge-medium">MONTH 12+</span></div>
+        <div><div class="score-bar-track"><div class="score-bar-fill fill-medium" style="width:67%"></div></div></div>
+      </div>
+      <div class="score-row">
+        <div>1&ndash;20 Employee Startups</div>
+        <div style="color:var(--red); font-weight:600;">45/90</div>
+        <div><span class="badge badge-low">AVOID</span></div>
+        <div><div class="score-bar-track"><div class="score-bar-fill fill-low" style="width:50%"></div></div></div>
+      </div>
+      <div class="score-row">
+        <div>Global / Remote Companies</div>
+        <div style="color:var(--red); font-weight:600;">30/90</div>
+        <div><span class="badge badge-low">AVOID 24mo</span></div>
+        <div><div class="score-bar-track"><div class="score-bar-fill fill-low" style="width:33%"></div></div></div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>Primary ICP: Excel/CA payroll at 50&ndash;150 employees. Secondary: greytHR/Keka switchers. Avoid: sub-20 startups (price-sensitive) and global companies (compliance complexity).</p>
+    </div>
+  </div>
+  <div class="slide-num">14 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 15 — BUYER PERSONAS -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide15">
+  <div class="section-label">Personas</div>
+  <div class="slide-content">
+    <h2>Buyer Personas</h2>
+    <div class="key-message">Four distinct buyers with different pains, fears, and proof requirements. Each needs a different message.</div>
+
+    <div class="card-grid" style="margin-top:1.5rem;">
+      <div class="card" style="border-top:3px solid var(--accent);">
+        <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--accent); margin-bottom:0.5rem;">&#128105; HR Manager</div>
+        <div style="font-size:0.88rem; color:var(--fg); font-weight:600; margin-bottom:0.5rem;">2&ndash;7 years exp | 50&ndash;150 emp</div>
+        <div style="font-size:0.82rem; color:var(--fg2); line-height:1.7; margin-bottom:0.75rem;">
+          <strong style="color:var(--fg);">Pain:</strong> Monthly payroll takes 3&ndash;7 days. Errors in PF/ESI. Cannot generate custom reports. Blamed when wrong.<br>
+          <strong style="color:var(--fg);">Fear:</strong> EPFO notice, employee complaints, not knowing enough about new regulations.
+        </div>
+        <div style="font-size:0.78rem; color:var(--accent); font-weight:600;">Message: &ldquo;We configure correctly, build your dashboard, and answer the phone.&rdquo;</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--green);">
+        <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--green); margin-bottom:0.5rem;">&#128104; Founder / Owner</div>
+        <div style="font-size:0.88rem; color:var(--fg); font-weight:600; margin-bottom:0.5rem;">50&ndash;150 emp | Building the company</div>
+        <div style="font-size:0.82rem; color:var(--fg2); line-height:1.7; margin-bottom:0.75rem;">
+          <strong style="color:var(--fg);">Pain:</strong> Payroll takes best HR person away from hiring. No visibility into payroll costs. Fear of government notices.<br>
+          <strong style="color:var(--fg);">Fear:</strong> Payroll error causing exits, surprise penalty, paying for compliance that isn&rsquo;t happening.
+        </div>
+        <div style="font-size:0.78rem; color:var(--green); font-weight:600;">Message: &ldquo;Your HR team gets 3+ days back. Your CFO gets a dashboard. Labour Code verified.&rdquo;</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--blue);">
+        <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--blue); margin-bottom:0.5rem;">&#128104; CFO / Finance Head</div>
+        <div style="font-size:0.88rem; color:var(--fg); font-weight:600; margin-bottom:0.5rem;">100&ndash;500 emp | Number-driven</div>
+        <div style="font-size:0.82rem; color:var(--fg2); line-height:1.7; margin-bottom:0.75rem;">
+          <strong style="color:var(--fg);">Pain:</strong> Payroll data doesn&rsquo;t speak to accounting. Manual journal entries. No department-level cost visibility.<br>
+          <strong style="color:var(--fg);">Fear:</strong> Tax liability from incorrect TDS, audit exposure, vendor dependency.
+        </div>
+        <div style="font-size:0.78rem; color:var(--blue); font-weight:600;">Message: &ldquo;Audit trail logs every change. ERPNext eliminates manual journal entries.&rdquo;</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--purple);">
+        <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--purple); margin-bottom:0.5rem;">&#128104; CA / Accountant</div>
+        <div style="font-size:0.88rem; color:var(--fg); font-weight:600; margin-bottom:0.5rem;">Manages payroll for 5&ndash;20 clients</div>
+        <div style="font-size:0.82rem; color:var(--fg2); line-height:1.7; margin-bottom:0.75rem;">
+          <strong style="color:var(--fg);">Pain:</strong> Managing different salary structures across clients. Month-end chaos. Ad hoc report requests.<br>
+          <strong style="color:var(--fg);">Fear:</strong> Compliance error damaging firm reputation, client outgrowing manual process.
+        </div>
+        <div style="font-size:0.78rem; color:var(--purple); font-weight:600;">Message: &ldquo;We set up the system; your client runs it; you focus on filings.&rdquo;</div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>Each persona needs a different demo, proof point, and message. The HR manager wants support. The founder wants time back. The CFO wants auditability. The CA wants partnership, not replacement.</p>
+    </div>
+  </div>
+  <div class="slide-num">15 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 16 — PAYROLLOPS WEDGE -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide16">
+  <div class="section-label">Positioning</div>
+  <div class="slide-content">
+    <h2>The PayrollOps Wedge</h2>
+    <div class="key-message">&ldquo;We configure your payroll correctly, build your HR team a dashboard they can use, and stay with you when something goes wrong.&rdquo;</div>
+
+    <div class="before-after" style="margin-top:1.5rem;">
+      <div class="before-box">
+        <div class="before-title">&#128308; Before PayrollOps</div>
+        <ul style="font-size:0.85rem; color:var(--fg2); padding-left:1.2rem; line-height:2;">
+          <li>Running payroll in a 47-tab Excel workbook</li>
+          <li>One HR manager holds all the knowledge</li>
+          <li>Salary structures designed pre-2025</li>
+          <li>PF basis potentially non-compliant</li>
+          <li>Manual reconciliation of attendance vs. payroll</li>
+          <li>Payslips rejected by banks</li>
+          <li>No CFO visibility into payroll costs</li>
+          <li>Support tickets take 48+ hours (if answered)</li>
+          <li>Post-update regressions break payroll</li>
+          <li>Compliance anxiety with no clear path</li>
+        </ul>
+      </div>
+      <div class="after-box">
+        <div class="after-title">&#128994; After PayrollOps</div>
+        <ul style="font-size:0.85rem; color:var(--fg2); padding-left:1.2rem; line-height:2;">
+          <li>Frappe HR configured with correct structures</li>
+          <li>Documented SOP + trained HR team</li>
+          <li>Salary structures verified vs. Labour Code 2025</li>
+          <li>PF/ESI/PT/TDS correctly configured</li>
+          <li>Attendance-to-payroll workflow automated</li>
+          <li>Custom payslips accepted by banks</li>
+          <li>CFO dashboard with department cost view</li>
+          <li>Named contact answers in 2&ndash;4 hours</li>
+          <li>Pre-payroll checklist catches errors early</li>
+          <li>Monthly support + compliance calendar</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>The wedge is not a feature. It is the transformation from chaos to controlled payroll operations. Sell the after-state, not the product.</p>
+    </div>
+  </div>
+  <div class="slide-num">16 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 17 — HOW PAYROLLOPS WORKS -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide17">
+  <div class="section-label">Process</div>
+  <div class="slide-content">
+    <h2>How PayrollOps Works</h2>
+    <div class="key-message">A 10-step client journey from first conversation to monthly support. Each step is a defined deliverable.</div>
+
+    <div class="timeline" style="margin-top:1.5rem;">
+      <div class="timeline-item phase1">
+        <div class="timeline-title">1. Discovery Call</div>
+        <div class="timeline-desc">Understand current payroll process, tools, employee count, pain points, salary structure.</div>
+      </div>
+      <div class="timeline-item phase1">
+        <div class="timeline-title">2. Data Collection</div>
+        <div class="timeline-desc">Employee master, salary structures, PF/ESI registrations, attendance method, leave policy.</div>
+      </div>
+      <div class="timeline-item phase1">
+        <div class="timeline-title">3. Payroll Data Audit</div>
+        <div class="timeline-desc">Data quality report + Labour Code 50% wages check + salary structure gap analysis.</div>
+      </div>
+      <div class="timeline-item phase2">
+        <div class="timeline-title">4. System Setup (Week 2&ndash;3)</div>
+        <div class="timeline-desc">Configure Frappe: company, employees, salary structures, PF/ESI/PT/TDS, workflows, approvals.</div>
+      </div>
+      <div class="timeline-item phase2">
+        <div class="timeline-title">5. Dashboard &amp; Report Building</div>
+        <div class="timeline-desc">Custom payslip template, Excel reports (salary sheet, bank file, cost summary), HR dashboard.</div>
+      </div>
+      <div class="timeline-item phase2">
+        <div class="timeline-title">6. Test Payroll Run</div>
+        <div class="timeline-desc">Run test payroll for 5&ndash;10 employees. Validate PF, ESI, PT, TDS, LOP, net pay calculations.</div>
+      </div>
+      <div class="timeline-item phase3">
+        <div class="timeline-title">7. Parallel Run</div>
+        <div class="timeline-desc">One full payroll cycle in both old system AND Frappe. Reconcile employee-by-employee.</div>
+      </div>
+      <div class="timeline-item phase3">
+        <div class="timeline-title">8. HR Team Training</div>
+        <div class="timeline-desc">3 sessions: system overview, monthly payroll process, payslip generation + SOP document.</div>
+      </div>
+      <div class="timeline-item phase3">
+        <div class="timeline-title">9. Go-Live</div>
+        <div class="timeline-desc">Client HR runs next payroll cycle with PayrollOps on standby. Go-live declaration signed.</div>
+      </div>
+      <div class="timeline-item phase4">
+        <div class="timeline-title">10. Monthly Support</div>
+        <div class="timeline-desc">Pre-payroll checklist, exception report, post-payroll review call, issue resolution within 2&ndash;4 hours.</div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>Timeline: 4&ndash;6 weeks from discovery to go-live. Every step is documented, repeatable, and measurable. The first 3 steps are risk-reduction; steps 4&ndash;7 are delivery; steps 8&ndash;10 are long-term value.</p>
+    </div>
+  </div>
+  <div class="slide-num">17 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 18 — PRODUCT/SERVICE PACKAGES -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide18">
+  <div class="section-label">Packages</div>
+  <div class="slide-content">
+    <h2>Product / Service Packages</h2>
+    <div class="key-message">Seven defined packages matched to real buyer pain and willingness-to-pay levels. Transparent pricing. No &ldquo;contact us.&rdquo;</div>
+
+    <div class="card-grid card-grid-3" style="margin-top:1.5rem;">
+      <div class="card" style="border-top:3px solid var(--accent);">
+        <div class="card-title">&#128296; PayrollOps Setup</div>
+        <div style="font-size:1.1rem; font-weight:700; color:var(--fg); margin-bottom:0.5rem;">&#8377;25,000&ndash;75,000 <span style="font-size:0.75rem; color:var(--fg2); font-weight:400;">one-time</span></div>
+        <div class="card-body">From Excel to configured Frappe HR. Employee import, salary structures, PF/ESI/PT/TDS, payslip, dashboard, test + parallel run, HR training. Timeline: 4&ndash;6 weeks.</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--green);">
+        <div class="card-title">&#128172; Monthly Support</div>
+        <div style="font-size:1.1rem; font-weight:700; color:var(--fg); margin-bottom:0.5rem;">&#8377;5,000&ndash;20,000 <span style="font-size:0.75rem; color:var(--fg2); font-weight:400;">/month</span></div>
+        <div class="card-body">Pre-payroll checklist, exception review, post-payroll call, one custom Excel/month, compliance reminders, 2&ndash;4hr SLA. Named contact.</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--blue);">
+        <div class="card-title">&#128260; Migration</div>
+        <div style="font-size:1.1rem; font-weight:700; color:var(--fg); margin-bottom:0.5rem;">&#8377;35,000&ndash;1,00,000 <span style="font-size:0.75rem; color:var(--fg2); font-weight:400;">one-time</span></div>
+        <div class="card-body">Switch from greytHR/Keka/Excel to Frappe. Audit current config, extract + clean history, redesign structures, parallel run, retraining. Timeline: 6&ndash;8 weeks.</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--purple);">
+        <div class="card-title">&#128203; Custom Payslip &amp; Reports</div>
+        <div style="font-size:1.1rem; font-weight:700; color:var(--fg); margin-bottom:0.5rem;">&#8377;5,000&ndash;15,000 <span style="font-size:0.75rem; color:var(--fg2); font-weight:400;">per template</span></div>
+        <div class="card-body">Custom HTML payslip (bank/loan/visa compliant) + up to 3 Excel report templates. Monthly maintenance: &#8377;2,000&ndash;5,000/mo.</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--orange);">
+        <div class="card-title">&#11088; PayrollOps Pro (Bundle)</div>
+        <div style="font-size:1.1rem; font-weight:700; color:var(--fg); margin-bottom:0.5rem;">&#8377;60,000&ndash;1,30,000 <span style="font-size:0.75rem; color:var(--fg2); font-weight:400;">lump (6 months)</span></div>
+        <div class="card-body">Setup + 6 months support bundled. Reduces decision fatigue. Ensures 6-month engagement to prove value. 50% upfront, 50% over 6 months.</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--red);">
+        <div class="card-title">&#9888; Labour Code Compliance Audit</div>
+        <div style="font-size:1.1rem; font-weight:700; color:var(--fg); margin-bottom:0.5rem;">&#8377;15,000&ndash;35,000 <span style="font-size:0.75rem; color:var(--fg2); font-weight:400;">one-time</span></div>
+        <div class="card-body">Audit salary structures vs. Code on Wages 50% rule. Identify gaps, recommend restructure, configure new structure, written compliance memo. Requires CA specialist.</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--green); grid-column: span 1;">
+        <div class="card-title">&#9881; ERPNext Activation</div>
+        <div style="font-size:1.1rem; font-weight:700; color:var(--fg); margin-bottom:0.5rem;">&#8377;35,000&ndash;75,000 <span style="font-size:0.75rem; color:var(--fg2); font-weight:400;">one-time</span></div>
+        <div class="card-body">For companies already on ERPNext. Activate payroll module + native accounting integration. Auto-posts salary journal entries to GL.</div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>Pricing is service + support value, not SaaS subscription. The Labour Code Audit is the door-opener. The Pro bundle reduces churn risk. Every package has a clear scope boundary.</p>
+    </div>
+  </div>
+  <div class="slide-num">18 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 19 — WHY FRAPPE PAYROLL HELPS US -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide19">
+  <div class="section-label">Technology</div>
+  <div class="slide-content">
+    <h2>Why Frappe Payroll Helps Us</h2>
+    <div class="key-message">Frappe HR v16 is not perfect. But it gives PayrollOps competitive advantages that no closed-source competitor can match.</div>
+
+    <div class="card-grid card-grid-3" style="margin-top:1.5rem;">
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#128176; No Per-User Licensing</div>
+        <div class="card-body">MIT-licensed, zero per-user fees. greytHR charges &#8377;35/additional employee. Keka is PEPM-based. Frappe means cost doesn&rsquo;t scale with headcount.</div>
+        <span class="badge badge-high">High Confidence</span>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#128295; Salary Structure Flexibility</div>
+        <div class="card-body">Fully configurable salary components, formulas, conditions. Complex structures (FBP, shift allowances, performance pay) are all possible.</div>
+        <span class="badge badge-high">High Confidence</span>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#128202; Custom Reports</div>
+        <div class="card-body">Frappe Report Builder + Python/Jinja scripts. Any Excel output the CA or CFO needs can be built once and generated monthly.</div>
+        <span class="badge badge-high">High Confidence</span>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#128481; Custom Dashboards</div>
+        <div class="card-body">Configurable dashboards per client. Payroll calendar, exception flags, cost summary, approval status. No competitor offers this as a service.</div>
+        <span class="badge badge-medium">Medium Confidence</span>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#128203; Custom Payslips</div>
+        <div class="card-body">Jinja HTML templating. Any format: bank loan applications, visa documentation, enterprise vendor requirements. Full control.</div>
+        <span class="badge badge-high">High Confidence</span>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#128221; Audit Trail</div>
+        <div class="card-body">Every change logged, timestamped, attributable. Critical for EPFO inspections. Built into Frappe framework natively.</div>
+        <span class="badge badge-high">High Confidence</span>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#128272; Role Permissions</div>
+        <div class="card-body">Granular access: HR admin, payroll processor, manager approval, employee self-service view. Configured per client.</div>
+        <span class="badge badge-high">High Confidence</span>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#128260; ERPNext Integration</div>
+        <div class="card-body">Salary journal entry auto-posted to GL. PF/ESI employer contributions mapped. Eliminates the manual entry CFOs despise.</div>
+        <span class="badge badge-high">High Confidence</span>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#128187; Open Customization</div>
+        <div class="card-body">Open-source means no vendor lock-in. Client owns their data. Our team can modify anything. Software team can maintain it.</div>
+        <span class="badge badge-high">High Confidence</span>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">19 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 20 — WHERE FRAPPE NEEDS CAUTION -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide20">
+  <div class="section-label">Risks</div>
+  <div class="slide-content">
+    <h2>Where Frappe Needs Caution</h2>
+    <div class="key-message">Frappe&rsquo;s advantages are real. But honest assessment of its limitations is essential before client delivery.</div>
+
+    <div class="card-grid" style="margin-top:1.5rem;">
+      <div class="card" style="border-left:3px solid var(--red);">
+        <div class="card-title" style="color:var(--red);">&#9888; India Statutory Outputs Must Be Verified</div>
+        <div class="card-body">Form 130 (new Form 16), EPFO 3.0 ECR, 50% wages rule compliance &mdash; these must be hands-on tested before any client promises. Cannot be assumed.</div>
+        <span class="badge badge-validate">Needs Validation</span>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red);">
+        <div class="card-title" style="color:var(--red);">&#9888; Compliance Not Out-of-Box</div>
+        <div class="card-body">Unlike greytHR/Keka which maintain compliance teams, Frappe requires manual configuration of PF/ESI/PT/TDS rules. This is a permanent operational cost.</div>
+        <span class="badge badge-high">High Confidence</span>
+      </div>
+      <div class="card" style="border-left:3px solid var(--orange);">
+        <div class="card-title" style="color:var(--orange);">&#9888; Skilled Configuration Required</div>
+        <div class="card-body">Every customization, report, and workflow requires someone who knows the Frappe framework. Not a low-skill operation.</div>
+        <span class="badge badge-high">High Confidence</span>
+      </div>
+      <div class="card" style="border-left:3px solid var(--orange);">
+        <div class="card-title" style="color:var(--orange);">&#9888; Support Team Must Understand Payroll</div>
+        <div class="card-body">A developer who doesn&rsquo;t understand PF basis vs. gross salary will configure incorrectly. Need payroll domain + technical skill together.</div>
+        <span class="badge badge-strategy">Strategy</span>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red);">
+        <div class="card-title" style="color:var(--red);">&#9888; Do Not Promise Statutory Ownership</div>
+        <div class="card-body">Until a licensed compliance professional is on the team, PayrollOps configures but does not own statutory filings. Boundary protects against liability.</div>
+        <span class="badge badge-high">High Confidence</span>
+      </div>
+      <div class="card" style="border-left:3px solid var(--orange);">
+        <div class="card-title" style="color:var(--orange);">&#9888; Small Review Volume</div>
+        <div class="card-body">Frappe HR has far fewer reviews than greytHR or Keka. Trust signal is weaker. Need client references and case studies to compensate.</div>
+        <span class="badge badge-medium">Medium Confidence</span>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>Frappe is the right engine. But India compliance configuration requires validation before first client. Budget 2 weeks for hands-on testing of PF, ESI, PT, TDS against Labour Code 2025 and Income Tax Act 2025 rules.</p>
+    </div>
+  </div>
+  <div class="slide-num">20 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 21 — 20 USPs -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide21">
+  <div class="section-label">USPs</div>
+  <div class="slide-content">
+    <h2>20 Evidence-Backed USPs</h2>
+    <div class="key-message">Each USP maps to a documented complaint pattern or market gap. Generic claims excluded. Every claim has a source.</div>
+
+    <div class="usp-grid" style="margin-top:1.5rem;">
+      <div class="usp-card">
+        <div class="usp-head"><span class="usp-title">1. Configured correctly from day one</span><span class="badge badge-high">High</span></div>
+        <div class="usp-pain">66% of buyers face disruption post-purchase. We configure before HR logs in.</div>
+      </div>
+      <div class="usp-card">
+        <div class="usp-head"><span class="usp-title">2. Labour Code salary structure audit</span><span class="badge badge-high">High</span></div>
+        <div class="usp-pain">50% wages rule from Nov 2025. Most structures are non-compliant.</div>
+      </div>
+      <div class="usp-card">
+        <div class="usp-head"><span class="usp-title">3. HR dashboard built to spec</span><span class="badge badge-medium">Med</span></div>
+        <div class="usp-pain">No India SMB tool builds client-specific dashboards as a service.</div>
+      </div>
+      <div class="usp-card">
+        <div class="usp-head"><span class="usp-title">4. Custom payslip (any format)</span><span class="badge badge-high">High</span></div>
+        <div class="usp-pain">Banks reject standard payslips. Jinja templating = any format.</div>
+      </div>
+      <div class="usp-card">
+        <div class="usp-head"><span class="usp-title">5. Custom Excel reports for CA/CFO</span><span class="badge badge-high">High</span></div>
+        <div class="usp-pain">&ldquo;Reporting configuration is not possible&rdquo; &mdash; greytHR G2 review.</div>
+      </div>
+      <div class="usp-card">
+        <div class="usp-head"><span class="usp-title">6. Human support during payroll week</span><span class="badge badge-high">High</span></div>
+        <div class="usp-pain">#1 complaint across ALL tools. Named contact. 2&ndash;4hr SLA.</div>
+      </div>
+      <div class="usp-card">
+        <div class="usp-head"><span class="usp-title">7. Pre-payroll checklist</span><span class="badge badge-high">High</span></div>
+        <div class="usp-pain">Errors discovered after distribution create reversal nightmares.</div>
+      </div>
+      <div class="usp-card">
+        <div class="usp-head"><span class="usp-title">8. Attendance-to-payroll validation</span><span class="badge badge-medium">Med</span></div>
+        <div class="usp-pain">Manual attendance reconciliation takes 1&ndash;2 days every month.</div>
+      </div>
+      <div class="usp-card">
+        <div class="usp-head"><span class="usp-title">9. Complex salary structures</span><span class="badge badge-medium">Med</span></div>
+        <div class="usp-pain">FBP, bonuses, shift pay, retainers &mdash; all configurable in Frappe.</div>
+      </div>
+      <div class="usp-card">
+        <div class="usp-head"><span class="usp-title">10. ERPNext accounting integration</span><span class="badge badge-high">High</span></div>
+        <div class="usp-pain">Auto-posts salary journal entries. Eliminates manual work for CFOs.</div>
+      </div>
+      <div class="usp-card">
+        <div class="usp-head"><span class="usp-title">11. Audit trail (every change logged)</span><span class="badge badge-high">High</span></div>
+        <div class="usp-pain">EPFO inspection defense. Frappe native. Zero extra development.</div>
+      </div>
+      <div class="usp-card">
+        <div class="usp-head"><span class="usp-title">12. Transparent all-in pricing</span><span class="badge badge-high">High</span></div>
+        <div class="usp-pain">Keka has no public pricing. ADP is quote-only. We publish ours.</div>
+      </div>
+      <div class="usp-card">
+        <div class="usp-head"><span class="usp-title">13. Exception reporting</span><span class="badge badge-medium">Med</span></div>
+        <div class="usp-pain">Flag missing UAN, ESI threshold breach, basic &lt; 50% before payroll.</div>
+      </div>
+      <div class="usp-card">
+        <div class="usp-head"><span class="usp-title">14. Migration support</span><span class="badge badge-medium">Med</span></div>
+        <div class="usp-pain">Parallel run validation. Historical data preserved. De-risked switch.</div>
+      </div>
+      <div class="usp-card">
+        <div class="usp-head"><span class="usp-title">15. No per-user licensing</span><span class="badge badge-high">High</span></div>
+        <div class="usp-pain">Frappe MIT license. Scale from 50 to 200 employees, bill stays flat.</div>
+      </div>
+      <div class="usp-card">
+        <div class="usp-head"><span class="usp-title">16. One phone call during payroll week</span><span class="badge badge-high">High</span></div>
+        <div class="usp-pain">&ldquo;Things work fine until something breaks, then support is a black hole.&rdquo;</div>
+      </div>
+      <div class="usp-card">
+        <div class="usp-head"><span class="usp-title">17. Documented payroll SOP</span><span class="badge badge-medium">Med</span></div>
+        <div class="usp-pain">Process lives in writing, not in one person&rsquo;s head. Reduces key-person risk.</div>
+      </div>
+      <div class="usp-card">
+        <div class="usp-head"><span class="usp-title">18. India-first configuration</span><span class="badge badge-medium">Med</span></div>
+        <div class="usp-pain">We maintain India regulatory calendar. Update all clients when rules change.</div>
+      </div>
+      <div class="usp-card">
+        <div class="usp-head"><span class="usp-title">19. Client retains control</span><span class="badge badge-high">High</span></div>
+        <div class="usp-pain">You run payroll. We make the system work. Not full outsourcing.</div>
+      </div>
+      <div class="usp-card">
+        <div class="usp-head"><span class="usp-title">20. Payroll in 1 day, not 5</span><span class="badge badge-medium">Med</span></div>
+        <div class="usp-pain">Configured Frappe + checklist + templates = 4&ndash;8 hour payroll cycle.</div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>20 USPs, each tied to evidence. The strongest cluster: setup quality (1&ndash;5), human support (6, 16), transparency (12), and Frappe&rsquo;s structural advantages (10, 11, 15). Use these as messaging anchors.</p>
+    </div>
+  </div>
+  <div class="slide-num">21 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 22 — PRICING AND PACKAGING -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide22">
+  <div class="section-label">Pricing</div>
+  <div class="slide-content">
+    <h2>Pricing &amp; Packaging Hypothesis</h2>
+    <div class="key-message">PayrollOps must not price like pure SaaS. It must price as setup + support + configuration value. The delta is justified by time saved + risk reduced.</div>
+
+    <div style="margin-top:1.5rem;">
+      <div class="bar-chart">
+        <div class="bar-row"><div class="bar-label">Zoho Payroll (50 emp)</div><div class="bar-track"><div class="bar-fill c1" style="width:22%">&#8377;2,000&ndash;4,000/mo</div></div></div>
+        <div class="bar-row"><div class="bar-label">Qandle (50 emp)</div><div class="bar-track"><div class="bar-fill c1" style="width:28%">&#8377;2,450/mo</div></div></div>
+        <div class="bar-row"><div class="bar-label">greytHR (50 emp)</div><div class="bar-track"><div class="bar-fill c2" style="width:38%">&#8377;3,495/mo</div></div></div>
+        <div class="bar-row"><div class="bar-label">Keka est. (50 emp)</div><div class="bar-track"><div class="bar-fill c2" style="width:48%">&#8377;4,500&ndash;5,000/mo</div></div></div>
+        <div class="bar-row"><div class="bar-label">HROne (50 emp)</div><div class="bar-track"><div class="bar-fill c5" style="width:52%">&#8377;4,250&ndash;4,950/mo</div></div></div>
+        <div class="bar-row"><div class="bar-label">factoHR (50 emp)</div><div class="bar-track"><div class="bar-fill c3" style="width:54%">&#8377;4,999/mo</div></div></div>
+        <div class="bar-row"><div class="bar-label"><strong>PayrollOps Support (50 emp)</strong></div><div class="bar-track"><div class="bar-fill c6" style="width:72%">&#8377;5,000&ndash;8,000/mo</div></div></div>
+        <div class="bar-row"><div class="bar-label">Payroll outsourcing</div><div class="bar-track"><div class="bar-fill c4" style="width:100%">&#8377;15,000&ndash;50,000/mo</div></div></div>
+      </div>
+    </div>
+
+    <div class="card-grid card-grid-3" style="margin-top:1.5rem;">
+      <div class="card">
+        <div class="card-title">&#128176; Setup Fee</div>
+        <div class="card-body">&#8377;25,000&ndash;75,000 one-time. Comparable to 2&ndash;3 months of CA payroll processing. ROI: 3&ndash;6 months from time savings alone.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">&#128260; Monthly Support</div>
+        <div class="card-body">&#8377;5,000&ndash;20,000/month banded by size. Lower than outsourcing. Higher than SaaS. Value = human validation + support layer.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">&#128230; Bundle (Pro)</div>
+        <div class="card-body">&#8377;60,000&ndash;1,30,000 for Setup + 6 months support. Reduces decision fatigue. Ensures 6-month commitment to prove value.</div>
+      </div>
+    </div>
+
+    <div style="background:var(--gold-light); border:1px solid var(--accent); border-radius:10px; padding:1.25rem; margin-top:1.25rem;">
+      <div style="font-size:0.9rem; color:var(--fg); font-weight:600; text-align:center;">
+        Value Proposition: Excel payroll wastes &#8377;5,500&ndash;9,500/month in HR time cost.<br>
+        PayrollOps at &#8377;8,000&ndash;12,000/month (setup + support) = ROI-positive on time savings + compliance risk reduction.
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>Frame against cost of HR time + penalty risk, not against greytHR&rsquo;s &#8377;3,495. The buyer is not choosing between software subscriptions. They are choosing between chaos and controlled operations.</p>
+    </div>
+  </div>
+  <div class="slide-num">22 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 23 — GTM STRATEGY -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide23">
+  <div class="section-label">Go-To-Market</div>
+  <div class="slide-content">
+    <h2>Go-To-Market Strategy</h2>
+    <div class="key-message">Six channels ranked by speed and evidence. Start with network, validate with pilots, then scale.</div>
+
+    <div style="margin-top:1.5rem;">
+      <div class="funnel-step">
+        <div class="funnel-bar" style="width:95%; background:var(--gradient1);">1. Existing Network</div>
+        <span class="funnel-label">Fastest. First 3&ndash;5 clients from personal contacts. No pitch &mdash; just a diagnostic conversation.</span>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-bar" style="width:85%; background:var(--gradient2);">2. LinkedIn HR Outreach</div>
+        <span class="funnel-label">Target HR Managers at 50&ndash;200 emp companies. Free 15-min payroll diagnostic as hook.</span>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-bar" style="width:75%; background:var(--gradient3);">3. Frappe / ERPNext Community</div>
+        <span class="funnel-label">22,000+ forum users. Partner with implementation partners. Attend meetups in Bangalore, Hyderabad.</span>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-bar" style="width:65%; background:var(--gradient1);">4. CA / Accountant Referrals</div>
+        <span class="funnel-label">CA firms with 5&ndash;20 SMB clients. Referral fee or CA-branded dashboard. Slower but scalable.</span>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-bar" style="width:50%; background:var(--gradient2);">5. Content Marketing</div>
+        <span class="funnel-label">LinkedIn/Substack articles: Labour Code compliance, true cost of Excel payroll, greytHR gaps.</span>
+      </div>
+      <div class="funnel-step">
+        <div class="funnel-bar" style="width:35%; background:var(--gradient3);">6. Free Diagnostic + Audit Offer</div>
+        <span class="funnel-label">Labour Code Compliance Audit as door-opener. Low-cost entry point that demonstrates expertise.</span>
+      </div>
+    </div>
+
+    <div class="card-grid" style="margin-top:1.5rem;">
+      <div class="card">
+        <div class="card-title">&#128221; Content Pillars</div>
+        <div class="card-body">&ldquo;Is Your Salary Structure Compliant with Labour Code 2025?&rdquo; | &ldquo;True Cost of Excel Payroll for 50 Employees&rdquo; | &ldquo;What greytHR Can&rsquo;t Configure Without a Ticket&rdquo;</div>
+      </div>
+      <div class="card">
+        <div class="card-title">&#128260; Sales Script (Founder)</div>
+        <div class="card-body">&ldquo;Your team is growing and payroll complexity is increasing. If your HR team spends 3+ days on payroll, there&rsquo;s likely a compliance gap. 20-minute diagnostic first, no obligation.&rdquo;</div>
+      </div>
+      <div class="card">
+        <div class="card-title">&#128260; Sales Script (HR)</div>
+        <div class="card-body">&ldquo;Most HR teams at your size are running payroll in Excel or dealing with a tool never configured for Labour Code 2025. Free 20-minute diagnostic &mdash; no pitch, just an honest look at risk.&rdquo;</div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>Do not spend on paid ads before offer is validated. First 10 clients come from network + community + content. CA channel activates Month 3+. Paid ads only after 10+ paying clients.</p>
+    </div>
+  </div>
+  <div class="slide-num">23 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 24 — FIRST 10 CLIENTS STRATEGY -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide24">
+  <div class="section-label">Execution</div>
+  <div class="slide-content">
+    <h2>First 10 Clients Strategy</h2>
+    <div class="key-message">The first 10 clients are not about revenue. They are about validation, case studies, references, and process proof.</div>
+
+    <div class="card-grid" style="margin-top:1.5rem;">
+      <div class="card">
+        <div class="card-title">&#128587; Where They Come From</div>
+        <div class="card-body">
+          <ul style="padding-left:1.1rem; line-height:1.9;">
+            <li>Known network (founder, team contacts)</li>
+            <li>Companies currently using Excel payroll</li>
+            <li>50&ndash;150 employee range</li>
+            <li>ERPNext / Frappe contacts</li>
+            <li>CA referrals (Month 3+)</li>
+            <li>Unhappy greytHR / Keka users</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">&#128161; What They Get</div>
+        <div class="card-body">
+          <ul style="padding-left:1.1rem; line-height:1.9;">
+            <li>30&ndash;50% discount vs. full price</li>
+            <li>Full Setup + 2 months Monthly Support</li>
+            <li>Labour Code Compliance Audit included</li>
+            <li>Dedicated named contact</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">&#128205; What We Get</div>
+        <div class="card-body">
+          <ul style="padding-left:1.1rem; line-height:1.9;">
+            <li>Feedback on setup process</li>
+            <li>Case study rights (with permission)</li>
+            <li>Reference for future sales</li>
+            <li>NPS target: &gt;50</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.25rem; margin-top:1.25rem;">
+      <div style="font-size:0.85rem; font-weight:600; color:var(--accent); margin-bottom:0.75rem;">&#128200; Pipeline Plan: Month 1&ndash;6</div>
+      <div style="font-size:0.82rem; color:var(--fg2); line-height:1.8;">
+        <strong style="color:var(--fg);">Month 1&ndash;2:</strong> 15 buyer interviews, 3&ndash;5 pilot candidates identified, Frappe validation complete<br>
+        <strong style="color:var(--fg);">Month 3&ndash;4:</strong> Pilot clients 1&ndash;3 onboarded, first case studies started<br>
+        <strong style="color:var(--fg);">Month 5&ndash;6:</strong> First full-price clients, CA channel activated, 8&ndash;10 clients live<br>
+        <strong style="color:var(--fg);">Month 7&ndash;12:</strong> Scale to 15&ndash;20 clients, refine delivery, build productization learnings
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>First 10 clients are discounted pilots for validation and proof. Full pricing starts at client 11+. Case studies from pilots are the sales enablement for full-price clients.</p>
+    </div>
+  </div>
+  <div class="slide-num">24 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 25 — DEMO FLOW -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide25">
+  <div class="section-label">Sales</div>
+  <div class="slide-content">
+    <h2>Demo Flow</h2>
+    <div class="key-message">A 45-minute demo that starts with their pain, not our product. Show the before-state first. Then show transformation.</div>
+
+    <div class="timeline" style="margin-top:1.5rem;">
+      <div class="timeline-item phase1">
+        <div class="timeline-title">1. Start With Their Problem (5 min)</div>
+        <div class="timeline-desc">&ldquo;Here&rsquo;s what we typically find when we audit a 70-employee company&rsquo;s payroll.&rdquo; Show a sanitized before-state. Make it recognizable.</div>
+      </div>
+      <div class="timeline-item phase1">
+        <div class="timeline-title">2. Show Configured Dashboard (15 min)</div>
+        <div class="timeline-desc">Not a generic demo. A configured Frappe instance with realistic salary structures, their industry&rsquo;s components, and a live dashboard.</div>
+      </div>
+      <div class="timeline-item phase2">
+        <div class="timeline-title">3. Show Custom Payslip (5 min)</div>
+        <div class="timeline-desc">&ldquo;Your bank needs this format. Your auditor needs this breakdown. We build it for you.&rdquo; Show before/after payslip comparison.</div>
+      </div>
+      <div class="timeline-item phase2">
+        <div class="timeline-title">4. Show Excel Report (5 min)</div>
+        <div class="timeline-desc">Salary sheet, bank file, cost summary. &ldquo;This is what your CA gets every month. No more manual Excel work.&rdquo;</div>
+      </div>
+      <div class="timeline-item phase2">
+        <div class="timeline-title">5. Show Payroll Checklist (5 min)</div>
+        <div class="timeline-desc">&ldquo;This is what payroll week looks like after we set it up. Checklist, exception report, one-click run, validation.&rdquo;</div>
+      </div>
+      <div class="timeline-item phase3">
+        <div class="timeline-title">6. Show Support Model (5 min)</div>
+        <div class="timeline-desc">&ldquo;This is your named contact. WhatsApp + phone during payroll week. Not a ticket number.&rdquo; Show actual contact method.</div>
+      </div>
+      <div class="timeline-item phase4">
+        <div class="timeline-title">7. Close With Pilot Offer (5 min)</div>
+        <div class="timeline-desc">&ldquo;We can start with a free Labour Code Audit. No obligation. Just an honest assessment of where you stand.&rdquo;</div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>The demo is not a feature tour. It is a pain-then-transformation story. Start with what they recognize. End with what they want. The pilot offer closes without pressure.</p>
+    </div>
+  </div>
+  <div class="slide-num">25 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 26 — VALIDATION PLAN -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide26">
+  <div class="section-label">Validation</div>
+  <div class="slide-content">
+    <h2>Validation Plan</h2>
+    <div class="key-message">Seven validation gates before scaling. Each gate has a kill criterion. No scaling until gates are cleared.</div>
+
+    <div class="card-grid card-grid-3" style="margin-top:1.5rem;">
+      <div class="card" style="border-top:3px solid var(--red);">
+        <div class="card-title">&#9881; 1. Frappe Technical Validation</div>
+        <div class="card-body">Configure sample 50-emp company. Verify PF, ESI, PT, TDS against Labour Code 2025 and Income Tax Act 2025. Test payslip, reports, dashboard.</div>
+        <span class="badge badge-validate">Week 1&ndash;2</span>
+      </div>
+      <div class="card" style="border-top:3px solid var(--orange);">
+        <div class="card-title">&#128172; 2. 15&ndash;20 Buyer Interviews</div>
+        <div class="card-body">HR managers + founders at 50&ndash;150 emp companies. Validate pain, offer, pricing. Success: 5+ ask &ldquo;how do I sign up?&rdquo;</div>
+        <span class="badge badge-validate">Week 2&ndash;4</span>
+      </div>
+      <div class="card" style="border-top:3px solid var(--green);">
+        <div class="card-title">&#128640; 3. 3&ndash;5 Pilot Clients</div>
+        <div class="card-body">Discounted pilots. Full Setup + 2 months support. Measure: clean payroll, HR usage, CA approval, NPS &gt;50.</div>
+        <span class="badge badge-validate">Month 2&ndash;4</span>
+      </div>
+      <div class="card" style="border-top:3px solid var(--blue);">
+        <div class="card-title">&#128260; 4. Parallel Payroll Cycles</div>
+        <div class="card-body">Run old system + Frappe simultaneously for 2+ months. Reconcile every employee. Prove accuracy before go-live.</div>
+        <span class="badge badge-validate">Month 3&ndash;5</span>
+      </div>
+      <div class="card" style="border-top:3px solid var(--purple);">
+        <div class="card-title">&#128221; 5. CA / Compliance Review</div>
+        <div class="card-body">Have a CA review one completed configuration. Verify service boundary (config vs. filing). Get legal scope note.</div>
+        <span class="badge badge-validate">Month 3</span>
+      </div>
+      <div class="card" style="border-top:3px solid var(--accent);">
+        <div class="card-title">&#128200; 6. SLA Tracking</div>
+        <div class="card-body">Track every support request. Target: &lt;4 hours on payroll week, &lt;24 hours otherwise. Calculate clients-per-operator ratio.</div>
+        <span class="badge badge-validate">Month 3&ndash;6</span>
+      </div>
+      <div class="card" style="border-top:3px solid var(--green); grid-column: span 1;">
+        <div class="card-title">&#128176; 7. Pricing Validation</div>
+        <div class="card-body">3+ pilot clients convert to full-price support. If fewer than 3 of 20 interviewees accept pricing, revise before scale.</div>
+        <span class="badge badge-validate">Month 4&ndash;6</span>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>Validation is not optional. Each gate protects against scaling a broken model. The cost of validating is low. The cost of delivering a misconfigured payroll to a client is unrecoverable.</p>
+    </div>
+  </div>
+  <div class="slide-num">26 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 27 — 90-DAY PLAN -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide27">
+  <div class="section-label">Execution</div>
+  <div class="slide-content">
+    <h2>90-Day Plan</h2>
+    <div class="key-message">Three 30-day sprints: Build &amp; Validate, Pilot, Go-Live &amp; Measure. Clear deliverables and decision gates at each phase.</div>
+
+    <div class="card-grid" style="margin-top:1.5rem;">
+      <div class="card" style="border-top:3px solid var(--accent);">
+        <div class="card-title">&#128197; Days 1&ndash;30: Build &amp; Validate</div>
+        <div class="card-body" style="font-size:0.82rem; line-height:1.8;">
+          <strong style="color:var(--fg);">Week 1:</strong> Frappe v16 test instance, sample 50-emp company, configure PF/ESI/PT/TDS<br>
+          <strong style="color:var(--fg);">Week 2:</strong> Custom payslip template, Excel salary sheet export, payroll dashboard<br>
+          <strong style="color:var(--fg);">Week 3:</strong> 15 buyer discovery interviews, discovery script, objection handling<br>
+          <strong style="color:var(--fg);">Week 4:</strong> Complete interviews, finalize pricing, identify 3&ndash;5 pilot candidates, build SOP<br>
+          <span class="badge badge-validate">Gate: Frappe config validated + 5 interested buyers</span>
+        </div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--green);">
+        <div class="card-title">&#128197; Days 31&ndash;60: Pilot Clients</div>
+        <div class="card-body" style="font-size:0.82rem; line-height:1.8;">
+          <strong style="color:var(--fg);">Pilot 1:</strong> Excel payroll, 50&ndash;80 employees. Full Stages 1&ndash;5.<br>
+          <strong style="color:var(--fg);">Pilot 2:</strong> Stagger 1 week behind. Document every issue.<br>
+          <strong style="color:var(--fg);">Compliance:</strong> Send configuration to CA for review.<br>
+          <strong style="color:var(--fg);">Refinement:</strong> Update implementation checklist based on real experience.<br>
+          <span class="badge badge-validate">Gate: 2+ pilots running clean test payrolls</span>
+        </div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--blue);">
+        <div class="card-title">&#128197; Days 61&ndash;90: Go-Live &amp; Refine</div>
+        <div class="card-body" style="font-size:0.82rem; line-height:1.8;">
+          <strong style="color:var(--fg);">Pilot 1:</strong> Go-live, first supported payroll cycle.<br>
+          <strong style="color:var(--fg);">Pilot 2:</strong> Complete parallel run, go-live.<br>
+          <strong style="color:var(--fg);">Pilot 3:</strong> Target greytHR/Keka switcher.<br>
+          <strong style="color:var(--fg);">Measure:</strong> Time to go-live, error count, client satisfaction, NPS.<br>
+          <strong style="color:var(--fg);">Pipeline:</strong> Build 10 qualified prospects for Month 4&ndash;6.<br>
+          <span class="badge badge-validate">Gate: 2+ pilots live + case study ready</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>Day 90 decision: Is the model ready for full-price clients? If fewer than 2 pilots ran clean payroll, redesign the implementation process before scaling. Do not skip this gate.</p>
+    </div>
+  </div>
+  <div class="slide-num">27 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 28 — 12-MONTH ROADMAP -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide28">
+  <div class="section-label">Roadmap</div>
+  <div class="slide-content">
+    <h2>12-Month Roadmap</h2>
+    <div class="key-message">From validation to 15&ndash;20 active clients. Service-first throughout. No SaaS productization in Year 1.</div>
+
+    <div style="margin-top:1.5rem;">
+      <div class="score-row header">
+        <div>Month</div>
+        <div>Focus</div>
+        <div>Revenue</div>
+        <div>Milestone</div>
+      </div>
+      <div class="score-row">
+        <div><strong>1&ndash;2</strong></div>
+        <div>Technical validation, 15 interviews, pilot prep</div>
+        <div>&#8377;0</div>
+        <div>Frappe validated; 15 interviews done</div>
+      </div>
+      <div class="score-row highlight">
+        <div><strong>3&ndash;4</strong></div>
+        <div>3&ndash;5 discounted pilot clients</div>
+        <div>&#8377;50K&ndash;1.5L</div>
+        <div>3 pilots live; 2 case studies</div>
+      </div>
+      <div class="score-row">
+        <div><strong>5&ndash;6</strong></div>
+        <div>First full-price clients; refine delivery</div>
+        <div>&#8377;1.5L&ndash;3L</div>
+        <div>5&ndash;8 clients; referral pipeline</div>
+      </div>
+      <div class="score-row">
+        <div><strong>7&ndash;8</strong></div>
+        <div>CA referral channel; Labour Code audit offer</div>
+        <div>&#8377;3L&ndash;5L</div>
+        <div>CA leads flowing; 10+ clients</div>
+      </div>
+      <div class="score-row">
+        <div><strong>9&ndash;10</strong></div>
+        <div>Secondary ICP: greytHR/Keka switchers</div>
+        <div>&#8377;5L&ndash;7L</div>
+        <div>Migration package proven; 15+ clients</div>
+      </div>
+      <div class="score-row">
+        <div><strong>11&ndash;12</strong></div>
+        <div>Multi-entity pilot; ERPNext partner channel</div>
+        <div>&#8377;7L&ndash;10L</div>
+        <div>20+ clients; ready for expansion</div>
+      </div>
+    </div>
+
+    <div class="card-grid card-grid-3" style="margin-top:1.5rem;">
+      <div class="card" style="text-align:center;">
+        <div style="font-size:1.8rem; font-weight:700; color:var(--accent);">20+</div>
+        <div style="font-size:0.82rem; color:var(--fg2);">Active clients by Month 12</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:1.8rem; font-weight:700; color:var(--green);">&#8377;8&ndash;10L</div>
+        <div style="font-size:0.82rem; color:var(--fg2);">Monthly revenue target (Month 12)</div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <div style="font-size:1.8rem; font-weight:700; color:var(--blue);">4</div>
+        <div style="font-size:0.82rem; color:var(--fg2);">Team size (dev + payroll + PM + BD)</div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>Year 1 is service-only. No SaaS development. Revenue scales with team size. 20 clients with 3&ndash;4 people is realistic and profitable. Productization begins in Year 2.</p>
+    </div>
+  </div>
+  <div class="slide-num">28 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 29 — 24-MONTH PRODUCTIZATION -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide29">
+  <div class="section-label">Productization</div>
+  <div class="slide-content">
+    <h2>24-Month Productization Path</h2>
+    <div class="key-message">SaaS comes after service learning, not before. Productize the repetitive parts. Keep the human parts human.</div>
+
+    <div class="timeline" style="margin-top:1.5rem;">
+      <div class="timeline-item phase1">
+        <div class="timeline-title">Months 1&ndash;12: Service Foundation</div>
+        <div class="timeline-desc">Deliver 20+ implementations manually. Document every configuration pattern. Build internal &ldquo;Payroll Config Library&rdquo; &mdash; reusable templates by industry and size. Identify which parts take the most time.</div>
+      </div>
+      <div class="timeline-item phase2">
+        <div class="timeline-title">Months 13&ndash;18: Internal Setup Wizard</div>
+        <div class="timeline-desc">Build an internal tool that automates repetitive setup: employee import templates, standard salary component library, PF/ESI formula presets. Not client-facing. Delivery efficiency tool only. Target: setup time from 4&ndash;6 weeks to 2&ndash;3 weeks.</div>
+      </div>
+      <div class="timeline-item phase3">
+        <div class="timeline-title">Months 19&ndash;24: Client-Facing Layer</div>
+        <div class="timeline-desc">Build a PayrollOps client portal on top of Frappe: payroll input submission, checklist tracking, exception report viewing, payslip download, support logging. This is the beginning of SaaS &mdash; built on 24 months of real workflow knowledge.</div>
+      </div>
+      <div class="timeline-item phase4">
+        <div class="timeline-title">Month 24+: SaaS Transition Option</div>
+        <div class="timeline-desc">If portal + Config Library are mature: Option A &mdash; license portal to other Frappe partners. Option B &mdash; self-serve lite tier. Option C &mdash; raise investment to scale. Only if service business has generated reusable IP.</div>
+      </div>
+    </div>
+
+    <div style="background:var(--red); background-opacity:0.1; border:1px solid var(--red); border-radius:10px; padding:1.25rem; margin-top:1.25rem;">
+      <div style="font-size:0.88rem; color:var(--fg); font-weight:600; text-align:center;">
+        &#9888; Critical Rule: Do not build SaaS before delivering 20+ implementations.<br>
+        <span style="font-weight:400; color:var(--fg2);">The product must emerge from service knowledge. Building it before service learning = building the wrong product.</span>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>Productization is a 24-month path, not a 6-month sprint. The internal wizard comes first. The client portal comes second. Self-serve SaaS comes third &mdash; only after real workflow knowledge is captured.</p>
+    </div>
+  </div>
+  <div class="slide-num">29 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 30 — RISKS -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide30">
+  <div class="section-label">Risk</div>
+  <div class="slide-content">
+    <h2>Risks</h2>
+    <div class="key-message">Every risk is named honestly. No risk is hidden. Each has probability, impact, and mitigation.</div>
+
+    <div style="margin-top:1.5rem;">
+      <div class="score-row header">
+        <div>Risk</div>
+        <div>Probability</div>
+        <div>Impact</div>
+        <div>Mitigation</div>
+      </div>
+      <div class="score-row">
+        <div>Frappe India compliance not current</div>
+        <div><span class="badge badge-high">High</span></div>
+        <div><span class="badge badge-high">High</span></div>
+        <div>Hands-on validation before 1st client; CA review</div>
+      </div>
+      <div class="score-row">
+        <div>PF configured incorrectly &rarr; EPFO notice</div>
+        <div><span class="badge badge-medium">Med</span></div>
+        <div><span class="badge badge-high">Very High</span></div>
+        <div>Clear contract boundary; client CA confirms filing</div>
+      </div>
+      <div class="score-row">
+        <div>Support overload &rarr; SLA failure &rarr; churn</div>
+        <div><span class="badge badge-high">High</span></div>
+        <div><span class="badge badge-high">High</span></div>
+        <div>Hard cap on clients/operator; hire before 10th client</div>
+      </div>
+      <div class="score-row">
+        <div>Client data quality too poor to migrate</div>
+        <div><span class="badge badge-high">High</span></div>
+        <div><span class="badge badge-medium">Med</span></div>
+        <div>Data audit as Stage 2; out-of-scope billing for cleanup</div>
+      </div>
+      <div class="score-row">
+        <div>greytHR/Keka launches managed onboarding</div>
+        <div><span class="badge badge-medium">Med</span></div>
+        <div><span class="badge badge-high">High</span></div>
+        <div>Moat is operations quality, not features. Stay focused.</div>
+      </div>
+      <div class="score-row">
+        <div>Willingness to pay below pricing hypothesis</div>
+        <div><span class="badge badge-medium">Med</span></div>
+        <div><span class="badge badge-high">High</span></div>
+        <div>Validate in 20 interviews; offer deferred payment</div>
+      </div>
+      <div class="score-row">
+        <div>Key developer leaves</div>
+        <div><span class="badge badge-medium">Med</span></div>
+        <div><span class="badge badge-high">High</span></div>
+        <div>Document every config; train 2 people per client</div>
+      </div>
+      <div class="score-row">
+        <div>Scope creep per client</div>
+        <div><span class="badge badge-high">High</span></div>
+        <div><span class="badge badge-medium">Med</span></div>
+        <div>Written scope; change order process; define &ldquo;reasonable&rdquo;</div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>The highest-impact risks are compliance-related and support-scalability-related. Both are manageable with the right team (Frappe developer + payroll specialist) and disciplined process (validation gates, SLA caps, scope boundaries).</p>
+    </div>
+  </div>
+  <div class="slide-num">30 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 31 — KILL CRITERIA -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide31">
+  <div class="section-label">Kill Criteria</div>
+  <div class="slide-content">
+    <h2>Kill Criteria</h2>
+    <div class="key-message">These are the conditions under which we stop and redesign &mdash; not push forward with a broken model.</div>
+
+    <div class="card-grid" style="margin-top:1.5rem;">
+      <div class="card" style="border-left:3px solid var(--red);">
+        <div class="card-title" style="color:var(--red);">&#128308; Pilots Fail Clean Payroll</div>
+        <div class="card-body">If fewer than 2 of 5 pilot clients run a clean payroll in the first supported cycle, the implementation process needs fundamental redesign before any further clients.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red);">
+        <div class="card-title" style="color:var(--red);">&#128308; Buyers Reject Pricing</div>
+        <div class="card-body">If fewer than 3 of 20 interviewees express interest at stated pricing, revisit pricing or offer structure. Do not force a price the market rejects.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red);">
+        <div class="card-title" style="color:var(--red);">&#128308; Support SLA Breaks</div>
+        <div class="card-body">If average resolution time exceeds 4 hours on payroll week consistently across pilots, stop taking new clients until support capacity is added.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red);">
+        <div class="card-title" style="color:var(--red);">&#128308; Frappe Cannot Configure</div>
+        <div class="card-body">If Frappe HR v16 cannot support required India payroll configuration within 2 weeks of testing, delay client onboarding until resolved or pivot strategy.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red);">
+        <div class="card-title" style="color:var(--red);">&#128308; Compliance Advisor Flags Risk</div>
+        <div class="card-body">If a qualified CA or payroll compliance advisor flags PayrollOps delivery as legally unsafe, halt client delivery until compliance structure is corrected.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red);">
+        <div class="card-title" style="color:var(--red);">&#128308; No Recurring Conversion</div>
+        <div class="card-body">If fewer than 50% of pilot clients convert to ongoing Monthly Support after the pilot period, the value proposition needs revision before scaling.</div>
+      </div>
+    </div>
+
+    <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.25rem; margin-top:1.25rem; text-align:center;">
+      <div style="font-size:0.9rem; color:var(--fg); font-weight:600;">
+        &ldquo;Killing the current approach is not failure. Scaling a broken model is failure.&rdquo;
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>These are not pessimistic. They are guardrails. Every startup that scaled a broken model wished they had stopped to fix it. Review kill criteria at Day 30, Day 60, and Day 90.</p>
+    </div>
+  </div>
+  <div class="slide-num">31 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 32 — WHAT WE SHOULD NOT PROMISE -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide32">
+  <div class="section-label">Boundaries</div>
+  <div class="slide-content">
+    <h2>What We Should Not Promise</h2>
+    <div class="key-message">These promises are tempting but dangerous. Each creates liability, disappointment, or competitive fights we cannot win.</div>
+
+    <div style="max-width:700px; margin:1.5rem auto;">
+      <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.25rem; margin:0.75rem 0; display:flex; align-items:center; gap:1rem;">
+        <span style="font-size:1.5rem;">&#10060;</span>
+        <div>
+          <div style="font-size:0.95rem; font-weight:600; color:var(--fg);">Not Global Payroll (Yet)</div>
+          <div style="font-size:0.82rem; color:var(--fg2);">India alone requires full-time compliance tracking. Each country needs separate expertise.</div>
+        </div>
+      </div>
+      <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.25rem; margin:0.75rem 0; display:flex; align-items:center; gap:1rem;">
+        <span style="font-size:1.5rem;">&#10060;</span>
+        <div>
+          <div style="font-size:0.95rem; font-weight:600; color:var(--fg);">Not Statutory Filing Ownership</div>
+          <div style="font-size:0.82rem; color:var(--fg2);">We configure. Client&rsquo;s CA files. Legal liability boundary protects both sides.</div>
+        </div>
+      </div>
+      <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.25rem; margin:0.75rem 0; display:flex; align-items:center; gap:1rem;">
+        <span style="font-size:1.5rem;">&#10060;</span>
+        <div>
+          <div style="font-size:0.95rem; font-weight:600; color:var(--fg);">Not greytHR / Keka Killer</div>
+          <div style="font-size:0.82rem; color:var(--fg2);">greytHR has 20,000+ clients. Our Year 1 goal is 20. We win on service, not feature count.</div>
+        </div>
+      </div>
+      <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.25rem; margin:0.75rem 0; display:flex; align-items:center; gap:1rem;">
+        <span style="font-size:1.5rem;">&#10060;</span>
+        <div>
+          <div style="font-size:0.95rem; font-weight:600; color:var(--fg);">Not Full SaaS From Day One</div>
+          <div style="font-size:0.82rem; color:var(--fg2);">No &ldquo;sign up and go live in 5 minutes.&rdquo; PayrollOps is a setup + support service first.</div>
+        </div>
+      </div>
+      <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.25rem; margin:0.75rem 0; display:flex; align-items:center; gap:1rem;">
+        <span style="font-size:1.5rem;">&#10060;</span>
+        <div>
+          <div style="font-size:0.95rem; font-weight:600; color:var(--fg);">Not Zero-Error Guarantee</div>
+          <div style="font-size:0.82rem; color:var(--fg2);">India compliance is genuinely complex. We validate, configure, and support. We do not guarantee perfection.</div>
+        </div>
+      </div>
+      <div style="background:var(--card); border:1px solid var(--border); border-radius:10px; padding:1.25rem; margin:0.75rem 0; display:flex; align-items:center; gap:1rem;">
+        <span style="font-size:1.5rem;">&#10060;</span>
+        <div>
+          <div style="font-size:0.95rem; font-weight:600; color:var(--fg);">Not &ldquo;100% Automated Compliance&rdquo;</div>
+          <div style="font-size:0.82rem; color:var(--fg2);">Compliance requires human verification. Frappe does not auto-update for every regulatory change.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>Every broken promise to a client becomes a negative review we cannot afford. Under-promise and over-deliver. The first 20 client relationships define the brand.</p>
+    </div>
+  </div>
+  <div class="slide-num">32 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 33 — MANAGEMENT DECISION NEEDED -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide33">
+  <div class="section-label">Decision</div>
+  <div class="slide-content">
+    <h2>Management Decision Needed</h2>
+    <div class="key-message">Seven specific asks. Each is required for the 90-day validation sprint to succeed.</div>
+
+    <div class="card-grid" style="margin-top:1.5rem;">
+      <div class="card" style="border-top:3px solid var(--accent); text-align:center;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">&#9989;</div>
+        <div style="font-size:0.95rem; font-weight:600; color:var(--fg); margin-bottom:0.5rem;">1. Approve 90-Day Validation Sprint</div>
+        <div style="font-size:0.82rem; color:var(--fg2);">Dedicated time and resources for validation before any revenue commitment.</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--accent); text-align:center;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">&#128187;</div>
+        <div style="font-size:0.95rem; font-weight:600; color:var(--fg); margin-bottom:0.5rem;">2. Assign One Frappe Developer</div>
+        <div style="font-size:0.82rem; color:var(--fg2);">Senior enough to configure HR/payroll modules, write custom Python scripts, and build reports.</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--accent); text-align:center;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">&#128104;</div>
+        <div style="font-size:0.95rem; font-weight:600; color:var(--fg); margin-bottom:0.5rem;">3. Assign One Payroll Specialist</div>
+        <div style="font-size:0.82rem; color:var(--fg2);">India payroll domain expert who understands PF, ESI, PT, TDS, and Labour Code 2025. CA advisor acceptable.</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--accent); text-align:center;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">&#128101;</div>
+        <div style="font-size:0.95rem; font-weight:600; color:var(--fg); margin-bottom:0.5rem;">4. Secure 3&ndash;5 Pilot Clients</div>
+        <div style="font-size:0.82rem; color:var(--fg2);">From existing network. Discounted in exchange for feedback, case study rights, and reference.</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--accent); text-align:center;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">&#128176;</div>
+        <div style="font-size:0.95rem; font-weight:600; color:var(--fg); margin-bottom:0.5rem;">5. Approve Pricing Experiment</div>
+        <div style="font-size:0.82rem; color:var(--fg2);">Test published pricing in 20 buyer interviews. Adjust based on feedback before full launch.</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--accent); text-align:center;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">&#128221;</div>
+        <div style="font-size:0.95rem; font-weight:600; color:var(--fg); margin-bottom:0.5rem;">6. Assign Support Process Owner</div>
+        <div style="font-size:0.82rem; color:var(--fg2);">One person accountable for SLA tracking, client communication, and issue resolution quality.</div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--accent); text-align:center;">
+        <div style="font-size:2rem; margin-bottom:0.5rem;">&#128204;</div>
+        <div style="font-size:0.95rem; font-weight:600; color:var(--fg); margin-bottom:0.5rem;">7. Define Clear Service Boundary</div>
+        <div style="font-size:0.82rem; color:var(--fg2);">What PayrollOps does (configure, support) vs. what client&rsquo;s CA does (file). In writing. In every contract.</div>
+      </div>
+    </div>
+
+    <div class="decision-card">
+      <div class="decision-label">The Ask</div>
+      <div class="decision-title" style="font-size:1.3rem;">Approve the 90-Day Validation Sprint</div>
+      <p style="color:var(--fg2); font-size:0.9rem; max-width:600px; margin:0.75rem auto 0;">If validation succeeds, we have a proven model ready to scale. If it fails, we kill it early with minimal sunk cost. Either outcome is valuable.</p>
+    </div>
+  </div>
+  <div class="slide-num">33 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 34 — FINAL RECOMMENDATION -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide" id="slide34">
+  <div class="section-label">Recommendation</div>
+  <div class="slide-content">
+    <h2>Final Recommendation</h2>
+
+    <div class="decision-card">
+      <div class="decision-label">Strategic Verdict</div>
+      <div class="decision-title">Conditional Go</div>
+      <p style="color:var(--fg2); font-size:0.95rem; max-width:650px; margin:0.75rem auto 1.5rem;">
+        The market gap is real. The evidence supports service-led entry. The risks are manageable with the right team and disciplined validation.
+      </p>
+    </div>
+
+    <div class="card-grid" style="margin-top:1.5rem;">
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#128994; Start Service-Led</div>
+        <div class="card-body">Setup + configuration + monthly support. Not SaaS first. Not product first. Service excellence first.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#128994; Target Excel/CA Payroll</div>
+        <div class="card-body">50&ndash;150 employees. Highest pain, largest population, least direct competition for implementation-as-a-service.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#128994; Use Frappe as Backend</div>
+        <div class="card-body">Zero licensing cost. Full customization. ERPNext integration. Open-source advantage. Validate compliance before promising.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#128994; Differentiate on Operations</div>
+        <div class="card-body">Setup quality. Custom reports + payslips. Human support. Pre-payroll checks. HR training. Not feature count.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#128994; Validate with Pilots</div>
+        <div class="card-body">3&ndash;5 discounted pilots. Measure clean payroll, client satisfaction, NPS. Kill criteria at Day 30, 60, 90.</div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">&#128994; Productize Later</div>
+        <div class="card-body">Internal wizard at Month 13&ndash;18. Client portal at Month 19&ndash;24. SaaS only after 24 months of service learning.</div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <div class="takeaway-label">Management Takeaway</div>
+      <p>The evidence says: go, but go carefully. The market gap exists. The competitors are vulnerable on service quality. Frappe is capable. The team and validation discipline will determine success or failure.</p>
+    </div>
+  </div>
+  <div class="slide-num">34 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SLIDE 35 — CLOSING -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<section class="slide title-slide" id="slide35">
+  <div class="slide-content">
+    <div class="title-badge">PayrollOps &mdash; June 2026</div>
+    <div class="closing-quote" style="margin:2rem auto;">
+      &ldquo;PayrollOps should not try to become the <span class="accent">best payroll SaaS on paper</span>.<br><br>
+      It should become the <span class="accent">most reliable payroll operations partner</span> for HR teams that are stuck in Excel, stuck with poor setup, or stuck without support.&rdquo;
+    </div>
+    <div class="accent-line"></div>
+    <p style="color:var(--fg2); font-size:0.9rem; max-width:600px; margin:1.5rem auto;">
+      The opportunity is real. The evidence supports it. The team and the execution will determine everything.
+    </p>
+
+    <!-- Source Ledger -->
+    <div style="margin-top:3rem; text-align:left; max-width:800px; margin-left:auto; margin-right:auto;">
+      <div style="font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--accent); margin-bottom:0.75rem; text-align:center;">Key Sources</div>
+      <div style="font-size:0.68rem; color:var(--fg2); line-height:1.9; column-count:2; column-gap:2rem;">
+        <a href="https://www.mordorintelligence.com/industry-reports/india-payroll-market-industry" target="_blank">Mordor Intelligence India Payroll</a><br>
+        <a href="https://www.thebusinessresearchcompany.com/report/hr-payroll-software-global-market-report" target="_blank">Business Research Company</a><br>
+        <a href="https://www.precedenceresearch.com/cloud-based-payroll-software-market" target="_blank">Precedence Research</a><br>
+        <a href="https://www.skyquestt.com/report/hr-payroll-software-market" target="_blank">SkyQuestt</a><br>
+        <a href="https://www.verifiedmarketreports.com/product/payroll-software-market/" target="_blank">Verified Market Reports</a><br>
+        <a href="https://ezhrm.in/payroll-roi-calculator-india-2026-true-cost-manual-payroll/" target="_blank">EZHRM ROI Calculator</a><br>
+        <a href="https://www.indpayroll.com/blog/how-to-choose-payroll-software-india-2026" target="_blank">INDPayroll Guide</a><br>
+        <a href="https://accountx.in/payroll-compliance-checklist-india-2026/" target="_blank">AccountX Compliance</a><br>
+        <a href="https://www.wisemonk.io/blogs/payroll-compliance-in-india" target="_blank">WiseMonk Compliance</a><br>
+        <a href="https://hrone.cloud/blog/switching-from-greythr-india/" target="_blank">HROne greytHR Analysis</a><br>
+        <a href="https://hrone.cloud/blog/keka-vs-greythr-india/" target="_blank">HROne Keka vs greytHR</a><br>
+        <a href="https://www.getapp.com/hr-employee-management-software/a/greythr/" target="_blank">GetApp greytHR Reviews</a><br>
+        <a href="https://www.g2.com/products/frappe-hr/reviews" target="_blank">G2 Frappe HR Reviews</a><br>
+        <a href="https://salarybox.in/blog/best-payroll-software-india-2026/" target="_blank">SalaryBox India 2026</a><br>
+        <a href="https://www.goodhiresonly.com/post/the-top-10-hrms-platforms-in-india-for-2025-a-transparent-user-driven-comparison" target="_blank">goodhiresonly HRMS</a><br>
+        <a href="https://www.patronaccounting.com/blog/payroll-outsourcing-vs-in-house-sme-guide-india-2026" target="_blank">Patron Accounting</a><br>
+        <a href="https://futurexsolutions.com/salary-slip-format-india-2026/" target="_blank">FutureX Payslip Guide</a><br>
+        <a href="https://www.comparisun.com/payroll/reviews/gusto/" target="_blank">Comparisun Gusto</a><br>
+        <a href="https://www.comparisun.com/payroll/reviews/paychex/" target="_blank">Comparisun Paychex</a><br>
+        <a href="https://frappe.io/hr/version-16" target="_blank">Frappe HR v16 Release</a>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">35 / 35</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- JAVASCRIPT -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function() {
+  'use strict';
+
+  const slides = document.querySelectorAll('.slide');
+  const totalSlides = slides.length;
+  const navDotsContainer = document.getElementById('navDots');
+  const progressBar = document.getElementById('progressBar');
+
+  // Create nav dots
+  slides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+    dot.addEventListener('click', () => {
+      slides[i].scrollIntoView({ behavior: 'smooth' });
+    });
+    navDotsContainer.appendChild(dot);
+  });
+
+  const dots = document.querySelectorAll('.nav-dot');
+
+  // Intersection Observer for slide visibility
+  const observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.4
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        const idx = Array.from(slides).indexOf(entry.target);
+        // Update dots
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+        // Update progress bar
+        const progress = ((idx + 1) / totalSlides) * 100;
+        progressBar.style.width = progress + '%';
+      }
+    });
+  }, observerOptions);
+
+  slides.forEach(slide => observer.observe(slide));
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    const currentIdx = Array.from(slides).findIndex(s => {
+      const rect = s.getBoundingClientRect();
+      return rect.top >= -100 && rect.top <= 200;
+    });
+
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+      e.preventDefault();
+      if (currentIdx < totalSlides - 1) {
+        slides[currentIdx + 1].scrollIntoView({ behavior: 'smooth' });
+      }
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      if (currentIdx > 0) {
+        slides[currentIdx - 1].scrollIntoView({ behavior: 'smooth' });
+      }
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      slides[0].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      slides[totalSlides - 1].scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

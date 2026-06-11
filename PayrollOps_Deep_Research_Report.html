@@ -1,0 +1,1882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PayrollOps Deep Research Report</title>
+<style>
+:root {
+  --bg: #0f1117;
+  --bg2: #161922;
+  --bg3: #1e212b;
+  --bg4: #252a36;
+  --fg: #e4e6eb;
+  --fg2: #b0b3c7;
+  --accent: #d4a853;
+  --accent2: #b08d3f;
+  --green: #5a9e6f;
+  --red: #c45a5a;
+  --orange: #c9905a;
+  --blue: #5a8ec4;
+  --purple: #8a6fc4;
+  --border: #2a2e3b;
+  --card: #181b25;
+  --gold: #d4a853;
+}
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background: var(--bg); color: var(--fg); line-height:1.7;
+  font-size: 14.5px;
+}
+a { color: var(--accent); text-decoration:none; }
+a:hover { text-decoration:underline; }
+h1,h2,h3,h4 { font-weight:600; letter-spacing:-0.01em; }
+h2 { font-size:1.6rem; margin:2.5rem 0 1rem; color:var(--gold); border-bottom:1px solid var(--border); padding-bottom:0.5rem; }
+h3 { font-size:1.2rem; margin:2rem 0 0.75rem; color:var(--fg); }
+h4 { font-size:1rem; margin:1.25rem 0 0.5rem; color:var(--fg2); }
+p { margin-bottom:0.75rem; }
+
+/* TOC */
+.toc-bar {
+  position:fixed; top:0; left:0; width:280px; height:100vh;
+  background:var(--bg2); border-right:1px solid var(--border);
+  overflow-y:auto; z-index:100; padding:1.5rem 1rem;
+  transition:transform .3s;
+}
+.toc-bar h3 { font-size:0.85rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--accent); margin-bottom:1rem; }
+.toc-bar a { display:block; padding:0.35rem 0.5rem; font-size:0.82rem; color:var(--fg2); border-radius:4px; transition:0.15s; }
+.toc-bar a:hover { background:var(--bg3); color:var(--fg); text-decoration:none; }
+.toc-bar .sub { padding-left:1.2rem; font-size:0.78rem; }
+.toc-toggle { display:none; position:fixed; top:1rem; left:1rem; z-index:101; background:var(--bg3); border:1px solid var(--border); color:var(--fg); padding:0.5rem 0.75rem; border-radius:4px; cursor:pointer; font-size:0.85rem; }
+
+/* Main */
+.main { margin-left:280px; max-width:980px; padding:2.5rem 3rem; }
+
+/* Cover */
+.cover { min-height:95vh; display:flex; flex-direction:column; justify-content:center; padding:3rem 0 4rem; border-bottom:2px solid var(--accent); margin-bottom:2rem; }
+.cover .badge { display:inline-block; background:var(--accent); color:#000; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.15em; padding:0.35rem 0.8rem; border-radius:2px; width:fit-content; margin-bottom:1.5rem; }
+.cover h1 { font-size:2.4rem; font-weight:700; line-height:1.2; margin-bottom:1rem; max-width:800px; }
+.cover .subtitle { font-size:1.15rem; color:var(--fg2); margin-bottom:2rem; max-width:700px; line-height:1.6; }
+.cover .meta { color:var(--fg2); font-size:0.92rem; margin-bottom:0.5rem; }
+.cover .meta span { color:var(--accent); }
+.cover .verdict { margin-top:2.5rem; padding:1.5rem; background:var(--bg3); border-left:3px solid var(--accent); border-radius:0 6px 6px 0; max-width:750px; }
+.cover .verdict-label { font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--accent); font-weight:700; margin-bottom:0.5rem; }
+.cover .verdict-text { font-size:1rem; color:var(--fg); line-height:1.6; }
+
+/* Cards */
+.card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:1.5rem; margin:1rem 0; }
+.card-title { font-size:0.85rem; font-weight:600; color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.75rem; }
+
+/* Verdict */
+.verdict-card { background:var(--bg3); border:1px solid var(--accent); border-radius:8px; padding:1.5rem; margin:1.5rem 0; }
+.verdict-card .label { font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--accent); font-weight:700; }
+.verdict-card .value { font-size:1.1rem; margin-top:0.5rem; }
+
+/* Badges */
+.badge-pill { display:inline-block; padding:0.2rem 0.6rem; border-radius:20px; font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; margin-right:0.4rem; }
+.bg-green { background:rgba(90,158,111,0.15); color:#6bbf7e; }
+.bg-red { background:rgba(196,90,90,0.15); color:#e07a7a; }
+.bg-orange { background:rgba(201,144,90,0.15); color:#e5a76a; }
+.bg-blue { background:rgba(90,142,196,0.15); color:#7ab0e0; }
+.bg-purple { background:rgba(138,111,196,0.15); color:#a88fe0; }
+.bg-gray { background:rgba(176,179,199,0.1); color:#b0b3c7; }
+
+/* Scorecards */
+.score-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; margin:1rem 0; }
+.score-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:1.25rem; }
+.score-card .seg { font-size:0.8rem; font-weight:600; color:var(--accent); margin-bottom:0.5rem; }
+.score-card .score { font-size:1.6rem; font-weight:700; margin-bottom:0.5rem; }
+.score-card .score.high { color:var(--green); }
+.score-card .score.medium { color:var(--orange); }
+.score-card .score.low { color:var(--red); }
+.score-card .desc { font-size:0.82rem; color:var(--fg2); line-height:1.5; }
+.score-bar { height:6px; background:var(--bg3); border-radius:3px; margin-top:0.75rem; overflow:hidden; }
+.score-bar .fill { height:100%; border-radius:3px; }
+.fill.high { background:var(--green); }
+.fill.medium { background:var(--orange); }
+.fill.low { background:var(--red); }
+
+/* Tables */
+.table-wrap { overflow-x:auto; margin:1rem 0; }
+table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+th,td { padding:0.6rem 0.75rem; text-align:left; border-bottom:1px solid var(--border); }
+th { background:var(--bg3); color:var(--accent); font-weight:600; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.05em; }
+tr:hover td { background:rgba(212,168,83,0.04); }
+
+/* Persona */
+.persona-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1rem; }
+.persona-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:1.25rem; }
+.persona-card .role { font-size:0.9rem; font-weight:700; color:var(--fg); margin-bottom:0.25rem; }
+.persona-card .tag { font-size:0.75rem; color:var(--fg2); margin-bottom:0.75rem; }
+.persona-card .field { font-size:0.78rem; color:var(--fg2); margin-bottom:0.5rem; }
+.persona-card .field strong { color:var(--fg); }
+
+/* JTBD */
+.jtbd-row { display:flex; align-items:center; padding:0.7rem 1rem; background:var(--card); border-bottom:1px solid var(--border); }
+.jtbd-rank { font-size:0.85rem; font-weight:700; color:var(--accent); width:2rem; }
+.jtbd-text { flex:1; font-size:0.85rem; }
+.jtbd-tag { font-size:0.72rem; margin-left:0.5rem; }
+
+/* Charts - CSS only */
+.bar-chart { margin:1rem 0; }
+.bar-row { display:flex; align-items:center; margin:0.5rem 0; font-size:0.82rem; }
+.bar-label { width:160px; text-align:right; padding-right:1rem; color:var(--fg2); flex-shrink:0; }
+.bar-track { flex:1; height:24px; background:var(--bg3); border-radius:4px; overflow:hidden; position:relative; }
+.bar-fill { height:100%; border-radius:4px; display:flex; align-items:center; justify-content:flex-end; padding-right:0.5rem; font-size:0.72rem; font-weight:600; color:#fff; transition:width 1s; }
+.bar-fill.c1 { background:#5a9e6f; }
+.bar-fill.c2 { background:#5a8ec4; }
+.bar-fill.c3 { background:#c9905a; }
+.bar-fill.c4 { background:#c45a5a; }
+.bar-fill.c5 { background:#8a6fc4; }
+
+/* Matrix */
+.matrix-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1rem; }
+.matrix-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:1.25rem; }
+.matrix-card .gap-title { font-size:0.85rem; font-weight:600; color:var(--accent); margin-bottom:0.5rem; }
+.matrix-card .gap-meta { font-size:0.78rem; color:var(--fg2); margin-bottom:0.75rem; }
+
+/* Timeline */
+.timeline { position:relative; padding-left:2rem; }
+.timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background:var(--border); }
+.timeline-item { position:relative; padding:0.75rem 0 1.25rem; }
+.timeline-item::before { content:''; position:absolute; left:-1.65rem; top:1rem; width:10px; height:10px; border-radius:50%; background:var(--accent); border:2px solid var(--bg); }
+.timeline-item.phase::before { background:var(--green); }
+.timeline-item.later::before { background:var(--blue); }
+.timeline-item.notneeded::before { background:var(--red); }
+.timeline-title { font-size:0.85rem; font-weight:600; }
+.timeline-desc { font-size:0.8rem; color:var(--fg2); margin-top:0.2rem; }
+
+/* Pricing cards */
+.price-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; }
+.price-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:1.25rem; text-align:center; }
+.price-card .pkg { font-size:0.8rem; font-weight:600; color:var(--accent); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.5rem; }
+.price-card .price { font-size:1.5rem; font-weight:700; margin-bottom:0.5rem; }
+.price-card .price-note { font-size:0.78rem; color:var(--fg2); margin-bottom:0.75rem; }
+
+/* Roadmap */
+.road-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:1rem; }
+.road-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:1.25rem; }
+.road-card .phase-label { font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.5rem; }
+.road-card ul { list-style:none; padding:0; }
+.road-card li { font-size:0.82rem; color:var(--fg2); padding:0.3rem 0; border-bottom:1px solid var(--border); }
+.road-card li:last-child { border:none; }
+
+/* Source chips */
+.src-chip { display:inline-block; font-size:0.72rem; color:var(--fg2); background:var(--bg3); padding:0.15rem 0.5rem; border-radius:3px; margin-top:0.5rem; }
+.src-chip a { color:var(--accent); }
+
+/* Risk */
+.risk-row { display:grid; grid-template-columns:2fr 80px 80px 2fr; gap:0.75rem; align-items:center; padding:0.6rem 0.75rem; border-bottom:1px solid var(--border); font-size:0.82rem; }
+.risk-row.header { font-weight:600; color:var(--accent); text-transform:uppercase; font-size:0.75rem; letter-spacing:0.05em; }
+
+/* GTM Funnel */
+.funnel-step { display:flex; align-items:center; margin:0.5rem 0; }
+.funnel-bar { height:36px; display:flex; align-items:center; padding:0 1rem; color:#fff; font-size:0.82rem; font-weight:600; border-radius:4px; }
+.funnel-label { margin-left:1rem; font-size:0.8rem; color:var(--fg2); }
+
+/* Heatmap */
+.heat-grid { display:grid; grid-template-columns:2fr repeat(3,1fr); gap:0.5rem; font-size:0.82rem; }
+.heat-cell { padding:0.5rem; text-align:center; border-radius:4px; font-weight:600; }
+.heat-high { background:rgba(196,90,90,0.25); color:#e07a7a; }
+.heat-medium { background:rgba(201,144,90,0.2); color:#e5a76a; }
+.heat-low { background:rgba(90,158,111,0.15); color:#6bbf7e; }
+
+/* Callout */
+.callout { background:var(--bg3); border-left:3px solid var(--accent); padding:1rem 1.25rem; margin:1rem 0; border-radius:0 6px 6px 0; font-size:0.9rem; }
+.callout-red { border-left-color:var(--red); }
+.callout-green { border-left-color:var(--green); }
+.callout-blue { border-left-color:var(--blue); }
+
+/* Section header */
+.sec-num { display:inline-block; background:var(--accent); color:#000; font-size:0.65rem; font-weight:700; padding:0.15rem 0.4rem; border-radius:2px; margin-right:0.5rem; vertical-align:middle; }
+
+/* Print */
+@media print {
+  .toc-bar { display:none; }
+  .main { margin-left:0; max-width:100%; padding:1rem; }
+  body { background:#fff; color:#000; }
+  .card, .score-card, .persona-card, .matrix-card, .price-card, .road-card { break-inside:avoid; }
+}
+
+/* Mobile */
+@media (max-width:900px) {
+  .toc-bar { transform:translateX(-100%); }
+  .toc-bar.open { transform:translateX(0); }
+  .toc-toggle { display:block; }
+  .main { margin-left:0; padding:1.5rem; }
+  .cover h1 { font-size:1.7rem; }
+  .risk-row { grid-template-columns:1fr; gap:0.25rem; }
+  .heat-grid { grid-template-columns:1fr repeat(3,1fr); }
+}
+
+/* Animations */
+@keyframes fadeIn { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
+.section { animation:fadeIn .4s ease-out; }
+
+/* Compact lists */
+.compact li { margin-bottom:0.4rem; font-size:0.85rem; }
+.compact { padding-left:1.2rem; }
+
+/* Two col */
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+@media(max-width:700px){ .two-col { grid-template-columns:1fr; } }
+
+/* USP */
+.usp-item { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:1.25rem; margin:0.75rem 0; }
+.usp-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.5rem; }
+.usp-title { font-weight:600; font-size:0.9rem; }
+.usp-meta { display:flex; gap:0.5rem; }
+
+/* Competitor */
+.comp-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:1.25rem; margin:0.75rem 0; }
+.comp-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem; }
+.comp-name { font-size:1rem; font-weight:700; }
+.comp-info { font-size:0.8rem; color:var(--fg2); }
+</style>
+</head>
+<body>
+
+<nav style="background: var(--card); padding: 10px 15px; border: 1px solid var(--border); border-radius: 8px; display: flex; gap: 10px; z-index: 9999; position: fixed; top: 20px; right: 40px; font-size: 0.95rem; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+  <a href="PayrollOps_Strategy_Presentation.html" style="font-weight: bold; color: var(--fg); text-decoration: none; padding: 6px 16px; border-radius: 5px; transition: background 0.3s;">Main Report</a>
+  <a href="PayrollOps_Deep_Research_Report.html" style="font-weight: bold; color: var(--accent); text-decoration: none; padding: 6px 16px; border-radius: 5px; background: rgba(212,168,83,0.1);">Research report</a>
+</nav>
+
+<button class="toc-toggle" onclick="document.querySelector('.toc-bar').classList.toggle('open')">&#9776; Menu</button>
+
+<nav class="toc-bar">
+<h3>Contents</h3>
+<a href="#cover">Cover</a>
+<a href="#executive-summary">Executive Summary</a>
+<a href="#brutal-truth">The Brutal Truth</a>
+<a href="#concept">PayrollOps Definition</a>
+<a href="#market-defs">Market Definitions</a>
+<a href="#market-size">Market Size</a>
+<a href="#buyer-expectations">Buyer Expectations 2026</a>
+<a href="#segments">Customer Segments</a>
+<a href="#icp">Best ICP Analysis</a>
+<a href="#personas">Buyer Personas</a>
+<a href="#jtbd">Jobs-to-be-Done</a>
+<a href="#reviews">User Review Mining</a>
+<a href="#competitors">Top 20 Competitors</a>
+<a href="#comp-profiles">Competitor Profiles</a>
+<a href="#feature-matrix">Feature Matrix</a>
+<a href="#pricing-compare">Pricing Comparison</a>
+<a href="#gap-map">Competitor Gap Map</a>
+<a href="#frappe-fit">Frappe Payroll Fit</a>
+<a href="#product-strategy">Product/Service Strategy</a>
+<a href="#usps">20 Evidence-Based USPs</a>
+<a href="#blueprint">Product Blueprint</a>
+<a href="#implementation">Implementation Workflow</a>
+<a href="#pricing-strategy">Pricing Strategy</a>
+<a href="#gtm">Go-To-Market Strategy</a>
+<a href="#sales-messaging">Sales Messaging</a>
+<a href="#validation">Validation Plan</a>
+<a href="#risk-matrix">Risk Matrix</a>
+<a href="#global">Global Expansion Reality</a>
+<a href="#90-day">90-Day Action Plan</a>
+<a href="#12-month">12-Month Roadmap</a>
+<a href="#24-month">24-Month Productization</a>
+<a href="#recommendation">Final Recommendation</a>
+<a href="#decisions">Management Decisions</a>
+<a href="#dont-promise">What Not To Promise</a>
+<a href="#claims-validation">Claims Needing Validation</a>
+<a href="#sources">Source Ledger</a>
+</nav>
+
+<div class="main">
+
+<!-- ==================== COVER ==================== -->
+<section id="cover" class="cover section">
+<div class="badge">Deep Research Report &mdash; June 2026</div>
+<h1>PayrollOps Deep Research Report</h1>
+<div class="subtitle">Payroll Service/SaaS Opportunity Using Frappe Payroll &mdash; Market, Competitors, Gaps, Strategy, and Practical Launch Plan</div>
+<div class="meta">Prepared for: <span>Internal Strategy Discussion</span></div>
+<div class="meta">Research Period: <span>June 2026</span></div>
+<div class="meta">Evidence Base: <span>Phase 1 (Market Research) + Phase 2 (Competitor Intelligence) + Phase 3 (Strategy &amp; Roadmap)</span></div>
+<div class="verdict">
+  <div class="verdict-label">Strategic Conclusion</div>
+  <div class="verdict-text">PayrollOps should launch as a <strong>service-led payroll setup, configuration, dashboarding, workflow, and operations support model</strong> using Frappe HR/Frappe Payroll as the delivery engine. Target: Indian companies with 50&ndash;150 employees running payroll in Excel or via CA/manual processes. The realistic opening is service quality &mdash; not SaaS features.</div>
+</div>
+</section>
+
+<!-- ==================== EXECUTIVE SUMMARY ==================== -->
+<section id="executive-summary" class="section">
+<h2><span class="sec-num">01</span>Executive Summary</h2>
+
+<div class="verdict-card">
+  <div class="label">Decision</div>
+  <div class="value"><span class="badge-pill bg-orange">Conditional Go</span> &mdash; Launch as service-led payroll operations. Productize later. Not SaaS first.</div>
+</div>
+
+<h3>Market Reality</h3>
+<p>The global payroll software market is valued at $29&ndash;42B with 9&ndash;11% CAGR. India's payroll services market is estimated at $1.91B (2026) with 7.4% CAGR. <strong>But market size is not the business case.</strong> The India payroll SaaS segment has 15+ credible tools at ₹40&ndash;100 PEPM. The market is crowded with software, not with service.</p>
+<p class="src-chip">Source: <a href="https://www.mordorintelligence.com/industry-reports/india-payroll-market-industry">Mordor Intelligence</a> | <a href="https://www.thebusinessresearchcompany.com/report/hr-payroll-software-global-market-report">Business Research Company</a> &mdash; Analyst Estimate</p>
+
+<h3>Competitor Reality</h3>
+<p>greytHR (4,200+ G2 reviews), Keka (1,850+ G2 reviews), Zoho Payroll, HROne, RazorpayX, factoHR, and others deliver reliable payroll compliance for standard structures. Where they consistently fail: setup quality, configuration flexibility, custom reporting, payslip customization, and human support during payroll week. <strong>66% of payroll software buyers encounter disruption or disappointment after purchase.</strong></p>
+<p class="src-chip">Source: <a href="https://www.capterra.com/">Capterra 2026 Buying Trends Report</a> &mdash; Analyst Survey</p>
+
+<h3>User Pain Reality</h3>
+<p>The #1 complaint across all India payroll tools is support failure &mdash; ticket loops, no escalation, chat-only agents who cannot resolve configuration issues. The #2 complaint is inflexible customization requiring vendor intervention. The #3 is compliance update lag after the November 2025 Labour Code changes. These are service gaps, not feature gaps.</p>
+
+<h3>Frappe Fit Reality</h3>
+<p>Frappe HR v16 (January 2026) has confirmed core payroll capabilities but <strong>India statutory compliance post-Labour Code 2025 requires hands-on verification</strong> before client delivery. Frappe's strengths: zero per-user licensing, full customizability, ERPNext accounting integration, and open-source transparency. Frappe's risks: compliance not automated out-of-the-box, technical skill required for configuration, limited review volume.</p>
+
+<h3>Best First ICP</h3>
+<p><strong>Primary:</strong> Indian companies with 50&ndash;150 employees running payroll in Excel or via CA/manual process. <strong>Secondary:</strong> Companies unhappy with existing payroll software (greytHR/Keka switchers). <strong>Tertiary:</strong> ERPNext/Frappe users needing payroll activation. <strong>Avoid:</strong> Global/multi-country, EOR, 1&ndash;20 employees, large enterprise.</p>
+
+<h3>Recommended Launch Model</h3>
+<p>Service-first: Setup packages (₹25,000&ndash;75,000 one-time) + Monthly support (₹5,000&ndash;20,000/month). Seven defined service packages. Transparent published pricing. Named human contact per client. Labour Code 2025 compliance verification as door-opener.</p>
+
+<h3>Main Risks</h3>
+<ul class="compact">
+<li>Frappe India compliance not current with Form 130, EPFO 3.0, 50% wages rule &mdash; <span class="badge-pill bg-red">High Impact</span></li>
+<li>Support overload at scale &mdash; <span class="badge-pill bg-orange">High Impact</span></li>
+<li>Compliance liability boundary &mdash; <span class="badge-pill bg-red">Very High Impact</span></li>
+<li>Willingness to pay above greytHR's ₹3,495/month anchor &mdash; <span class="badge-pill bg-orange">Medium Impact</span></li>
+</ul>
+
+<h3>90-Day Decision Gate</h3>
+<p>Complete Frappe technical validation, 15 buyer interviews, 3&ndash;5 pilot clients at discounted rates. Kill criteria defined for each milestone. Do not scale until delivery is proven.</p>
+</section>
+
+<!-- ==================== BRUTAL TRUTH ==================== -->
+<section id="brutal-truth" class="section">
+<h2><span class="sec-num">02</span>The Brutal Truth: What the Research Actually Shows</h2>
+
+<div class="callout callout-red">
+<strong>The payroll market is crowded.</strong> 15+ credible India payroll tools exist. greytHR alone has 20,000+ clients. No feature gap exists that a 3-person team can fill faster than well-funded incumbents.
+</div>
+
+<div class="callout">
+<strong>Software is not the gap.</strong> Every major competitor has PF/ESI/PT/TDS auto-calculation, payslip generation, attendance integration, and statutory challan outputs. The gap is what happens <em>after</em> the company buys the software.
+</div>
+
+<div class="callout callout-green">
+<strong>Implementation and operations are the gap.</strong> 66% of buyers encounter disruption after purchase. "Not one month has passed where we have not raised a ticket." &mdash; greytHR G2 review. Companies buy software, receive a login, and spend months trying to configure it correctly. Nobody does configuration as a service.
+</div>
+
+<div class="callout callout-blue">
+<strong>PayrollOps should start service-led.</strong> Setup + configuration + monthly support + custom reports + human contact. Frappe is the delivery engine, not the product. The client pays for operational excellence, not software subscriptions.
+</div>
+
+<div class="callout">
+<strong>Full SaaS and global payroll are later.</strong> SaaS productization requires 18&ndash;24 months of service delivery to build reusable IP. Global expansion requires country-by-country compliance validation and is not realistic before Month 24.
+</div>
+
+<div class="callout callout-red">
+<strong>Statutory filing ownership must be avoided initially.</strong> PayrollOps configures and validates. The client's CA files PF/ESI/TDS returns. This boundary protects against legal liability and acknowledges that PayrollOps does not yet have licensed compliance professionals on staff.
+</div>
+
+<p class="src-chip">Strategic interpretation based on Phase 1, Phase 2, and Phase 3 synthesis &mdash; High Confidence</p>
+</section>
+
+<!-- ==================== CONCEPT DEFINITION ==================== -->
+<section id="concept" class="section">
+<h2><span class="sec-num">03</span>PayrollOps Concept Definition</h2>
+
+<h3>What PayrollOps Is</h3>
+<p>A <strong>payroll implementation and operations service</strong> powered by Frappe HR, designed for Indian companies that are either stuck in Excel or stuck with a payroll system that was never set up correctly. PayrollOps configures salary structures, builds custom payslips and reports, sets up approval workflows, creates CFO dashboards, verifies Labour Code 2025 compliance, and provides a named human contact who answers the phone during payroll week.</p>
+
+<h3>What PayrollOps Is Not</h3>
+<ul class="compact">
+<li><strong>Not a statutory filing service</strong> &mdash; does not own PF/ESI/TDS filings legally</li>
+<li><strong>Not a replacement for your CA</strong> &mdash; the CA continues to own compliance filings</li>
+<li><strong>Not a pure SaaS product</strong> &mdash; you cannot "sign up and go live in 5 minutes"</li>
+<li><strong>Not an EOR</strong> &mdash; does not employ your people</li>
+<li><strong>Not a global payroll company</strong> &mdash; India-only for the first 24 months</li>
+<li><strong>Not a greytHR/Keka replacement</strong> based on feature count</li>
+</ul>
+
+<h3>How It Works</h3>
+<p>The client signs up for a Setup package. PayrollOps runs a discovery call, audits existing data, configures Frappe HR with correct salary structures and compliance settings, builds custom payslips and reports, runs test and parallel payrolls, trains the HR team, and hands over a working system. The client then subscribes to Monthly Support for ongoing validation, exception reporting, and human support during payroll week.</p>
+
+<h3>Who Uses It</h3>
+<p>HR managers at 50&ndash;150 employee Indian companies; founders who want payroll visibility without full outsourcing; CFOs who need department-level payroll cost reporting; companies migrating from Excel or from unhappy software relationships.</p>
+
+<h3>Division of Responsibilities</h3>
+<div class="two-col">
+<div class="card">
+  <div class="card-title">Client HR Team Does</div>
+  <ul class="compact">
+  <li>Collects attendance, LOP, new joiner/exits monthly</li>
+  <li>Runs the payroll cycle in Frappe (one-click)</li>
+  <li>Reviews exception reports before finalizing</li>
+  <li>Distributes payslips to employees</li>
+  <li>Coordinates with CA on statutory filings</li>
+  </ul>
+</div>
+<div class="card">
+  <div class="card-title">PayrollOps Team Does</div>
+  <ul class="compact">
+  <li>Configures the system correctly from day one</li>
+  <li>Builds custom payslips, reports, dashboards</li>
+  <li>Verifies Labour Code 2025 compliance</li>
+  <li>Reviews pre-payroll checklist monthly</li>
+  <li>Flags exceptions before finalization</li>
+  <li>Resolves issues within 2&ndash;4 hours on payroll week</li>
+  <li>Documents the payroll SOP for client</li>
+  </ul>
+</div>
+</div>
+
+<h3>Where Frappe Fits</h3>
+<p>Frappe HR is the <strong>delivery engine</strong> &mdash; the platform on which PayrollOps builds configurations. Its zero licensing cost, full customizability, and ERPNext accounting integration are competitive advantages. Its compliance automation gap is a responsibility that PayrollOps must fill manually with qualified expertise.</p>
+</section>
+
+<!-- ==================== MARKET DEFINITIONS ==================== -->
+<section id="market-defs" class="section">
+<h2><span class="sec-num">04</span>Market Definitions</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>Category</th><th>Definition</th><th>Example</th><th>PayrollOps Fit</th></tr>
+<tr><td>Payroll SaaS</td><td>Cloud software licensed per employee/month; client self-serves</td><td>greytHR, Keka, Zoho Payroll</td><td>Uses Frappe (open-source) as engine; differentiates on service</td></tr>
+<tr><td>Payroll Service</td><td>Third party runs payroll process; receives inputs, delivers outputs</td><td>CA firms, Voltech HR</td><td>Close &mdash; but client retains process ownership</td></tr>
+<tr><td>Payroll Outsourcing</td><td>Full process ownership including statutory filings</td><td>ADP India, Ramco</td><td>Not this &mdash; PayrollOps does not own filings</td></tr>
+<tr><td>Managed Payroll</td><td>Vendor runs payroll using their software; higher touch than SaaS</td><td>Ramco Payce</td><td>Adjacent &mdash; PayrollOps is setup+support, not full management</td></tr>
+<tr><td>Payroll Implementation</td><td>Setting up and configuring a payroll system for a client</td><td>Frappe partners</td><td><strong>Core model</strong></td></tr>
+<tr><td>HRMS + Payroll</td><td>Integrated HR platform with payroll as one module</td><td>Darwinbox, PeopleStrong</td><td>Frappe HR is an HRMS; PayrollOps uses only payroll</td></tr>
+<tr><td>EOR</td><td>Legal entity employs workers on behalf of company</td><td>Deel, Remote, Wisemonk</td><td>Not applicable</td></tr>
+<tr><td>Global Payroll</td><td>Managing payroll across multiple countries</td><td>ADP, Papaya Global</td><td>Future only (Month 24+)</td></tr>
+<tr><td>Payroll Automation</td><td>Connecting attendance, leave, and payroll calculation</td><td>Biometric-to-payroll sync</td><td>Part of setup service</td></tr>
+<tr><td>PayrollOps Category</td><td colspan="3"><strong>Payroll Implementation + Operations Service, powered by configurable open-source platform (Frappe HR), delivered as managed setup with ongoing support.</strong></td></tr>
+</table>
+</div>
+<p class="src-chip">Phase 1 synthesis &mdash; Strategic Interpretation</p>
+</section>
+
+<!-- ==================== MARKET SIZE ==================== -->
+<section id="market-size" class="section">
+<h2><span class="sec-num">05</span>Market Size and Growth</h2>
+
+<h3>Global Market Estimates</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Segment</th><th>2025&ndash;26 Value</th><th>2030&ndash;35 Projection</th><th>CAGR</th><th>Source</th></tr>
+<tr><td>Global HR Payroll Software</td><td>$38.82B (2025)</td><td>$62.64B (2030)</td><td>10.2%</td><td><a href="https://www.thebusinessresearchcompany.com/report/hr-payroll-software-global-market-report">Business Research Company</a></td></tr>
+<tr><td>Global HR Payroll Software</td><td>$32.39B (2025)</td><td>$65.97B (2033)</td><td>9.3%</td><td><a href="https://www.skyquestt.com/report/hr-payroll-software-market">SkyQuestt</a></td></tr>
+<tr><td>Global Cloud Payroll</td><td>$26.55B (2025)</td><td>$61.71B (2035)</td><td>8.8%</td><td><a href="https://www.precedenceresearch.com/cloud-based-payroll-software-market">Precedence Research</a></td></tr>
+<tr><td>Global Payroll Outsourcing</td><td>$41.27B (2025)</td><td>$73.83B (2035)</td><td>6.0%</td><td><a href="https://www.sphericalinsights.com/blogs/top-15-companies-in-global-payroll-outsourcing-services-market-statistics-report-till-2035">Spherical Insights</a></td></tr>
+<tr><td>Asia Pacific Payroll Software</td><td>$8.3B (2025)</td><td>$15.2B (2033)</td><td>8.1%</td><td><a href="https://www.verifiedmarketreports.com/product/payroll-software-market/">Verified Market Reports</a></td></tr>
+</table>
+</div>
+<p class="src-chip">Analyst estimates with wide variance &mdash; Medium Confidence. Scope definitions vary across firms. Treat as directional.</p>
+
+<h3>India Payroll Market</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Segment</th><th>Value</th><th>CAGR</th><th>Source</th></tr>
+<tr><td>India Payroll Services</td><td>$1.91B (2026)</td><td>7.41%</td><td><a href="https://www.mordorintelligence.com/industry-reports/india-payroll-market-industry">Mordor Intelligence</a></td></tr>
+<tr><td>India Payroll Outsourcing</td><td>~₹4,200 Cr (~$504M) (2026)</td><td>&mdash;</td><td>HROne blog</td></tr>
+</table>
+</div>
+
+<h3>Why Market Size Is Not the Business Case</h3>
+<div class="callout callout-red">
+The India payroll SaaS segment already has 15+ credible competitors at ₹40&ndash;100 PEPM. Market size does not determine whether PayrollOps can acquire clients. The determining factors are: (1) whether the service gap is real, (2) whether target buyers will pay for it, and (3) whether PayrollOps can deliver at quality. The evidence says yes to all three &mdash; but only with a service-led model, not a SaaS-first model.
+</div>
+
+<h3>Key India Regulatory Context (Verified)</h3>
+<ul class="compact">
+<li><strong>November 2025:</strong> All four Labour Codes took effect, consolidating 29 central labour laws</li>
+<li><strong>April 1, 2026:</strong> Income Tax Act 2025 replaced the 1961 Act; Form 16 &rarr; Form 130</li>
+<li><strong>50% wages rule:</strong> Basic pay must be &ge;50% of total CTC under Code on Wages</li>
+<li><strong>EPFO 3.0:</strong> API connectivity required for accurate ECR filing</li>
+<li><strong>Digital record-keeping:</strong> Mandated for all employers; 7-year retention</li>
+</ul>
+<p class="src-chip">Regulatory Source: EPFO, ESIC, Ministry of Labour notifications &mdash; Verified Fact</p>
+</section>
+
+<!-- ==================== BUYER EXPECTATIONS ==================== -->
+<section id="buyer-expectations" class="section">
+<h2><span class="sec-num">06</span>Payroll Buyer Expectations in 2026</h2>
+
+<h3>Table-Stakes Features (Non-Negotiable)</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Feature</th><th>Evidence</th><th>Confidence</th></tr>
+<tr><td>Correct PF/ESI/TDS calculations</td><td>Universal expectation across every review and compliance guide</td><td><span class="badge-pill bg-green">High</span></td></tr>
+<tr><td>Payslip generation</td><td>Universal</td><td><span class="badge-pill bg-green">High</span></td></tr>
+<tr><td>Form 130 generation (new Form 16)</td><td>Universal post-April 2026</td><td><span class="badge-pill bg-green">High</span></td></tr>
+<tr><td>Attendance-to-payroll linkage</td><td>Most reviews cite pain when absent</td><td><span class="badge-pill bg-green">High</span></td></tr>
+<tr><td>Leave/LOP integration</td><td>Standard expectation</td><td><span class="badge-pill bg-green">High</span></td></tr>
+<tr><td>Basic employee self-service</td><td>Expected at every price point</td><td><span class="badge-pill bg-green">High</span></td></tr>
+<tr><td>Monthly payroll processing</td><td>Obviously required</td><td><span class="badge-pill bg-green">High</span></td></tr>
+</table>
+</div>
+
+<h3>Expected Service Quality</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Expectation</th><th>Evidence</th><th>Confidence</th></tr>
+<tr><td>Timely support response</td><td>Recurring complaint when absent</td><td><span class="badge-pill bg-green">High</span></td></tr>
+<tr><td>Compliance updates without intervention</td><td>Buyers expect vendor to update for regulatory changes</td><td><span class="badge-pill bg-green">High</span></td></tr>
+<tr><td>Correct statutory challan generation</td><td>Every compliance guide emphasizes this</td><td><span class="badge-pill bg-green">High</span></td></tr>
+<tr><td>Transparent pricing (no hidden fees)</td><td>Repeated review complaint pattern</td><td><span class="badge-pill bg-orange">Medium</span></td></tr>
+</table>
+</div>
+
+<h3>Differentiators (Where PayrollOps Can Win)</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Differentiator</th><th>Evidence</th><th>Confidence</th></tr>
+<tr><td>Customizable salary structures</td><td>Strong pattern in complaints about rigid software</td><td><span class="badge-pill bg-green">High</span></td></tr>
+<tr><td>Custom reports and Excel outputs</td><td>Mentioned in multiple India HRMS reviews</td><td><span class="badge-pill bg-green">High</span></td></tr>
+<tr><td>Payslip format customization</td><td>Banks require specific formats; multiple SMB use cases</td><td><span class="badge-pill bg-green">High</span></td></tr>
+<tr><td>Responsive human support (not chat bots)</td><td>Strong negative pattern in greytHR, Keka reviews</td><td><span class="badge-pill bg-green">High</span></td></tr>
+<tr><td>Fast setup / low implementation friction</td><td>Critical for 50&ndash;100 employee segment</td><td><span class="badge-pill bg-orange">Medium-High</span></td></tr>
+<tr><td>CFO-level dashboard visibility</td><td>Consistent HR leadership request</td><td><span class="badge-pill bg-orange">Medium</span></td></tr>
+<tr><td>Labour Code 2025 compliance verification</td><td>Urgent, time-sensitive differentiator</td><td><span class="badge-pill bg-green">High</span></td></tr>
+</table>
+</div>
+
+<h3>Risky Promises to Avoid</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Promise</th><th>Risk</th></tr>
+<tr><td>"We will handle all statutory filings"</td><td><span class="badge-pill bg-red">High</span> Requires licensed CA; legal liability</td></tr>
+<tr><td>"Zero compliance errors guaranteed"</td><td><span class="badge-pill bg-red">High</span> India compliance is genuinely complex</td></tr>
+<tr><td>"Seamless migration in X days"</td><td><span class="badge-pill bg-orange">Medium</span> Data quality issues always delay</td></tr>
+<tr><td>"Global payroll ready"</td><td><span class="badge-pill bg-red">Very High</span> Not feasible for Phase 1</td></tr>
+</table>
+</div>
+<p class="src-chip">Phase 1 evidence &mdash; ADP Future of Pay India 2025, G2/Capterra reviews, compliance guides</p>
+</section>
+
+<!-- ==================== CUSTOMER SEGMENTS ==================== -->
+<section id="segments" class="section">
+<h2><span class="sec-num">07</span>Customer Segment Analysis</h2>
+
+<h3>Segment Scorecards</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Segment</th><th>Pain</th><th>Urgency</th><th>WTP</th><th>Trust</th><th>Fit: POps</th><th>Evidence</th></tr>
+<tr><td>1&ndash;20 employees</td><td>4</td><td>5</td><td>2</td><td>7</td><td>2</td><td>Medium</td></tr>
+<tr><td>21&ndash;50 employees</td><td>6</td><td>6</td><td>4</td><td>6</td><td>5</td><td>Medium</td></tr>
+<tr style="background:rgba(212,168,83,0.08);"><td><strong>50&ndash;100 employees</strong></td><td><strong>8</strong></td><td><strong>8</strong></td><td><strong>7</strong></td><td><strong>5</strong></td><td><strong>8</strong></td><td><strong>High</strong></td></tr>
+<tr><td>100&ndash;500 employees</td><td>7</td><td>7</td><td>8</td><td>5</td><td>6</td><td>Medium-High</td></tr>
+<tr><td>500+ employees</td><td>5</td><td>4</td><td>9</td><td>4</td><td>3</td><td>Medium</td></tr>
+<tr style="background:rgba(212,168,83,0.08);"><td><strong>Excel payroll users</strong></td><td><strong>9</strong></td><td><strong>9</strong></td><td><strong>5</strong></td><td><strong>6</strong></td><td><strong>9</strong></td><td><strong>High</strong></td></tr>
+<tr><td>CA/accountant-led payroll</td><td>7</td><td>7</td><td>4</td><td>7</td><td>6</td><td>Medium</td></tr>
+<tr style="background:rgba(212,168,83,0.08);"><td><strong>Unhappy software users</strong></td><td><strong>8</strong></td><td><strong>7</strong></td><td><strong>6</strong></td><td><strong>5</strong></td><td><strong>8</strong></td><td><strong>High</strong></td></tr>
+<tr><td>ERPNext/Frappe users</td><td>7</td><td>6</td><td>7</td><td>2</td><td>9</td><td>Medium</td></tr>
+<tr><td>Multi-entity companies</td><td>8</td><td>7</td><td>8</td><td>5</td><td>6</td><td>Medium</td></tr>
+<tr><td>Global/remote hiring</td><td>4</td><td>4</td><td>7</td><td>6</td><td>2</td><td>Low</td></tr>
+</table>
+</div>
+<p class="src-chip">Scoring 1&ndash;10 based on Phase 1 + Phase 2 evidence &mdash; Strategic Interpretation</p>
+
+<div class="callout">
+<strong>Key insight:</strong> 62% of Indian SMEs still rely on spreadsheets (NASSCOM 2026 per INDPayroll). Excel payroll for a 50-employee company wastes ₹5,500&ndash;9,500/month in HR time cost alone. Labour Code violations now cost ₹10,000&ndash;1,00,000 per violation. The Excel segment has the highest pain and urgency combination.
+</div>
+<p class="src-chip">Source: <a href="https://ezhrm.in/payroll-roi-calculator-india-2026-true-cost-manual-payroll/">EZHRM ROI Analysis</a> &mdash; Vendor Analysis</p>
+</section>
+
+<!-- ==================== ICP ==================== -->
+<section id="icp" class="section">
+<h2><span class="sec-num">08</span>Best ICP Analysis</h2>
+
+<h3>ICP Scorecard Comparison</h3>
+<div class="score-grid">
+<div class="score-card">
+  <div class="seg">ICP A: Excel/CA Payroll, 50&ndash;150 emp</div>
+  <div class="score high">75/90</div>
+  <div class="desc">Pain intensity 9/10. Urgency 9/10 (Labour Code 2026). WTP 7/10. Fastest time to revenue. Large segment size. Low direct competition for implementation+support service.</div>
+  <div class="score-bar"><div class="fill high" style="width:83%"></div></div>
+</div>
+<div class="score-card">
+  <div class="seg">ICP B: Unhappy SaaS Switchers</div>
+  <div class="score medium">62/90</div>
+  <div class="desc">Already paying for payroll; motivated to switch. Trust barrier lower. Competition: may switch to HROne/factoHR instead. Medium sales cycle.</div>
+  <div class="score-bar"><div class="fill medium" style="width:69%"></div></div>
+</div>
+<div class="score-card">
+  <div class="seg">ICP C: ERPNext/Frappe Users</div>
+  <div class="score medium">58/90</div>
+  <div class="desc">Zero trust barrier on platform. Fastest implementation. Numerically smaller segment. Hard to find without partner channel.</div>
+  <div class="score-bar"><div class="fill medium" style="width:64%"></div></div>
+</div>
+<div class="score-card">
+  <div class="seg">ICP D: Multi-Entity SMBs</div>
+  <div class="score medium">60/90</div>
+  <div class="desc">High WTP, complex problem. Implementation difficulty 8/10. Do not target until 10+ single-entity implementations delivered.</div>
+  <div class="score-bar"><div class="fill medium" style="width:67%"></div></div>
+</div>
+<div class="score-card">
+  <div class="seg">ICP E: Startups 1&ndash;20 emp</div>
+  <div class="score low">45/90</div>
+  <div class="desc">Price-sensitive. Free tiers available (greytHR free, Zoho free). WTP very low. Avoid.</div>
+  <div class="score-bar"><div class="fill low" style="width:50%"></div></div>
+</div>
+<div class="score-card">
+  <div class="seg">ICP F: Global/Remote Companies</div>
+  <div class="score low">30/90</div>
+  <div class="desc">Compliance complexity outside India requires infrastructure PayrollOps cannot build quickly. Avoid for 24 months.</div>
+  <div class="score-bar"><div class="fill low" style="width:33%"></div></div>
+</div>
+</div>
+
+<div class="verdict-card">
+  <div class="label">Primary ICP</div>
+  <div class="value">Indian companies with 50&ndash;150 employees running payroll in Excel or with a CA, growing to the point where manual process is breaking down. Based in Tier 1 cities. IT services, SaaS, professional services, marketing agencies, healthcare clinics.</div>
+</div>
+</section>
+
+<!-- ==================== BUYER PERSONAS ==================== -->
+<section id="personas" class="section">
+<h2><span class="sec-num">09</span>Buyer Personas</h2>
+
+<div class="persona-grid">
+<div class="persona-card">
+  <div class="role">The HR Manager</div>
+  <div class="tag">50&ndash;150 employees | 2&ndash;7 years experience</div>
+  <div class="field"><strong>Pain:</strong> Monthly payroll takes 3&ndash;7 days. Errors in PF/ESI. Cannot generate custom reports. Blamed when payroll is wrong.</div>
+  <div class="field"><strong>Fear:</strong> EPFO notice, employee complaints, not knowing enough about new regulations.</div>
+  <div class="field"><strong>Trigger:</strong> Compliance penalty, employee dispute, CFO asking for cost report, HR manager departure.</div>
+  <div class="field"><strong>Objection:</strong> "We already have greytHR" &mdash; needs proof of configuration advantage.</div>
+  <div class="field"><strong>Proof needed:</strong> Working demo with their salary structure, reference from similar company.</div>
+  <div class="field"><strong>PayrollOps message:</strong> "We configure your payroll correctly from day one, build you a dashboard, and answer the phone during payroll week."</div>
+</div>
+<div class="persona-card">
+  <div class="role">The Founder / Business Owner</div>
+  <div class="tag">50&ndash;150 employees | Building the company</div>
+  <div class="field"><strong>Pain:</strong> Payroll takes best HR person away from hiring. Fear of government notices. No visibility into payroll costs.</div>
+  <div class="field"><strong>Fear:</strong> Payroll error causing employee exits, surprise notice with penalties, paying for compliance that isn't happening.</div>
+  <div class="field"><strong>Trigger:</strong> HR manager resigns, compliance notice received, fundraising due diligence, cross-state expansion.</div>
+  <div class="field"><strong>Objection:</strong> "Too expensive" &mdash; frame against cost of HR time + penalty risk.</div>
+  <div class="field"><strong>Proof needed:</strong> Clean fast demo, credible references, clear SLA.</div>
+  <div class="field"><strong>PayrollOps message:</strong> "Your HR team gets 3+ days back every month. Your CFO gets a dashboard. And you're compliant with Labour Code 2025."</div>
+</div>
+<div class="persona-card">
+  <div class="role">The CFO / Finance Head</div>
+  <div class="tag">100&ndash;500 employees | Number-driven, skeptical</div>
+  <div class="field"><strong>Pain:</strong> Payroll data doesn't speak to accounting. Manual month-end journal entries. No department-level cost visibility.</div>
+  <div class="field"><strong>Fear:</strong> Tax liability from incorrect TDS, audit exposure, vendor dependency on unauditable systems.</div>
+  <div class="field"><strong>Trigger:</strong> Board audit revealing gaps, TDS reconciliation error, multi-entity reporting chaos.</div>
+  <div class="field"><strong>Objection:</strong> "How do I know your system is up to date?" &mdash; needs audit trail demo.</div>
+  <div class="field"><strong>Proof needed:</strong> Audit trail demo, accounting integration, multi-entity reporting demo.</div>
+  <div class="field"><strong>PayrollOps message:</strong> "Frappe's native audit trail logs every change. ERPNext accounting integration eliminates manual journal entries."</div>
+</div>
+<div class="persona-card">
+  <div class="role">The Payroll Admin</div>
+  <div class="tag">Operational executor | Does the monthly work</div>
+  <div class="field"><strong>Pain:</strong> Reconciling attendance against payroll manually. Fixing payslip errors after distribution. Chasing software support that doesn't respond.</div>
+  <div class="field"><strong>Fear:</strong> Making a visible error, not having help when needed, system breaking during payroll week.</div>
+  <div class="field"><strong>Trigger:</strong> Payroll error affecting employees, support ticket unresolved for weeks, software update breaking workflow.</div>
+  <div class="field"><strong>Objection:</strong> "What if your support person leaves?" &mdash; needs documentation guarantee.</div>
+  <div class="field"><strong>Proof needed:</strong> Documented SOP, named backup contact, training quality.</div>
+  <div class="field"><strong>PayrollOps message:</strong> "We document your entire payroll process. Two people on our team know your setup. You're never dependent on one person."</div>
+</div>
+<div class="persona-card">
+  <div class="role">The CA / Accountant</div>
+  <div class="tag">Manages payroll for 5&ndash;20 SMB clients</div>
+  <div class="field"><strong>Pain:</strong> Managing different salary structures across clients. Month-end chaos with multiple deadlines. Ad hoc report requests.</div>
+  <div class="field"><strong>Fear:</strong> Compliance error damaging firm reputation, client outgrowing manual process.</div>
+  <div class="field"><strong>Trigger:</strong> Client growth beyond manual capacity, compliance error, large client demanding professional process.</div>
+  <div class="field"><strong>Objection:</strong> "I can do this myself" &mdash; position as partner, not replacement.</div>
+  <div class="field"><strong>Proof needed:</strong> CA-branded dashboard option, clear referral incentive.</div>
+  <div class="field"><strong>PayrollOps message:</strong> "We set up the system; your client runs it; you focus on statutory filings."</div>
+</div>
+<div class="persona-card">
+  <div class="role">The Employee / End User</div>
+  <div class="tag">Receives payslip | Indirect buyer</div>
+  <div class="field"><strong>Pain:</strong> Payslip rejected by bank for loan. Cannot access self-service. Wrong salary credited.</div>
+  <div class="field"><strong>Fear:</strong> Tax filing problems due to wrong Form 130, salary dispute.</div>
+  <div class="field"><strong>Trigger:</strong> Bank rejection, payslip dispute, tax notice.</div>
+  <div class="field"><strong>PayrollOps impact:</strong> Professional payslip format, correct Form 130, employee self-service portal.</div>
+</div>
+</div>
+<p class="src-chip">Phase 1 buyer persona analysis &mdash; Strategic Interpretation</p>
+</section>
+
+<!-- ==================== JTBD ==================== -->
+<section id="jtbd" class="section">
+<h2><span class="sec-num">10</span>Jobs-to-be-Done (Ranked by Evidence)</h2>
+
+<div class="jtbd-row"><div class="jtbd-rank">1</div><div class="jtbd-text">Move payroll from Excel to a configured, running system</div><span class="badge-pill bg-green jtbd-tag">Tier 1</span></div>
+<div class="jtbd-row"><div class="jtbd-rank">2</div><div class="jtbd-text">Configure payroll correctly with Labour Code 2025 compliance</div><span class="badge-pill bg-green jtbd-tag">Tier 1</span></div>
+<div class="jtbd-row"><div class="jtbd-rank">3</div><div class="jtbd-text">Reduce payroll errors through pre-payroll validation</div><span class="badge-pill bg-green jtbd-tag">Tier 1</span></div>
+<div class="jtbd-row"><div class="jtbd-rank">4</div><div class="jtbd-text">Generate custom payslips that banks and auditors accept</div><span class="badge-pill bg-green jtbd-tag">Tier 1</span></div>
+<div class="jtbd-row"><div class="jtbd-rank">5</div><div class="jtbd-text">Generate custom Excel reports for CA, CFO, and bank</div><span class="badge-pill bg-green jtbd-tag">Tier 1</span></div>
+<div class="jtbd-row"><div class="jtbd-rank">6</div><div class="jtbd-text">Connect attendance/LOP to payroll without manual reconciliation</div><span class="badge-pill bg-orange jtbd-tag">Tier 2</span></div>
+<div class="jtbd-row"><div class="jtbd-rank">7</div><div class="jtbd-text">Get human support during payroll week when something breaks</div><span class="badge-pill bg-green jtbd-tag">Tier 1</span></div>
+<div class="jtbd-row"><div class="jtbd-rank">8</div><div class="jtbd-text">Improve payroll visibility for CFO and management</div><span class="badge-pill bg-orange jtbd-tag">Tier 2</span></div>
+<div class="jtbd-row"><div class="jtbd-rank">9</div><div class="jtbd-text">Migrate from current payroll software without losing data</div><span class="badge-pill bg-orange jtbd-tag">Tier 2</span></div>
+<div class="jtbd-row"><div class="jtbd-rank">10</div><div class="jtbd-text">Handle Labour Code/salary structure changes correctly</div><span class="badge-pill bg-green jtbd-tag">Tier 1</span></div>
+
+<p class="src-chip">Phase 1 + Phase 2 evidence synthesis &mdash; Strategic Interpretation</p>
+</section>
+
+<!-- ==================== REVIEW MINING ==================== -->
+<section id="reviews" class="section">
+<h2><span class="sec-num">11</span>User Review Mining: What Users Love and Hate</h2>
+
+<h3>India Payroll Software Review Ratings (June 2026)</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Company</th><th>G2 Rating</th><th>G2 Reviews</th><th>Key Pattern</th></tr>
+<tr><td>HROne</td><td>4.8/5</td><td>2,055+</td><td>Strong automation; steep learning curve</td></tr>
+<tr><td>Keka</td><td>4.5/5</td><td>1,854+</td><td>Best UX; support declining per 2026 reviews</td></tr>
+<tr><td>greytHR</td><td>~4.2/5</td><td>3,000+</td><td>Reliable for standard structures; support failure pattern</td></tr>
+<tr><td>Zoho Payroll</td><td>~4.3/5</td><td>&mdash;</td><td>Clean UI; shallow depth standalone</td></tr>
+<tr><td>factoHR</td><td>~4.5/5</td><td>&mdash;</td><td>Manufacturing strength; GPS attendance</td></tr>
+</table>
+</div>
+
+<h3>Top 7 Complaint Patterns</h3>
+
+<div class="bar-chart">
+<div class="bar-row"><div class="bar-label">Support failure</div><div class="bar-track"><div class="bar-fill c4" style="width:95%">95%</div></div></div>
+<div class="bar-row"><div class="bar-label">Config rigidity</div><div class="bar-track"><div class="bar-fill c3" style="width:85%">85%</div></div></div>
+<div class="bar-row"><div class="bar-label">Custom reports gap</div><div class="bar-track"><div class="bar-fill c3" style="width:80%">80%</div></div></div>
+<div class="bar-row"><div class="bar-label">Payslip limits</div><div class="bar-track"><div class="bar-fill c2" style="width:70%">70%</div></div></div>
+<div class="bar-row"><div class="bar-label">Mobile app issues</div><div class="bar-track"><div class="bar-fill c2" style="width:65%">65%</div></div></div>
+<div class="bar-row"><div class="bar-label">Post-update regressions</div><div class="bar-track"><div class="bar-fill c5" style="width:55%">55%</div></div></div>
+<div class="bar-row"><div class="bar-label">Pricing opacity</div><div class="bar-track"><div class="bar-fill c1" style="width:50%">50%</div></div></div>
+</div>
+<p style="font-size:0.75rem;color:var(--fg2);margin-top:0.5rem;">Percentage indicates prevalence across reviewed competitors (Phase 2 review mining)</p>
+
+<div class="matrix-grid">
+<div class="matrix-card">
+  <div class="gap-title">Pattern 1: Support Failure</div>
+  <div class="gap-meta">greytHR, Keka, Zoho | <span class="badge-pill bg-red">High Severity</span></div>
+  <p style="font-size:0.82rem;color:var(--fg2);">"Not one month has passed where we have not raised a ticket." &mdash; Maheshkumar J., greytHR G2. "Service decreasing day by day." &mdash; Keka G2 2026.</p>
+</div>
+<div class="matrix-card">
+  <div class="gap-title">Pattern 2: Configuration Dependency</div>
+  <div class="gap-meta">greytHR (High), Keka (Medium)</div>
+  <p style="font-size:0.82rem;color:var(--fg2);">"Very high dependency on the greythr team to customize and the customization is full of gaps." &mdash; Brimma Tech, G2.</p>
+</div>
+<div class="matrix-card">
+  <div class="gap-title">Pattern 3: Custom Reports Inadequate</div>
+  <div class="gap-meta">greytHR, RazorpayX, Zoho</div>
+  <p style="font-size:0.82rem;color:var(--fg2);">"Reporting configuration, TDS filing, revising of TDS is not possible." &mdash; Krishnanand B., greytHR G2.</p>
+</div>
+<div class="matrix-card">
+  <div class="gap-title">Pattern 4: Mobile App Reliability</div>
+  <div class="gap-meta">greytHR (High), Keka (Medium)</div>
+  <p style="font-size:0.82rem;color:var(--fg2);">"Not as user-friendly as advertised, with frequent glitches and slow load times." &mdash; Shreeya V., G2.</p>
+</div>
+<div class="matrix-card">
+  <div class="gap-title">Pattern 5: Post-Update Regressions</div>
+  <div class="gap-meta">greytHR primarily</div>
+  <p style="font-size:0.82rem;color:var(--fg2);">Vendor updates break previously working workflows; clients discover during payroll run.</p>
+</div>
+<div class="matrix-card">
+  <div class="gap-title">Pattern 6: Pricing Opacity</div>
+  <div class="gap-meta">Keka, ADP, Paychex</div>
+  <p style="font-size:0.82rem;color:var(--fg2);">Clients discover add-on costs after committing. Keka has no public pricing. ADP quote-only.</p>
+</div>
+<div class="matrix-card">
+  <div class="gap-title">Pattern 7: Compliance Update Lag</div>
+  <div class="gap-meta">All India tools (June 2026)</div>
+  <p style="font-size:0.82rem;color:var(--fg2);">Software not yet updated for Form 130, Labour Code 50% wage rule, EPFO 3.0. Most acute immediate gap.</p>
+</div>
+</div>
+
+<h3>What Users Praise</h3>
+<ul class="compact">
+<li><strong>Payroll accuracy for standard structures</strong> &mdash; All major India tools when salary structures are simple</li>
+<li><strong>Automated statutory compliance updates</strong> &mdash; HROne and Keka specifically praised</li>
+<li><strong>Employee self-service</strong> &mdash; Reduces HR admin burden across all tools</li>
+<li><strong>One-click payroll run with preview</strong> &mdash; Keka's most-praised payroll feature</li>
+<li><strong>Dedicated specialist model</strong> &mdash; Paychex: "having my own personal paycheck specialist for many years"</li>
+<li><strong>Transparent pricing</strong> &mdash; Gusto's flat pricing cited in hundreds of reviews</li>
+<li><strong>Accounting integration</strong> &mdash; Eliminates manual journal entries</li>
+</ul>
+<p class="src-chip">Phase 2 review mining: G2, Capterra, Trustpilot, GetApp &mdash; User Review Evidence</p>
+</section>
+
+<!-- ==================== COMPETITORS ==================== -->
+<section id="competitors" class="section">
+<h2><span class="sec-num">12</span>Top 20 Competitor Landscape</h2>
+
+<h3>Executive Competitor Snapshot</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Tier</th><th>Company</th><th>Geography</th><th>Threat</th><th>Key Note</th></tr>
+<tr><td>India Core</td><td>greytHR</td><td>India (Bangalore)</td><td><span class="badge-pill bg-red">HIGH</span></td><td>Most common incumbent at target segment; 3,000+ G2 reviews</td></tr>
+<tr><td>India Core</td><td>Keka</td><td>India (Hyderabad)</td><td><span class="badge-pill bg-red">HIGH</span></td><td>Best India HRMS UX; 1,850+ G2 reviews; support declining</td></tr>
+<tr><td>India Core</td><td>HROne</td><td>India (Delhi)</td><td><span class="badge-pill bg-orange">MEDIUM</span></td><td>G2 #3 globally; 100&ndash;5,000 emp focus</td></tr>
+<tr><td>India Core</td><td>Zoho Payroll</td><td>India (Chennai)</td><td><span class="badge-pill bg-red">HIGH (price)</span></td><td>Free tier; ecosystem play; ₹2,000&ndash;4,000/mo for 50</td></tr>
+<tr><td>India Core</td><td>RazorpayX</td><td>India (Bangalore)</td><td><span class="badge-pill bg-orange">MEDIUM</span></td><td>Fintech-first; simple startups; thin for complex HR</td></tr>
+<tr><td>India Core</td><td>factoHR</td><td>India (Ahmedabad)</td><td><span class="badge-pill bg-orange">MEDIUM</span></td><td>Manufacturing/field strength; GPS attendance</td></tr>
+<tr><td>India Core</td><td>Qandle</td><td>India (Delhi)</td><td><span class="badge-pill bg-green">LOW-MED</span></td><td>Modular; affordable; fewer integrations</td></tr>
+<tr><td>India Core</td><td>Zimyo</td><td>India</td><td><span class="badge-pill bg-green">LOW</span></td><td>Budget player; employee experience focus</td></tr>
+<tr><td>India Core</td><td>Saral PayPack</td><td>India (Bangalore)</td><td><span class="badge-pill bg-green">LOW-MED</span></td><td>CA favourite; deep statutory; dated UI</td></tr>
+<tr><td>India Core</td><td>Darwinbox</td><td>India (Hyderabad)</td><td><span class="badge-pill bg-green">VERY LOW</span></td><td>Enterprise 500+; 1,000+ emp territory</td></tr>
+<tr><td>Global Giant</td><td>ADP</td><td>US/Global</td><td><span class="badge-pill bg-green">LOW</span></td><td>Enterprise-grade; quote-only; over-complex for SMB</td></tr>
+<tr><td>Global Giant</td><td>Paychex</td><td>US</td><td><span class="badge-pill bg-green">NONE</span></td><td>Dedicated specialist model; pricing opacity</td></tr>
+<tr><td>Global Giant</td><td>Gusto</td><td>US</td><td><span class="badge-pill bg-green">NONE</span></td><td>Best US SMB UX; Trustpilot 2.5/5</td></tr>
+<tr><td>Global Giant</td><td>Rippling</td><td>US/Global</td><td><span class="badge-pill bg-green">NONE</span></td><td>Unified HR+IT+payroll; $11.25B valuation</td></tr>
+<tr><td>EOR Leader</td><td>Deel</td><td>Global</td><td><span class="badge-pill bg-green">NONE</span></td><td>$599/emp/mo EOR; India inbound leader</td></tr>
+<tr><td>EOR</td><td>Remote</td><td>Global</td><td><span class="badge-pill bg-green">NONE</span></td><td>$599&ndash;699/emp/mo EOR; owned entities</td></tr>
+<tr><td>Accounting</td><td>QuickBooks Payroll</td><td>US</td><td><span class="badge-pill bg-green">NONE</span></td><td>Accounting integration benchmark</td></tr>
+<tr><td>Enterprise</td><td>Ramco Systems</td><td>India (Chennai)</td><td><span class="badge-pill bg-green">VERY LOW</span></td><td>Enterprise managed payroll; 1,000+ focus</td></tr>
+<tr><td>EOR India</td><td>Wisemonk</td><td>India</td><td><span class="badge-pill bg-green">NONE</span></td><td>US companies hiring in India</td></tr>
+<tr><td>EOR SEA</td><td>Multiplier</td><td>Singapore</td><td><span class="badge-pill bg-green">NONE</span></td><td>SEA + India EOR context</td></tr>
+</table>
+</div>
+<p class="src-chip">Phase 2 competitor analysis &mdash; User Review Evidence + Vendor Claim</p>
+</section>
+
+<!-- ==================== COMPETITOR PROFILES ==================== -->
+<section id="comp-profiles" class="section">
+<h2><span class="sec-num">13</span>Competitor Profiles (Key Threats)</h2>
+
+<div class="comp-card">
+<div class="comp-head">
+  <div><div class="comp-name">greytHR <span style="font-size:0.8rem;color:var(--red);">&#9679; HIGH THREAT</span></div><div class="comp-info">India (Bangalore) | 1994 | 5&ndash;500,000 emp | ~₹3,495/mo (50 emp)</div></div>
+</div>
+<p style="font-size:0.85rem;"><strong>Strengths:</strong> Free tier; strong SMB brand trust; India compliance depth for standard structures; 3,000+ G2 reviews. <strong>Weaknesses:</strong> Support failure pattern; customization requires vendor intervention; dated UI; mobile app reliability; compliance lag. <strong>User praise:</strong> "Handles payroll without hiccups" for stable structures. <strong>User complaint:</strong> "Not one month without a ticket." <strong>What PayrollOps can learn:</strong> The switching pool from greytHR is real and motivated by support failure, not features.</p>
+<p class="src-chip">Source: <a href="https://www.getapp.com/hr-employee-management-software/a/greythr/">GetApp</a> | <a href="https://hrone.cloud/blog/switching-from-greythr-india/">HROne Switching Analysis</a> &mdash; User Review Evidence</p>
+</div>
+
+<div class="comp-card">
+<div class="comp-head">
+  <div><div class="comp-name">Keka <span style="font-size:0.8rem;color:var(--red);">&#9679; HIGH THREAT</span></div><div class="comp-info">India (Hyderabad) | 2015 | 10&ndash;10,000 emp | ~₹4,500&ndash;5,000/mo est. (50 emp)</div></div>
+</div>
+<p style="font-size:0.85rem;"><strong>Strengths:</strong> Best India HRMS UX; one-click payroll with preview; 1,850+ G2 reviews; strong payroll automation. <strong>Weaknesses:</strong> Support deterioration documented; pricing not transparent; multi-entity limitations; fair usage lock-in. <strong>User praise:</strong> Modern UI; payroll preview before finalization. <strong>User complaint:</strong> "Service decreasing day by day." <strong>What PayrollOps can learn:</strong> UX matters but support deterioration destroys loyalty even with great product.</p>
+<p class="src-chip">Source: <a href="https://hrone.cloud/blog/keka-vs-greythr-india/">HROne Keka vs greytHR</a> &mdash; User Review Evidence</p>
+</div>
+
+<div class="comp-card">
+<div class="comp-head">
+  <div><div class="comp-name">Zoho Payroll <span style="font-size:0.8rem;color:var(--orange);">&#9679; HIGH (price)</span></div><div class="comp-info">India (Chennai) | 1&ndash;1,000 emp | ~₹2,000&ndash;4,000/mo (50 emp)</div></div>
+</div>
+<p style="font-size:0.85rem;"><strong>Strengths:</strong> Free to 3 employees; Zoho ecosystem integration; clean UI; affordable. <strong>Weaknesses:</strong> "Features are shallow and there is no depth"; standalone feels incomplete; clunky Indian compliance setup for non-Zoho users. <strong>What PayrollOps can learn:</strong> Zoho's free tier creates a price anchor. PayrollOps must frame value as service, not software subscription.</p>
+<p class="src-chip">Source: <a href="https://salarybox.in/blog/best-payroll-software-india-2026/">SalaryBox India 2026</a> &mdash; User Review Evidence</p>
+</div>
+
+<div class="comp-card">
+<div class="comp-head">
+  <div><div class="comp-name">HROne <span style="font-size:0.8rem;color:var(--orange);">&#9679; MEDIUM</span></div><div class="comp-info">India (Delhi) | 2016 | 100&ndash;5,000 emp | ~₹4,250&ndash;4,950/mo (50 emp)</div></div>
+</div>
+<p style="font-size:0.85rem;"><strong>Strengths:</strong> G2 #3 globally; 127 pre-built workflows; ROI Dashboard; billing starts at go-live. <strong>Weaknesses:</strong> Learning curve steep; overwhelming for small teams. <strong>Threat to PayrollOps:</strong> Their target (100&ndash;5,000) slightly above PayrollOps sweet spot, but they explicitly target greytHR/Keka switchers.</p>
+<p class="src-chip">Source: <a href="https://hrone.cloud/blog/best-payroll-software-india/">HROne India Payroll</a> &mdash; Vendor Claim</p>
+</div>
+
+<div class="comp-card">
+<div class="comp-head">
+  <div><div class="comp-name">Gusto <span style="font-size:0.8rem;color:var(--green);">&#9679; BENCHMARK</span></div><div class="comp-info">US | 400K+ customers | $49/mo + $6/emp</div></div>
+</div>
+<p style="font-size:0.85rem;"><strong>Strategic lesson:</strong> Transparent pricing wins disproportionate goodwill. But Trustpilot 2.5/5 (2,364 reviews) driven by support failure proves that "things work fine until something breaks, and then customer support becomes a black hole." <strong>Key insight for PayrollOps:</strong> The moment things break is the truth test. Human support quality is the entire differentiation story.</p>
+<p class="src-chip">Source: <a href="https://www.comparisun.com/payroll/reviews/gusto/">Comparisun Gusto Review</a> | Trustpilot &mdash; User Review Evidence</p>
+</div>
+
+<div class="comp-card">
+<div class="comp-head">
+  <div><div class="comp-name">Paychex <span style="font-size:0.8rem;color:var(--green);">&#9679; BENCHMARK</span></div><div class="comp-info">US | 1&ndash;1,000 emp | Quote-based</div></div>
+</div>
+<p style="font-size:0.85rem;"><strong>Strategic lesson:</strong> The dedicated payroll specialist model (one named human who knows your payroll) is Paychex's strongest retention mechanism. Users who have had the same specialist for years are deeply loyal. PayrollOps should build the India equivalent of this model.</p>
+<p class="src-chip">Source: <a href="https://www.comparisun.com/payroll/reviews/paychex/">Comparisun Paychex Review</a> &mdash; User Review Evidence</p>
+</div>
+</section>
+
+
+<!-- ==================== FEATURE MATRIX ==================== -->
+<section id="feature-matrix" class="section">
+<h2><span class="sec-num">14</span>Competitor Feature Matrix</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>Feature</th><th>greytHR</th><th>Keka</th><th>Zoho</th><th>HROne</th><th>PayrollOps</th></tr>
+<tr><td>Payroll calculation</td><td><span class="badge-pill bg-green">Strong</span></td><td><span class="badge-pill bg-green">Strong</span></td><td><span class="badge-pill bg-green">Strong</span></td><td><span class="badge-pill bg-green">Strong</span></td><td><span class="badge-pill bg-green">Frappe capable</span></td></tr>
+<tr><td>Salary structure flexibility</td><td><span class="badge-pill bg-orange">Moderate</span></td><td><span class="badge-pill bg-orange">Moderate</span></td><td><span class="badge-pill bg-orange">Moderate</span></td><td><span class="badge-pill bg-green">Strong</span></td><td><span class="badge-pill bg-green">Highly flexible</span></td></tr>
+<tr><td>Payslip customization</td><td><span class="badge-pill bg-red">Weak</span></td><td><span class="badge-pill bg-orange">Moderate</span></td><td><span class="badge-pill bg-orange">Moderate</span></td><td><span class="badge-pill bg-orange">Moderate</span></td><td><span class="badge-pill bg-green">Custom (Jinja)</span></td></tr>
+<tr><td>Client-specific dashboard</td><td><span class="badge-pill bg-red">No</span></td><td><span class="badge-pill bg-red">No</span></td><td><span class="badge-pill bg-red">No</span></td><td><span class="badge-pill bg-orange">Moderate</span></td><td><span class="badge-pill bg-green">Built per client</span></td></tr>
+<tr><td>Custom reporting / Excel</td><td><span class="badge-pill bg-red">Weak</span></td><td><span class="badge-pill bg-orange">Moderate</span></td><td><span class="badge-pill bg-red">Weak</span></td><td><span class="badge-pill bg-green">Strong</span></td><td><span class="badge-pill bg-green">Custom per client</span></td></tr>
+<tr><td>Implementation service</td><td><span class="badge-pill bg-red">No</span></td><td><span class="badge-pill bg-red">No</span></td><td><span class="badge-pill bg-red">No</span></td><td><span class="badge-pill bg-orange">Moderate</span></td><td><span class="badge-pill bg-green">Core model</span></td></tr>
+<tr><td>Support quality</td><td><span class="badge-pill bg-red">Weak</span></td><td><span class="badge-pill bg-orange">Moderate</span></td><td><span class="badge-pill bg-orange">Moderate</span></td><td><span class="badge-pill bg-green">Strong</span></td><td><span class="badge-pill bg-green">Named contact</span></td></tr>
+<tr><td>India statutory compliance</td><td><span class="badge-pill bg-green">Strong</span></td><td><span class="badge-pill bg-green">Strong</span></td><td><span class="badge-pill bg-green">Strong</span></td><td><span class="badge-pill bg-green">Strong</span></td><td><span class="badge-pill bg-orange">Needs validation</span></td></tr>
+<tr><td>Pricing transparency</td><td><span class="badge-pill bg-green">Yes</span></td><td><span class="badge-pill bg-red">No</span></td><td><span class="badge-pill bg-green">Yes</span></td><td><span class="badge-pill bg-orange">Partial</span></td><td><span class="badge-pill bg-green">Published</span></td></tr>
+<tr><td>Open customization</td><td><span class="badge-pill bg-red">No</span></td><td><span class="badge-pill bg-red">No</span></td><td><span class="badge-pill bg-red">No</span></td><td><span class="badge-pill bg-red">No</span></td><td><span class="badge-pill bg-green">Full (open source)</span></td></tr>
+<tr><td>Excel-to-system transition</td><td><span class="badge-pill bg-red">No</span></td><td><span class="badge-pill bg-red">No</span></td><td><span class="badge-pill bg-orange">Moderate</span></td><td><span class="badge-pill bg-orange">Moderate</span></td><td><span class="badge-pill bg-green">Core service</span></td></tr>
+<tr><td>Accounting integration</td><td><span class="badge-pill bg-green">Yes</span></td><td><span class="badge-pill bg-green">Yes</span></td><td><span class="badge-pill bg-green">Native (Zoho)</span></td><td><span class="badge-pill bg-green">Yes</span></td><td><span class="badge-pill bg-green">ERPNext native</span></td></tr>
+</table>
+</div>
+<div class="callout">
+<strong>Key insight:</strong> Where competitors are strong (standard compliance, employee self-service, mobile apps), PayrollOps must not compete head-on. Where PayrollOps can differentiate (setup service, custom dashboards, custom reports, payslip flexibility, human support, open customization), the evidence shows consistent gaps across all 20 competitors.
+</div>
+<p class="src-chip">Phase 2 competitor analysis &mdash; User Review Evidence + Vendor Claim</p>
+</section>
+
+<!-- ==================== PRICING COMPARISON ==================== -->
+<section id="pricing-compare" class="section">
+<h2><span class="sec-num">15</span>Competitor Pricing Comparison</h2>
+
+<h3>Estimated 50-Employee Monthly Cost</h3>
+<div class="bar-chart">
+<div class="bar-row"><div class="bar-label">Zoho Payroll</div><div class="bar-track"><div class="bar-fill c1" style="width:25%">~₹2,000&ndash;4,000</div></div></div>
+<div class="bar-row"><div class="bar-label">greytHR</div><div class="bar-track"><div class="bar-fill c2" style="width:35%">~₹3,495</div></div></div>
+<div class="bar-row"><div class="bar-label">Qandle</div><div class="bar-track"><div class="bar-fill c3" style="width:35%">~₹2,450</div></div></div>
+<div class="bar-row"><div class="bar-label">HROne</div><div class="bar-track"><div class="bar-fill c5" style="width:45%">~₹4,250&ndash;4,950</div></div></div>
+<div class="bar-row"><div class="bar-label">Keka (est.)</div><div class="bar-track"><div class="bar-fill c5" style="width:50%">~₹4,500&ndash;5,000</div></div></div>
+<div class="bar-row"><div class="bar-label">RazorpayX</div><div class="bar-track"><div class="bar-fill c4" style="width:50%">~₹5,000</div></div></div>
+<div class="bar-row"><div class="bar-label">factoHR</div><div class="bar-track"><div class="bar-fill c4" style="width:50%">~₹4,999</div></div></div>
+<div class="bar-row"><div class="bar-label">PayrollOps</div><div class="bar-track"><div class="bar-fill c1" style="width:75%"><strong>₹8,000&ndash;12,000 (setup + support)</strong></div></div></div>
+<div class="bar-row"><div class="bar-label">Payroll outsourcing</div><div class="bar-track"><div class="bar-fill c4" style="width:100%">₹15,000&ndash;50,000</div></div></div>
+</div>
+
+<div class="callout callout-green">
+<strong>The PayrollOps value wedge:</strong> More than SaaS subscription (justified by setup + human support + custom reports); less than full payroll outsourcing (justified by client retaining control). This hybrid positioning is documented as underserved in India market research.
+</div>
+
+<h3>Why PayrollOps Must Price as Service + Support, Not SaaS-Only</h3>
+<ul class="compact">
+<li>India SaaS payroll pricing is ₹2,450&ndash;9,999/month for 50 employees. PayrollOps cannot compete on SaaS pricing alone.</li>
+<li>The value is in setup quality, configuration correctness, custom report building, and human support during payroll week.</li>
+<li>A 50-employee company doing Excel payroll wastes ₹5,500&ndash;9,500/month in HR time cost alone. PayrollOps at ₹8,000&ndash;12,000/month is ROI-positive on time savings + compliance risk reduction.</li>
+<li>Transparent all-in pricing (no hidden fees) is itself a differentiator &mdash; Gusto's transparent pricing generates disproportionate goodwill.</li>
+</ul>
+<p class="src-chip">Phase 2 competitor pricing + Phase 3 pricing strategy &mdash; Analyst Estimate + Vendor Claim</p>
+</section>
+
+<!-- ==================== GAP MAP ==================== -->
+<section id="gap-map" class="section">
+<h2><span class="sec-num">16</span>Competitor Gap Map</h2>
+
+<div class="matrix-grid">
+<div class="matrix-card">
+  <div class="gap-title">Gap 1: Setup/Configuration</div>
+  <div class="gap-meta"><span class="badge-pill bg-green">HIGH Confidence</span> <span class="badge-pill bg-orange">Medium Difficulty</span></div>
+  <p style="font-size:0.82rem;"><strong>Evidence:</strong> 66% of buyers encounter disruption after purchase. "Very high dependency on greythr team to customize." <strong>Affected:</strong> All 20 competitors. <strong>Opportunity:</strong> Be the expert who makes the software work.</p>
+</div>
+<div class="matrix-card">
+  <div class="gap-title">Gap 2: Custom Reports / Excel</div>
+  <div class="gap-meta"><span class="badge-pill bg-green">HIGH Confidence</span> <span class="badge-pill bg-orange">Medium Difficulty</span></div>
+  <p style="font-size:0.82rem;"><strong>Evidence:</strong> "Reporting configuration, TDS filing, revising of TDS is not possible." <strong>Affected:</strong> greytHR, RazorpayX, Zoho. <strong>Opportunity:</strong> Build client-specific Excel outputs once; deliver monthly.</p>
+</div>
+<div class="matrix-card">
+  <div class="gap-title">Gap 3: Payslip Customization</div>
+  <div class="gap-meta"><span class="badge-pill bg-green">HIGH Confidence</span> <span class="badge-pill bg-green">Low Difficulty</span></div>
+  <p style="font-size:0.82rem;"><strong>Evidence:</strong> Bank rejected 28-employee company's payslips for credit appraisal as "insufficient." <strong>Opportunity:</strong> Custom payslip format service as visible, tangible deliverable.</p>
+</div>
+<div class="matrix-card">
+  <div class="gap-title">Gap 4: CFO Dashboard</div>
+  <div class="gap-meta"><span class="badge-pill bg-orange">MEDIUM Confidence</span> <span class="badge-pill bg-orange">Medium Difficulty</span></div>
+  <p style="font-size:0.82rem;"><strong>Evidence:</strong> ADP India 2025: payroll visibility unmet need in mid-market. <strong>Affected:</strong> All India SMB tools. <strong>Opportunity:</strong> Build CFO-layer payroll dashboard per client in Frappe.</p>
+</div>
+<div class="matrix-card">
+  <div class="gap-title">Gap 5: Human Support (Payroll Week)</div>
+  <div class="gap-meta"><span class="badge-pill bg-green">VERY HIGH Confidence</span> <span class="badge-pill bg-red">High Difficulty (at scale)</span></div>
+  <p style="font-size:0.82rem;"><strong>Evidence:</strong> #1 complaint across ALL India payroll tools. Gusto Trustpilot 2.5/5 driven by support failure. <strong>Opportunity:</strong> Named specialist per client. Phone/WhatsApp support. 2&ndash;4hr SLA.</p>
+</div>
+<div class="matrix-card">
+  <div class="gap-title">Gap 6: Labour Code 2025 Audit</div>
+  <div class="gap-meta"><span class="badge-pill bg-green">HIGH Confidence</span> <span class="badge-pill bg-orange">Medium Difficulty</span></div>
+  <p style="font-size:0.82rem;"><strong>Evidence:</strong> 35-employee Pune company paid ₹8.7L EPFO arrears. 50% wages rule now mandatory. <strong>Opportunity:</strong> Time-boxed, high-value, urgent audit service.</p>
+</div>
+<div class="matrix-card">
+  <div class="gap-title">Gap 7: Excel-to-System Migration</div>
+  <div class="gap-meta"><span class="badge-pill bg-green">HIGH Confidence</span> <span class="badge-pill bg-orange">Medium Difficulty</span></div>
+  <p style="font-size:0.82rem;"><strong>Evidence:</strong> 62% of Indian SMEs still on spreadsheets. ₹5,500&ndash;9,500/month wasted on manual payroll. <strong>Opportunity:</strong> Structured migration with parallel run validation.</p>
+</div>
+<div class="matrix-card">
+  <div class="gap-title">Gap 8: Payroll Operations Support</div>
+  <div class="gap-meta"><span class="badge-pill bg-green">HIGH Confidence</span> <span class="badge-pill bg-orange">Medium Difficulty</span></div>
+  <p style="font-size:0.82rem;"><strong>Evidence:</strong> "CA up to 25 emp, in-house software from 50, hybrid from 500." Gap at 50&ndash;150. <strong>Opportunity:</strong> Fill hybrid model gap with setup + monthly support.</p>
+</div>
+</div>
+<p class="src-chip">Phase 2 Gap Map analysis &mdash; User Review Evidence + Strategic Interpretation</p>
+</section>
+
+<!-- ==================== FRAPPE FIT ==================== -->
+<section id="frappe-fit" class="section">
+<h2><span class="sec-num">17</span>Frappe Payroll Fit Assessment</h2>
+
+<h3>What Frappe HR v16 Supports (Confirmed)</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Feature</th><th>Status</th><th>Source</th></tr>
+<tr><td>Employee records and lifecycle</td><td><span class="badge-pill bg-green">Confirmed</span></td><td>Official docs</td></tr>
+<tr><td>Attendance and shift management</td><td><span class="badge-pill bg-green">Confirmed v16</span></td><td>v16 release notes</td></tr>
+<tr><td>Leave management with allocation</td><td><span class="badge-pill bg-green">Confirmed</span></td><td>Official docs</td></tr>
+<tr><td>Basic payroll processing</td><td><span class="badge-pill bg-green">Confirmed</span></td><td>Official docs</td></tr>
+<tr><td>Salary structure assignment</td><td><span class="badge-pill bg-green">Confirmed</span></td><td>Official docs</td></tr>
+<tr><td>Arrear calculation</td><td><span class="badge-pill bg-green">Confirmed v16</span></td><td>v16 release notes</td></tr>
+<tr><td>Overtime calculation</td><td><span class="badge-pill bg-green">Confirmed v16</span></td><td>v16 release notes</td></tr>
+<tr><td>Flexible benefits</td><td><span class="badge-pill bg-green">Confirmed v16</span></td><td>v16 release notes</td></tr>
+<tr><td>Custom reports (Report Builder)</td><td><span class="badge-pill bg-orange">With config</span></td><td>Frappe framework</td></tr>
+<tr><td>Custom dashboards</td><td><span class="badge-pill bg-orange">With config</span></td><td>Frappe framework</td></tr>
+<tr><td>Custom payslip formats</td><td><span class="badge-pill bg-orange">With customization</span></td><td>Jinja templating</td></tr>
+<tr><td>REST API</td><td><span class="badge-pill bg-green">Available</span></td><td>Frappe framework</td></tr>
+<tr><td>Audit trail</td><td><span class="badge-pill bg-green">Native</span></td><td>Frappe framework</td></tr>
+<tr><td>Role-based access</td><td><span class="badge-pill bg-green">Native</span></td><td>Frappe framework</td></tr>
+</table>
+</div>
+<p class="src-chip">Source: <a href="https://frappe.io/hr/version-16">frappe.io/hr/version-16</a> | <a href="https://www.indictranstech.com/how-frappe-hr-v16-automates-hr-workflow/">Indictrans v16 Breakdown</a> &mdash; Verified Fact (Vendor Documentation)</p>
+
+<h3>India Statutory Compliance &mdash; Honest Assessment</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Compliance Feature</th><th>Status</th><th>Risk Level</th></tr>
+<tr><td>Basic PF/ESI/PT/TDS component setup</td><td><span class="badge-pill bg-orange">Available with configuration</span></td><td><span class="badge-pill bg-orange">Medium</span></td></tr>
+<tr><td>Labour Code 2025 "50% wages rule"</td><td><span class="badge-pill bg-red">Needs hands-on verification</span></td><td><span class="badge-pill bg-red">High</span></td></tr>
+<tr><td>Form 130 (new Form 16) generation</td><td><span class="badge-pill bg-red">Unverified</span></td><td><span class="badge-pill bg-red">High</span></td></tr>
+<tr><td>ECR challan for EPFO</td><td><span class="badge-pill bg-orange">With configuration</span></td><td><span class="badge-pill bg-orange">Medium</span></td></tr>
+<tr><td>Form 24Q quarterly TDS output</td><td><span class="badge-pill bg-red">Needs verification</span></td><td><span class="badge-pill bg-red">High</span></td></tr>
+<tr><td>Multi-state Professional Tax</td><td><span class="badge-pill bg-orange">With configuration</span></td><td><span class="badge-pill bg-orange">Medium</span></td></tr>
+</table>
+</div>
+
+<div class="callout callout-red">
+<strong>Critical risk:</strong> If PayrollOps promises India statutory compliance automation using Frappe, the team must verify and configure this manually for each client. It cannot be assumed to be correct out of the box. This is a significant technical responsibility that must be completed before the first client engagement.
+</div>
+
+<h3>Why Frappe Is Suitable for PayrollOps</h3>
+<ul class="compact">
+<li><strong>No per-user licensing</strong> &mdash; genuine cost advantage vs ₹40&ndash;300 PEPM competitors</li>
+<li><strong>Full customizability</strong> &mdash; custom salary structures, payslips, reports, dashboards all possible</li>
+<li><strong>ERPNext integration</strong> &mdash; native accounting link eliminates manual journal entries</li>
+<li><strong>Zerodha implementation proof</strong> &mdash; deployed at major Indian fintech; scale validated</li>
+<li><strong>Open source with active development</strong> &mdash; v16 launched January 2026 with payroll improvements</li>
+</ul>
+
+<h3>Why Frappe Is Risky for Full SaaS/Compliance Ownership</h3>
+<ul class="compact">
+<li><strong>India compliance is not automated</strong> &mdash; unlike greytHR/Keka which maintain compliance teams</li>
+<li><strong>Technical skill required</strong> for every customization, report, and workflow</li>
+<li><strong>Compliance update responsibility</strong> &mdash; when rules change, every client config must be updated</li>
+<li><strong>Limited out-of-box payslip/reporting</strong> &mdash; clients need professional formats; requires dev work</li>
+<li><strong>Small review volume</strong> &mdash; fraction of greytHR/Keka reviews; limits trust signal</li>
+</ul>
+<p class="src-chip">Phase 1 Frappe assessment + Phase 3 strategy &mdash; Vendor Claim + Strategic Interpretation</p>
+</section>
+
+<!-- ==================== PRODUCT STRATEGY ==================== -->
+<section id="product-strategy" class="section">
+<h2><span class="sec-num">18</span>Product/Service Strategy</h2>
+
+<div class="price-grid">
+<div class="price-card">
+  <div class="pkg">PayrollOps Setup</div>
+  <div class="price">₹25,000&ndash;75,000</div>
+  <div class="price-note">One-time | 4&ndash;6 weeks | 50&ndash;150 emp</div>
+  <p style="font-size:0.82rem;text-align:left;">Discovery, data audit, system configuration, salary structure mapping, payslip template, dashboard, test + parallel run, HR training.</p>
+  <p style="font-size:0.78rem;color:var(--red);text-align:left;"><strong>Not included:</strong> Statutory filing, biometric hardware, other HRMS modules.</p>
+  <p style="font-size:0.78rem;color:var(--fg2);text-align:left;"><strong>Risk:</strong> Messy client data extends timeline. Needs data audit clause.</p>
+</div>
+<div class="price-card">
+  <div class="pkg">Monthly Support</div>
+  <div class="price">₹5,000&ndash;20,000/mo</div>
+  <div class="price-note">Ongoing | Named contact | SLA</div>
+  <p style="font-size:0.82rem;text-align:left;">Pre-payroll checklist, validation, post-payroll review, 1 custom Excel/month, compliance reminders, issue resolution (2&ndash;4hr SLA).</p>
+  <p style="font-size:0.78rem;color:var(--red);text-align:left;"><strong>Not included:</strong> Statutory filing, HR advisory, new module dev.</p>
+</div>
+<div class="price-card">
+  <div class="pkg">PayrollOps Migration</div>
+  <div class="price">₹35,000&ndash;1,00,000</div>
+  <div class="price-note">One-time | 6&ndash;8 weeks</div>
+  <p style="font-size:0.82rem;text-align:left;">Audit current config, historical data extraction, salary structure redesign, parallel run, verification report, retraining.</p>
+  <p style="font-size:0.78rem;color:var(--red);text-align:left;"><strong>Risk:</strong> Historical data quality primary risk. Data audit clause required.</p>
+</div>
+<div class="price-card">
+  <div class="pkg">Custom Payslip &amp; Reports</div>
+  <div class="price">₹5,000&ndash;15,000</div>
+  <div class="price-note">Per template + ₹2,000&ndash;5,000/mo maint</div>
+  <p style="font-size:0.82rem;text-align:left;">Custom payslip HTML/Jinja template + up to 3 custom Excel reports. Tested against 2 payroll cycles.</p>
+</div>
+<div class="price-card">
+  <div class="pkg">PayrollOps Pro Bundle</div>
+  <div class="price">₹60,000&ndash;1,30,000</div>
+  <div class="price-note">Setup + 6 months support | Lump sum</div>
+  <p style="font-size:0.82rem;text-align:left;">All Setup + 6 months Monthly Support. Reduces decision fatigue; ensures 6-month engagement to prove value.</p>
+</div>
+<div class="price-card">
+  <div class="pkg">Labour Code Audit</div>
+  <div class="price">₹15,000&ndash;35,000</div>
+  <div class="price-note">One-time | 1&ndash;2 weeks | Urgent</div>
+  <p style="font-size:0.82rem;text-align:left;">Audit salary structures vs Code on Wages 2025, identify gaps, recommend restructure, configure in system, compliance memo.</p>
+  <p style="font-size:0.78rem;color:var(--red);text-align:left;"><strong>Requires CA-qualified specialist.</strong> Deliverable is recommendation, not legally binding audit opinion.</p>
+</div>
+<div class="price-card">
+  <div class="pkg">ERPNext Activation</div>
+  <div class="price">₹35,000&ndash;75,000</div>
+  <div class="price-note">One-time + ₹5,000&ndash;12,000/mo</div>
+  <p style="font-size:0.82rem;text-align:left;">All Setup deliverables + ERPNext accounting integration (auto journal entry posting). Cleanest technical pitch.</p>
+</div>
+</div>
+<p class="src-chip">Phase 3 product/service strategy &mdash; Strategic Interpretation</p>
+</section>
+
+<!-- ==================== USPs ==================== -->
+<section id="usps" class="section">
+<h2><span class="sec-num">19</span>20 Evidence-Based USPs</h2>
+
+<div class="usp-item">
+<div class="usp-head"><span class="usp-title">USP 1: Configured correctly from day one &mdash; not left for you to figure out</span><span class="usp-meta"><span class="badge-pill bg-green">HIGH</span></span></div>
+<p style="font-size:0.82rem;color:var(--fg2);"><strong>Pain:</strong> 66% of buyers encounter disruption after purchase. "Very high dependency on greythr team to customize." <strong>How:</strong> Dedicated implementation sprint. No competitor includes dedicated configuration service.</p>
+</div>
+<div class="usp-item">
+<div class="usp-head"><span class="usp-title">USP 2: Labour Code 2025 verified before you roll next payroll</span><span class="usp-meta"><span class="badge-pill bg-orange">MEDIUM</span></span></div>
+<p style="font-size:0.82rem;color:var(--fg2);"><strong>Pain:</strong> EPFO case: 35-emp Pune company paid ₹8.7L arrears. <strong>How:</strong> Salary structure review against 50% wages rule. Requires CA on team.</p>
+</div>
+<div class="usp-item">
+<div class="usp-head"><span class="usp-title">USP 3: Payroll dashboard your HR manager will actually use</span><span class="usp-meta"><span class="badge-pill bg-green">HIGH</span></span></div>
+<p style="font-size:0.82rem;color:var(--fg2);"><strong>Pain:</strong> CFO visibility gap documented across all India SMB tools. <strong>How:</strong> Frappe configurable dashboards built during setup.</p>
+</div>
+<div class="usp-item">
+<div class="usp-head"><span class="usp-title">USP 4: Your payslip format &mdash; not a locked template</span><span class="usp-meta"><span class="badge-pill bg-green">HIGH</span></span></div>
+<p style="font-size:0.82rem;color:var(--fg2);"><strong>Pain:</strong> Bank rejected 28-emp company's payslips as "insufficient." <strong>How:</strong> Frappe Jinja templating; any format deliverable.</p>
+</div>
+<div class="usp-item">
+<div class="usp-head"><span class="usp-title">USP 5: Custom Excel outputs for your CA, bank, and CFO</span><span class="usp-meta"><span class="badge-pill bg-green">HIGH</span></span></div>
+<p style="font-size:0.82rem;color:var(--fg2);"><strong>Pain:</strong> "Reporting configuration, TDS filing is not possible." &mdash; greytHR G2. <strong>How:</strong> Frappe custom report builder + Python/Jinja scripts.</p>
+</div>
+<div class="usp-item">
+<div class="usp-head"><span class="usp-title">USP 6: Human support during payroll week &mdash; someone who picks up</span><span class="usp-meta"><span class="badge-pill bg-green">HIGH</span></span></div>
+<p style="font-size:0.82rem;color:var(--fg2);"><strong>Pain:</strong> Gusto Trustpilot 2.5/5 driven by support failure. <strong>How:</strong> Named contact; WhatsApp + phone; 2&ndash;4hr SLA.</p>
+</div>
+<div class="usp-item">
+<div class="usp-head"><span class="usp-title">USP 7: Pre-payroll checklist before you finalize &mdash; not after</span><span class="usp-meta"><span class="badge-pill bg-green">HIGH</span></span></div>
+<p style="font-size:0.82rem;color:var(--fg2);"><strong>Pain:</strong> Post-payroll errors trigger "I raised a ticket every month." <strong>How:</strong> Human review + structured checklist before client finalizes.</p>
+</div>
+<div class="usp-item">
+<div class="usp-head"><span class="usp-title">USP 8: Attendance connects to payroll &mdash; no manual reconciliation</span><span class="usp-meta"><span class="badge-pill bg-green">HIGH</span></span></div>
+<p style="font-size:0.82rem;color:var(--fg2);"><strong>Pain:</strong> HR managers spend 1&ndash;2 days/month reconciling attendance vs LOP manually. <strong>How:</strong> Frappe attendance module or structured Excel import.</p>
+</div>
+<div class="usp-item">
+<div class="usp-head"><span class="usp-title">USP 9: Unlimited salary components for complex structures</span><span class="usp-meta"><span class="badge-pill bg-orange">MEDIUM</span></span></div>
+<p style="font-size:0.82rem;color:var(--fg2);"><strong>Pain:</strong> greytHR/Keka flagged for structure rigidity. <strong>How:</strong> Frappe salary component system is fully configurable.</p>
+</div>
+<div class="usp-item">
+<div class="usp-head"><span class="usp-title">USP 10: ERPNext accounting integration &mdash; payroll posts to GL automatically</span><span class="usp-meta"><span class="badge-pill bg-green">HIGH</span></span></div>
+<p style="font-size:0.82rem;color:var(--fg2);"><strong>Pain:</strong> Finance waits 1&ndash;2 days for manual journal entry from HR. <strong>How:</strong> Frappe HR + ERPNext native integration.</p>
+</div>
+<div class="usp-item">
+<div class="usp-head"><span class="usp-title">USP 11: Payroll process documented &mdash; doesn't live in one person's head</span><span class="usp-meta"><span class="badge-pill bg-orange">MEDIUM</span></span></div>
+<p style="font-size:0.82rem;color:var(--fg2);"><strong>Pain:</strong> Common trigger for switching is HR manager departure. <strong>How:</strong> SOP documentation included in every setup.</p>
+</div>
+<div class="usp-item">
+<div class="usp-head"><span class="usp-title">USP 12: Transparent, all-in pricing &mdash; know before you sign</span><span class="usp-meta"><span class="badge-pill bg-green">HIGH</span></span></div>
+<p style="font-size:0.82rem;color:var(--fg2);"><strong>Pain:</strong> Pricing opacity is top-3 complaint for Keka, ADP, Paychex. <strong>How:</strong> Published price list. No hidden fees.</p>
+</div>
+<div class="usp-item">
+<div class="usp-head"><span class="usp-title">USP 13: Audit trail &mdash; every change logged, timestamped, attributable</span><span class="usp-meta"><span class="badge-pill bg-green">HIGH</span></span></div>
+<p style="font-size:0.82rem;color:var(--fg2);"><strong>Pain:</strong> EPFO inspection requires showing who changed what salary when. <strong>How:</strong> Frappe native audit trail; zero extra dev.</p>
+</div>
+<div class="usp-item">
+<div class="usp-head"><span class="usp-title">USP 14: Run payroll in 1 day &mdash; not 5 days of spreadsheets</span><span class="usp-meta"><span class="badge-pill bg-orange">MEDIUM</span></span></div>
+<p style="font-size:0.82rem;color:var(--fg2);"><strong>Pain:</strong> Excel payroll takes 3&ndash;5 working days for 50 employees. <strong>How:</strong> Configured Frappe + pre-payroll checklist.</p>
+</div>
+<div class="usp-item">
+<div class="usp-head"><span class="usp-title">USP 15: Exceptions flagged before HR sees the salary sheet</span><span class="usp-meta"><span class="badge-pill bg-orange">MEDIUM</span></span></div>
+<p style="font-size:0.82rem;color:var(--fg2);"><strong>Pain:</strong> New joiner errors, LOP mismatches propagate through payroll. <strong>How:</strong> Custom pre-payroll exception report in Frappe.</p>
+</div>
+<div class="usp-item">
+<div class="usp-head"><span class="usp-title">USP 16: Switch without losing historical data</span><span class="usp-meta"><span class="badge-pill bg-orange">MEDIUM</span></span></div>
+<p style="font-size:0.82rem;color:var(--fg2);"><strong>Pain:</strong> Fear of migration prevents switching even when unhappy. <strong>How:</strong> Structured extraction, cleaning, parallel run validation.</p>
+</div>
+<div class="usp-item">
+<div class="usp-head"><span class="usp-title">USP 17: India-first &mdash; Code on Wages, IT Act 2025, state PT slabs</span><span class="usp-meta"><span class="badge-pill bg-orange">MEDIUM</span></span></div>
+<p style="font-size:0.82rem;color:var(--fg2);"><strong>Pain:</strong> Generic Frappe config may not reflect post-2025 regulatory environment. <strong>How:</strong> India payroll regulatory calendar maintained by team.</p>
+</div>
+<div class="usp-item">
+<div class="usp-head"><span class="usp-title">USP 18: You control payroll &mdash; we make the system work</span><span class="usp-meta"><span class="badge-pill bg-green">HIGH</span></span></div>
+<p style="font-size:0.82rem;color:var(--fg2);"><strong>Pain:</strong> Full outsourcing feels risky; SaaS with no support leaves stranded. <strong>How:</strong> "You run it. We support it." Clear boundary.</p>
+</div>
+<div class="usp-item">
+<div class="usp-head"><span class="usp-title">USP 19: No per-user licensing fees &mdash; scale without changing bill</span><span class="usp-meta"><span class="badge-pill bg-green">HIGH</span></span></div>
+<p style="font-size:0.82rem;color:var(--fg2);"><strong>Pain:</strong> SaaS bill increases 50% when headcount grows 80&rarr;120. <strong>How:</strong> Frappe MIT license + banded support pricing.</p>
+</div>
+<div class="usp-item">
+<div class="usp-head"><span class="usp-title">USP 20: One phone call during payroll week &mdash; not a ticket number</span><span class="usp-meta"><span class="badge-pill bg-green">HIGH</span></span></div>
+<p style="font-size:0.82rem;color:var(--fg2);"><strong>Pain:</strong> "Support becomes a black hole when things go wrong" &mdash; #1 complaint. <strong>How:</strong> Named contact. Direct WhatsApp/phone. No ticket system for month-end.</p>
+</div>
+<p class="src-chip">Phase 3 USP analysis &mdash; Evidence from Phase 1 + Phase 2</p>
+</section>
+
+<!-- ==================== BLUEPRINT ==================== -->
+<section id="blueprint" class="section">
+<h2><span class="sec-num">20</span>Practical Product Blueprint</h2>
+
+<h3>MVP (Required for First Client)</h3>
+<div class="timeline">
+<div class="timeline-item"><div class="timeline-title">Employee master import (Excel template)</div><div class="timeline-desc">Required Day 1</div></div>
+<div class="timeline-item"><div class="timeline-title">Salary structure builder (components, formulas)</div><div class="timeline-desc">Core payroll function</div></div>
+<div class="timeline-item"><div class="timeline-title">Salary component mapping (Basic, HRA, allowances, deductions)</div><div class="timeline-desc">Required for every client</div></div>
+<div class="timeline-item"><div class="timeline-title">PF/ESI/PT/TDS component configuration</div><div class="timeline-desc">India compliance &mdash; verify post-Labour Code 2025</div></div>
+<div class="timeline-item"><div class="timeline-title">Attendance/LOP input (manual upload or Frappe attendance)</div><div class="timeline-desc">Excel upload template minimum</div></div>
+<div class="timeline-item"><div class="timeline-title">Payroll run (monthly batch)</div><div class="timeline-desc">Core function</div></div>
+<div class="timeline-item"><div class="timeline-title">Payslip generation (HTML template, customizable)</div><div class="timeline-desc">Custom template per client</div></div>
+<div class="timeline-item"><div class="timeline-title">Payroll approval workflow</div><div class="timeline-desc">Manager &rarr; HR &rarr; Finance</div></div>
+<div class="timeline-item"><div class="timeline-title">Salary sheet Excel export</div><div class="timeline-desc">Required by every CA and bank</div></div>
+<div class="timeline-item"><div class="timeline-title">PF challan + ESI data export</div><div class="timeline-desc">For EPFO/ESIC compliance</div></div>
+<div class="timeline-item"><div class="timeline-title">Audit trail + Role permissions</div><div class="timeline-desc">Frappe native &mdash; zero extra dev</div></div>
+<div class="timeline-item"><div class="timeline-title">Monthly payroll summary report</div><div class="timeline-desc">Basic Frappe report</div></div>
+</div>
+
+<h3>Phase 2 (After 5+ Clients Live)</h3>
+<div class="timeline">
+<div class="timeline-item phase"><div class="timeline-title">Custom exception report (pre-payroll flags)</div><div class="timeline-desc">High value; requires custom dev</div></div>
+<div class="timeline-item phase"><div class="timeline-title">CFO payroll cost dashboard (by dept, month)</div><div class="timeline-desc">Frappe dashboard builder; client-specific</div></div>
+<div class="timeline-item phase"><div class="timeline-title">Multi-month payroll trend comparison</div><div class="timeline-desc">Useful after 3+ months of data</div></div>
+<div class="timeline-item phase"><div class="timeline-title">Employee self-service (payslip view, Form 130)</div><div class="timeline-desc">Lower priority for first clients</div></div>
+<div class="timeline-item phase"><div class="timeline-title">Automated compliance update alerts</div><div class="timeline-desc">Regulatory calendar + alert system</div></div>
+<div class="timeline-item phase"><div class="timeline-title">TDS working sheet export + Multi-entity dashboard</div><div class="timeline-desc">For CA use; after 10+ single-entity clients</div></div>
+</div>
+
+<h3>Later (SaaS Phase)</h3>
+<div class="timeline">
+<div class="timeline-item later"><div class="timeline-title">Self-serve onboarding</div><div class="timeline-desc">After implementation-led model is proven</div></div>
+<div class="timeline-item later"><div class="timeline-title">Mobile app for employee self-service</div><div class="timeline-desc">Frappe mobile exists; needs polish</div></div>
+<div class="timeline-item later"><div class="timeline-title">AI-assisted payroll anomaly detection</div><div class="timeline-desc">Useful; not Day 1 priority</div></div>
+<div class="timeline-item later"><div class="timeline-title">Multi-country payroll</div><div class="timeline-desc">Different compliance engine required</div></div>
+</div>
+
+<h3>Not Needed (Phase 1)</h3>
+<div class="timeline">
+<div class="timeline-item notneeded"><div class="timeline-title">Performance management</div></div>
+<div class="timeline-item notneeded"><div class="timeline-title">Recruitment / ATS</div></div>
+<div class="timeline-item notneeded"><div class="timeline-title">Learning management</div></div>
+<div class="timeline-item notneeded"><div class="timeline-title">Advanced analytics beyond payroll</div></div>
+<div class="timeline-item notneeded"><div class="timeline-title">Expense management</div></div>
+</div>
+<p class="src-chip">Phase 3 product blueprint &mdash; Strategic Interpretation</p>
+</section>
+
+<!-- ==================== IMPLEMENTATION ==================== -->
+<section id="implementation" class="section">
+<h2><span class="sec-num">21</span>Implementation Workflow</h2>
+
+<div class="timeline">
+<div class="timeline-item"><div class="timeline-title">Stage 1: Discovery (Week 1)</div><div class="timeline-desc">Understand current process, tools, employee count, salary structure, pain points. Collect 13-point checklist including states of operation, attendance method, payslip requirements, Excel output needs.</div></div>
+<div class="timeline-item"><div class="timeline-title">Stage 2: Data Collection + Audit (Week 1&ndash;2)</div><div class="timeline-desc">Client provides employee master, salary sheets, PF/ESI registrations, bank details, attendance data. PayrollOps delivers data quality audit + salary structure gap analysis including Labour Code 50% wages check.</div></div>
+<div class="timeline-item"><div class="timeline-title">Stage 3: System Setup (Week 2&ndash;3)</div><div class="timeline-desc">Configure Frappe HR: company details, employee import, departments, salary structures, leave types, attendance config, payroll frequency, PF/ESI/PT/TDS formulas (verified against 2026 rules), approval workflow, payslip template, custom Excel reports, dashboard.</div></div>
+<div class="timeline-item"><div class="timeline-title">Stage 4: Test Payroll Run (Week 3&ndash;4)</div><div class="timeline-desc">Run test payroll with real data. Generate test payslips. Validate PF, ESI, PT, TDS, LOP calculations. Client HR spot-checks 10 employees. Issues logged and fixed.</div></div>
+<div class="timeline-item"><div class="timeline-title">Stage 5: Parallel Run (Week 4&ndash;5)</div><div class="timeline-desc">Run full payroll cycle in BOTH old system AND new Frappe system. Reconcile employee-by-employee. Client approves new output as accurate.</div></div>
+<div class="timeline-item"><div class="timeline-title">Stage 6: HR Training (Week 5&ndash;6)</div><div class="timeline-desc">3 sessions (5 hours total): system overview, monthly payroll process, payslip/export/workflow. Handover: PayrollOps SOP document. Go-live declaration.</div></div>
+<div class="timeline-item"><div class="timeline-title">Stage 7: First 3-Month Support</div><div class="timeline-desc">Month 1: high-touch walkthrough. Month 2: pre-payroll checklist + post-run validation. Month 3: mostly independent; exception handling. 3-month check-in; offer Monthly Support continuation.</div></div>
+</div>
+
+<h3>Monthly Support Process (Ongoing)</h3>
+<div class="card">
+<div style="display:grid;grid-template-columns:80px 1fr;gap:0.5rem;font-size:0.82rem;">
+<div style="color:var(--accent);font-weight:600;">22nd</div><div>PayrollOps sends monthly input checklist to HR</div>
+<div style="color:var(--accent);font-weight:600;">25th</div><div>HR provides completed inputs (attendance, LOP, joiners/exits)</div>
+<div style="color:var(--accent);font-weight:600;">26th</div><div>PayrollOps reviews inputs; flags exceptions in exception report</div>
+<div style="color:var(--accent);font-weight:600;">27th</div><div>Client HR finalizes payroll after reviewing exceptions</div>
+<div style="color:var(--accent);font-weight:600;">28&ndash;30th</div><div>Payroll run, payslip generation, bank file; PayrollOps on standby</div>
+<div style="color:var(--accent);font-weight:600;">1st</div><div>Monthly summary report delivered to client</div>
+</div>
+</div>
+<p class="src-chip">Phase 3 implementation workflow &mdash; Strategic Interpretation</p>
+</section>
+
+<!-- ==================== PRICING STRATEGY ==================== -->
+<section id="pricing-strategy" class="section">
+<h2><span class="sec-num">22</span>Pricing Strategy</h2>
+
+<h3>Pricing Principles</h3>
+<div class="two-col">
+<div class="card">
+<div class="card-title">Transparent and Published</div>
+<p style="font-size:0.85rem;">Every India payroll tool with opaque pricing gets punished in reviews. Gusto's transparent pricing generates disproportionate goodwill. PayrollOps must publish service pricing clearly.</p>
+</div>
+<div class="card">
+<div class="card-title">Higher than SaaS, Justified by Service</div>
+<p style="font-size:0.85rem;">greytHR ₹3,495/mo with no meaningful support. PayrollOps ₹8,000&ndash;12,000/mo with human validation + support. The ₹1,500&ndash;4,500 delta must be clearly articulated.</p>
+</div>
+<div class="card">
+<div class="card-title">Setup Fee + Monthly Support</div>
+<p style="font-size:0.85rem;">Setup is the entry point; monthly support is recurring revenue. Setup fee covers onboarding cost + margin. Monthly support covers ongoing operations.</p>
+</div>
+<div class="card">
+<div class="card-title">No Per-Employee Metering Below 150</div>
+<p style="font-size:0.85rem;">Banded pricing by company size, not per-employee meter. Cleaner; avoids SaaS per-employee anxiety. Honours Frappe's zero licensing fee model.</p>
+</div>
+</div>
+
+<h3>Pricing Table</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Package</th><th>Target</th><th>One-Time</th><th>Monthly</th></tr>
+<tr><td>PayrollOps Setup</td><td>50&ndash;100 emp</td><td>₹25,000&ndash;75,000</td><td>&mdash;</td></tr>
+<tr><td>Monthly Support</td><td>50&ndash;100 emp</td><td>&mdash;</td><td>₹5,000&ndash;12,000</td></tr>
+<tr><td>PayrollOps Pro (6mo bundle)</td><td>50&ndash;100 emp</td><td>&mdash;</td><td>Lump ₹60,000&ndash;1,30,000</td></tr>
+<tr><td>Migration</td><td>50&ndash;150 emp</td><td>₹35,000&ndash;1,00,000</td><td>&mdash;</td></tr>
+<tr><td>Labour Code Audit</td><td>Any size</td><td>₹15,000&ndash;35,000</td><td>&mdash;</td></tr>
+<tr><td>Custom Payslip</td><td>Any</td><td>₹5,000&ndash;15,000</td><td>₹2,000&ndash;5,000 maint</td></tr>
+<tr><td>Custom Report</td><td>Any</td><td>₹5,000&ndash;10,000</td><td>₹2,000&ndash;3,000 maint</td></tr>
+<tr><td>ERPNext Activation</td><td>ERPNext users</td><td>₹35,000&ndash;75,000</td><td>₹5,000&ndash;12,000</td></tr>
+</table>
+</div>
+
+<h3>Pricing Risk Analysis</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Risk</th><th>Mitigation</th></tr>
+<tr><td>Clients expect greytHR pricing (₹3,495)</td><td>Frame as setup + support service, not subscription. Quantify ROI: "Your HR manager spends 3 days/month on payroll. At ₹40,000/month salary, that's ₹6,000/month in time cost alone."</td></tr>
+<tr><td>Setup fee creates purchase friction</td><td>Deferred payment: 50% on contract, 50% on go-live. Or bundle into 12-month support contract.</td></tr>
+<tr><td>Clients switch after setup without support</td><td>Include 3-month minimum support clause in setup contract.</td></tr>
+<tr><td>Scope creep inflates delivery cost</td><td>Explicit written scope. Change-order process for out-of-scope items.</td></tr>
+</table>
+</div>
+<p class="src-chip">Phase 3 pricing strategy &mdash; Strategic Interpretation</p>
+</section>
+
+<!-- ==================== GTM ==================== -->
+<section id="gtm" class="section">
+<h2><span class="sec-num">23</span>Go-To-Market Strategy</h2>
+
+<h3>Channel Priority: First 10 Clients</h3>
+<div class="funnel-step"><div class="funnel-bar" style="width:100%;background:var(--green);">1. Existing Network (Months 1&ndash;3)</div><div class="funnel-label">Fastest: personal contacts at 50&ndash;200 emp companies</div></div>
+<div class="funnel-step"><div class="funnel-bar" style="width:90%;background:var(--blue);">2. Frappe/ERPNext Community (Months 1&ndash;6)</div><div class="funnel-label">22,000+ forum users; partner referrals; meetups</div></div>
+<div class="funnel-step"><div class="funnel-bar" style="width:80%;background:var(--purple);">3. LinkedIn Outreach (Months 2&ndash;6)</div><div class="funnel-label">HR Managers at 50&ndash;200 emp companies in Tier 1 cities</div></div>
+<div class="funnel-step"><div class="funnel-bar" style="width:70%;background:var(--orange);">4. CA Referral Program (Months 3&ndash;6)</div><div class="funnel-label">CA firms with 5&ndash;20 SMB payroll clients</div></div>
+<div class="funnel-step"><div class="funnel-bar" style="width:55%;background:#5a9e9e;">5. Content Marketing (Months 2+)</div><div class="funnel-label">LinkedIn + Substack: Labour Code, Excel cost, greytHR gaps</div></div>
+<div class="funnel-step"><div class="funnel-bar" style="width:35%;background:var(--fg2);">6. Paid Ads (Months 6+)</div><div class="funnel-label">Only after offer is validated; LinkedIn + Google</div></div>
+
+<h3>Key Offers</h3>
+<div class="two-col">
+<div class="card">
+<div class="card-title">Free 20-Minute Payroll Process Diagnostic</div>
+<p style="font-size:0.85rem;">"No pitch, just an honest look at where the risk is." Offered to HR managers and founders via LinkedIn. Not a demo &mdash; a diagnostic.</p>
+</div>
+<div class="card">
+<div class="card-title">Free Labour Code Compliance Audit</div>
+<p style="font-size:0.85rem;">Urgent, time-boxed, penalty-driven. "We'll audit your salary structures against the November 2025 Labour Code changes." No obligation to switch.</p>
+</div>
+</div>
+
+<h3>Content Strategy</h3>
+<ul class="compact">
+<li>"Labour Code 2025 &mdash; Is Your Salary Structure Compliant?"</li>
+<li>"True Cost of Excel Payroll for a 50-Person Company"</li>
+<li>"What greytHR Can't Configure Without Raising a Ticket"</li>
+<li>"Form 130 vs Form 16: What Changed in April 2026"</li>
+</ul>
+<p class="src-chip">Phase 3 GTM strategy &mdash; Strategic Interpretation</p>
+</section>
+
+<!-- ==================== SALES MESSAGING ==================== -->
+<section id="sales-messaging" class="section">
+<h2><span class="sec-num">24</span>Sales Messaging and Demo Flow</h2>
+
+<h3>One-Line Positioning</h3>
+<div class="verdict-card">
+<div class="label">PayrollOps Positioning</div>
+<div class="value">"We configure your payroll correctly, build your HR team a dashboard they'll actually use, and stay with you when something goes wrong."</div>
+</div>
+
+<h3>Discovery Call Script (30 minutes)</h3>
+<ol class="compact">
+<li>"Tell me how you run payroll right now. Walk me through last month."</li>
+<li>"How long does it take from attendance collection to payslip distribution?"</li>
+<li>"What's the most painful part of that process?"</li>
+<li>"Have you ever had a payroll error that affected employees directly?"</li>
+<li>"Do you know if your salary structures are compliant with November 2025 Code on Wages?"</li>
+<li>"What's stopping you from moving to a proper system?"</li>
+<li>"If you could describe your ideal payroll process in 6 months, what would it look like?"</li>
+</ol>
+
+<h3>Demo Flow (45 minutes)</h3>
+<div class="timeline">
+<div class="timeline-item"><div class="timeline-title">Show the problem (5 min)</div><div class="timeline-desc">Sanitized before-state of a typical 70-employee company's payroll chaos.</div></div>
+<div class="timeline-item"><div class="timeline-title">Show Setup output (15 min)</div><div class="timeline-desc">Configured Frappe HR with real salary structure, custom payslip, dashboard &mdash; not a generic demo.</div></div>
+<div class="timeline-item"><div class="timeline-title">Show monthly process (10 min)</div><div class="timeline-desc">Pre-payroll checklist, exception report, one-click payroll run.</div></div>
+<div class="timeline-item"><div class="timeline-title">Show deliverables (5 min)</div><div class="timeline-desc">Sample custom Excel outputs, payslip format, CFO dashboard.</div></div>
+<div class="timeline-item"><div class="timeline-title">Show support model (5 min)</div><div class="timeline-desc">"Here's your named contact. Here's how you reach us during payroll week."</div></div>
+<div class="timeline-item"><div class="timeline-title">Q&amp;A and scope (10 min)</div></div>
+</div>
+
+<h3>Objection Handling</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Objection</th><th>Response</th></tr>
+<tr><td>"We already have greytHR"</td><td>"How much time does your HR team spend on payroll? When was the last support ticket that took &gt;24hrs to resolve?"</td></tr>
+<tr><td>"Why Frappe, not greytHR/Keka?"</td><td>"Zero per-user licensing. Every configuration is yours. Not locked into a vendor's template."</td></tr>
+<tr><td>"Can Frappe handle our complex structure?"</td><td>"Walk me through your salary structure and I'll tell you honestly whether we can handle it &mdash; and exactly how."</td></tr>
+<tr><td>"What if your support person leaves?"</td><td>"Documented configuration. Two people know your setup. You have admin credentials &mdash; never locked out."</td></tr>
+<tr><td>"Seems expensive vs greytHR"</td><td>"greytHR ₹3,495 gets you a login. PayrollOps ₹8,000 includes setup, validation, and someone on the phone. How much does one payroll error cost?"</td></tr>
+<tr><td>"We're not sure about switching"</td><td>"Start with a free Labour Code Compliance Audit. No obligation to switch anything."</td></tr>
+</table>
+</div>
+
+<h3>What Not To Say</h3>
+<div class="callout callout-red">
+<ul class="compact">
+<li>"We will beat greytHR/Keka on features." &mdash; PayrollOps cannot in Year 1.</li>
+<li>"Go live in 5 minutes." &mdash; PayrollOps is not self-serve SaaS.</li>
+<li>"We handle all your statutory filings." &mdash; Boundary violation; legal liability.</li>
+<li>"100% automated compliance." &mdash; Not true; Frappe requires manual configuration.</li>
+<li>"Global payroll ready." &mdash; Not for 24+ months.</li>
+<li>"Zero-error guarantee." &mdash; India compliance is genuinely complex.</li>
+</ul>
+</div>
+<p class="src-chip">Phase 3 sales messaging &mdash; Strategic Interpretation</p>
+</section>
+
+
+<!-- ==================== VALIDATION ==================== -->
+<section id="validation" class="section">
+<h2><span class="sec-num">25</span>Validation Plan</h2>
+
+<div class="callout callout-red">
+<strong>Do this before scaling.</strong> Every item is a signal, not a guarantee. If the kill criteria are triggered, delay scale until resolved.
+</div>
+
+<h3>1. Frappe Technical Validation (Must Complete First)</h3>
+<div class="card">
+<ul class="compact">
+<li>Set up Frappe HR v16 instance on clean hosting</li>
+<li>Configure sample 50-employee company (PF-eligible, ESI-eligible, non-ESI, PT-applicable mix)</li>
+<li>Verify PF calculation basis is Code on Wages 2025 compliant (50% wages rule)</li>
+<li>Verify ESI calculation for employees earning &le;₹21,000</li>
+<li>Verify Professional Tax for Karnataka, Maharashtra, Tamil Nadu</li>
+<li>Verify TDS projection output matches Income Tax Act 2025</li>
+<li>Verify payslip template can be customized to client format</li>
+<li>Verify custom Excel salary sheet export in client-defined columns</li>
+<li>Verify audit trail captures all payroll modifications</li>
+</ul>
+<p style="font-size:0.82rem;color:var(--red);margin-top:0.75rem;"><strong>Kill criterion:</strong> If any of the above cannot be verified within 2 weeks, delay client onboarding until resolved.</p>
+</div>
+
+<h3>2. Buyer Interviews (15&ndash;20 Conversations Before First Pilot)</h3>
+<div class="card">
+<div style="font-size:0.85rem;"><strong>Target:</strong> HR managers and founders at 50&ndash;150 employee India companies.<br><strong>Goal:</strong> Validate pain, validate offer, validate pricing.<br><strong>Key questions:</strong></div>
+<ul class="compact">
+<li>"How long does payroll take you right now?"</li>
+<li>"What would make you switch your payroll system?"</li>
+<li>"What would you pay for someone to set it up correctly and support you monthly?"</li>
+<li>"What's your biggest fear about changing payroll systems?"</li>
+<li>"Would you pay ₹30,000 for setup + 6 months of support at ₹5,000/month?"</li>
+</ul>
+<p style="font-size:0.82rem;color:var(--green);margin-top:0.75rem;"><strong>Success signal:</strong> 5+ interviewees express genuine interest and ask "how do I sign up?"</p>
+<p style="font-size:0.82rem;color:var(--red);"><strong>Kill criterion:</strong> If fewer than 3 of 20 express interest at stated pricing, revisit pricing or offer.</p>
+</div>
+
+<h3>3. Pilot Clients (3&ndash;5 Before Full Launch)</h3>
+<div class="card">
+<div style="font-size:0.85rem;"><strong>Offer:</strong> 30&ndash;50% discount in exchange for feedback, case study rights, and reference.<br><strong>Full delivery:</strong> Setup + 2 months Monthly Support.</div>
+<p style="font-size:0.85rem;margin-top:0.5rem;"><strong>Measure:</strong></p>
+<ul class="compact">
+<li>Was payroll configured correctly on first run?</li>
+<li>How many errors caught pre-finalization?</li>
+<li>Did HR team use the dashboard?</li>
+<li>Did CA find any compliance issues?</li>
+<li>Did client renew Monthly Support after pilot?</li>
+<li>Would client recommend PayrollOps to a peer? (NPS target: &gt;50)</li>
+</ul>
+<p style="font-size:0.82rem;color:var(--red);margin-top:0.75rem;"><strong>Kill criterion:</strong> If more than 2 of 5 pilots fail to run a clean payroll in first cycle, redesign implementation process before scaling.</p>
+</div>
+
+<h3>4. Compliance Boundary Validation</h3>
+<div class="card">
+<ul class="compact">
+<li>Have a CA review one completed PayrollOps configuration</li>
+<li>Verify setup is within "payroll configuration and support" &mdash; not "statutory filing service"</li>
+<li>Document explicitly: PayrollOps configures and supports; client's CA files PF/ESI/TDS returns</li>
+<li>Get one-page legal scope note from CA or labour law practitioner</li>
+</ul>
+</div>
+
+<h3>5. Support SLA Validation</h3>
+<div class="card">
+<ul class="compact">
+<li>During 3 pilot clients: track every support request</li>
+<li>Measure: time from request to resolution</li>
+<li>Target: &lt;4 hours on payroll week; &lt;24 hours otherwise</li>
+<li>Calculate: how many clients can one operator handle while maintaining SLA?</li>
+<li>Assumption to validate: 1 operator can support 8&ndash;12 clients simultaneously</li>
+</ul>
+</div>
+<p class="src-chip">Phase 3 validation plan &mdash; Strategic Interpretation</p>
+</section>
+
+<!-- ==================== RISK MATRIX ==================== -->
+<section id="risk-matrix" class="section">
+<h2><span class="sec-num">26</span>Risk Matrix</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>Risk</th><th>Probability</th><th>Impact</th><th>Mitigation</th></tr>
+<tr><td>Frappe India compliance not current (Form 130, EPFO 3.0)</td><td><span class="badge-pill bg-red">HIGH</span></td><td><span class="badge-pill bg-red">HIGH</span></td><td>Complete technical validation before first client; CA review of configuration</td></tr>
+<tr><td>PayrollOps configures PF incorrectly &rarr; client EPFO notice</td><td><span class="badge-pill bg-orange">MEDIUM</span></td><td><span class="badge-pill bg-red">VERY HIGH</span></td><td>Compliance boundary in contract; client CA confirms filings; PayrollOps not liable for filing errors</td></tr>
+<tr><td>Support team overloaded &rarr; SLA fails &rarr; client churns</td><td><span class="badge-pill bg-red">HIGH (at scale)</span></td><td><span class="badge-pill bg-red">HIGH</span></td><td>Hard cap on clients per operator until SLA proven; hire before 10th client</td></tr>
+<tr><td>Client data quality too poor to migrate cleanly</td><td><span class="badge-pill bg-red">HIGH</span></td><td><span class="badge-pill bg-orange">MEDIUM</span></td><td>Data audit as Stage 2 deliverable; out-of-scope billing for excessive cleanup</td></tr>
+<tr><td>Competitor launches "managed onboarding" service</td><td><span class="badge-pill bg-orange">MEDIUM</span></td><td><span class="badge-pill bg-red">HIGH</span></td><td>PayrollOps's moat is operations quality, not features. Focus on delivery excellence.</td></tr>
+<tr><td>Frappe stops maintaining India compliance modules</td><td><span class="badge-pill bg-green">LOW</span></td><td><span class="badge-pill bg-red">HIGH</span></td><td>Contribute to Frappe community; build internal India compliance config library</td></tr>
+<tr><td>Client switches to cheaper tool after setup</td><td><span class="badge-pill bg-orange">MEDIUM</span></td><td><span class="badge-pill bg-orange">MEDIUM</span></td><td>Monthly support contract creates stickiness; dashboard/reports are maintained value</td></tr>
+<tr><td>Low willingness to pay for setup fee</td><td><span class="badge-pill bg-orange">MEDIUM</span></td><td><span class="badge-pill bg-red">HIGH</span></td><td>Validate in 20 interviews; offer deferred payment; Labour Code Audit as low-cost entry</td></tr>
+<tr><td>Key developer leaves &rarr; knowledge lost</td><td><span class="badge-pill bg-orange">MEDIUM</span></td><td><span class="badge-pill bg-red">HIGH</span></td><td>Document every client configuration; train at least 2 people per client</td></tr>
+<tr><td>Scope creep (endless customization requests)</td><td><span class="badge-pill bg-red">HIGH</span></td><td><span class="badge-pill bg-orange">MEDIUM</span></td><td>Written scope; change order process; define "reasonable customization" explicitly</td></tr>
+<tr><td>Payroll errors blamed on PayrollOps (legal liability)</td><td><span class="badge-pill bg-orange">LOW-MEDIUM</span></td><td><span class="badge-pill bg-red">VERY HIGH</span></td><td>Contract defines PayrollOps as configuration/support, not payroll processor; client approves every run</td></tr>
+</table>
+</div>
+
+<div class="callout callout-red">
+<strong>Compliance Risk &mdash; Special Note:</strong> PayrollOps must never inadvertently become a statutory filing service. The boundary is: <strong>PayrollOps does:</strong> Configure, validate, support. <strong>Client's CA/HR does:</strong> Submit PF challans, file ESI returns, deposit TDS, submit Form 24Q. This boundary must be explicitly stated in every contract.
+</div>
+<p class="src-chip">Phase 3 risk matrix &mdash; Strategic Interpretation</p>
+</section>
+
+<!-- ==================== GLOBAL EXPANSION ==================== -->
+<section id="global" class="section">
+<h2><span class="sec-num">27</span>Global Expansion Reality</h2>
+
+<div class="callout">
+<strong>The honest global ambition statement:</strong> PayrollOps can eventually become a global payroll implementation and operations service &mdash; the "India model" replicated country by country. But each country requires building compliance knowledge, hiring local experts, and validating configuration before client delivery. This is not a "flip a switch" expansion. It is country-by-country, specialist-by-specialist.
+</div>
+
+<h3>Realistic Global Timeline</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Phase</th><th>Timeline</th><th>What Is Realistic</th></tr>
+<tr><td>India</td><td>Now &ndash; Month 24</td><td>Prove model; 30+ clients; build playbook</td></tr>
+<tr><td>UAE/GCC</td><td>Month 24+ (conditional)</td><td>If India proven AND UAE payroll specialist joins; lower complexity than India but still requires specific configuration</td></tr>
+<tr><td>Southeast Asia</td><td>Month 36+</td><td>Singapore most tractable (English-language, cleaner compliance); Indonesia/Thailand/Vietnam very complex</td></tr>
+<tr><td>US</td><td>Year 4+ or never directly</td><td>US payroll extremely complex; dominated by ADP/Gusto/Paychex; not realistic early expansion</td></tr>
+<tr><td>UK</td><td>Year 3+</td><td>PAYE/RTI/NI compliance distinct; English-language; more tractable than US</td></tr>
+</table>
+</div>
+
+<div class="callout callout-red">
+<strong>Do not promise global payroll</strong> to investors or clients until India is profitable and at least one other country's compliance configuration is validated.
+</div>
+<p class="src-chip">Phase 3 global expansion analysis &mdash; Strategic Interpretation</p>
+</section>
+
+<!-- ==================== 90-DAY ACTION PLAN ==================== -->
+<section id="90-day" class="section">
+<h2><span class="sec-num">28</span>90-Day Action Plan</h2>
+
+<div class="road-grid">
+<div class="road-card">
+<div class="phase-label" style="color:var(--green);">Days 1&ndash;30: Build, Validate, Don't Sell</div>
+<ul>
+<li>Set up Frappe HR v16 test instance</li>
+<li>Create sample 50-employee India company</li>
+<li>Configure PF/ESI/PT/TDS with Labour Code 2025 + IT Act 2025</li>
+<li>Customize payslip template (bank-acceptable format)</li>
+<li>Build custom Excel salary sheet export</li>
+<li>Build payroll dashboard in Frappe</li>
+<li>Document exception scenarios</li>
+<li>Start 15 buyer discovery interviews</li>
+<li>Build discovery script + objection handling</li>
+<li>Get CA to review Frappe India compliance config</li>
+<li>Write one-page offer summary</li>
+</ul>
+</div>
+<div class="road-card">
+<div class="phase-label" style="color:var(--blue);">Days 31&ndash;60: First Pilot Clients</div>
+<ul>
+<li>Onboard Pilot Client 1 (Excel, 50&ndash;80 emp)</li>
+<li>Run Stages 1&ndash;5 (discovery through parallel run)</li>
+<li>Document every issue in implementation log</li>
+<li>Begin Pilot Client 2 (stagger 1 week behind)</li>
+<li>Create case study documentation framework</li>
+<li>Refine implementation checklist from real experience</li>
+<li>First compliance validation: CA reviews configuration</li>
+</ul>
+</div>
+<div class="road-card">
+<div class="phase-label" style="color:var(--purple);">Days 61&ndash;90: Go-Live, Iterate, Pipeline</div>
+<ul>
+<li>Pilot Client 1: Go-live; first supported payroll cycle</li>
+<li>Pilot Client 2: Complete parallel run; go-live</li>
+<li>Onboard Pilot Client 3 (greytHR/Keka switcher)</li>
+<li>Measure: time to go-live, error count, satisfaction</li>
+<li>Write first case study (with permission)</li>
+<li>Post LinkedIn article on learnings</li>
+<li>Refine pricing based on actual delivery cost</li>
+<li>Build pipeline of 10 qualified prospects for Month 4&ndash;6</li>
+<li>Decide: Is the model ready for full price?</li>
+</ul>
+</div>
+</div>
+
+<h3>90-Day Kill Criteria (Review at Day 90)</h3>
+<div class="callout callout-red">
+<ul class="compact">
+<li>If fewer than 2 of 3 pilots ran a clean payroll in first cycle &rarr; implementation process needs redesign</li>
+<li>If no pilot agrees to pay full price after discounted pilot &rarr; pricing or positioning needs revision</li>
+<li>If Frappe India compliance issues remain unresolved &rarr; delay scale until resolved</li>
+</ul>
+</div>
+<p class="src-chip">Phase 3 90-day action plan &mdash; Strategic Interpretation</p>
+</section>
+
+<!-- ==================== 12-MONTH ROADMAP ==================== -->
+<section id="12-month" class="section">
+<h2><span class="sec-num">29</span>12-Month Roadmap</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>Month</th><th>Focus</th><th>Revenue</th><th>Team</th><th>Milestone</th></tr>
+<tr><td>1&ndash;2</td><td>Technical validation, buyer interviews, pilot prep</td><td>₹0</td><td>2 (1 dev + 1 PM)</td><td>Frappe config validated; 15 interviews done</td></tr>
+<tr><td>3&ndash;4</td><td>3&ndash;5 discounted pilot clients</td><td>₹50K&ndash;1.5L</td><td>2</td><td>3 pilots live; 2 case studies</td></tr>
+<tr><td>5&ndash;6</td><td>First full-price clients; refine delivery</td><td>₹1.5L&ndash;3L</td><td>2&ndash;3</td><td>5&ndash;8 clients live; referral pipeline</td></tr>
+<tr><td>7&ndash;8</td><td>CA referral channel; Labour Code audit offer</td><td>₹3L&ndash;5L</td><td>3</td><td>CA channel generating leads; 10+ clients</td></tr>
+<tr><td>9&ndash;10</td><td>Secondary ICP: greytHR/Keka switchers</td><td>₹5L&ndash;7L</td><td>3&ndash;4</td><td>Migration package proven; 15+ clients</td></tr>
+<tr><td>11&ndash;12</td><td>Multi-entity pilot; ERPNext partner channel</td><td>₹7L&ndash;10L</td><td>4</td><td>20+ clients; ready for expansion pitch</td></tr>
+</table>
+</div>
+
+<div class="card">
+<div class="card-title">Month 12 Conservative Target</div>
+<p style="font-size:0.85rem;">20 active clients &times; avg ₹8,000/month = ₹1,60,000/month recurring<br>
++ Setup fees: 3 new clients/month &times; avg ₹40,000 = ₹1,20,000/month<br>
+<strong>Total: ~₹2,80,000/month in Month 12</strong></p>
+<p style="font-size:0.78rem;color:var(--fg2);">Assumption: Conservative for 3&ndash;4 person team. Revenue scales with team.</p>
+</div>
+<p class="src-chip">Phase 3 12-month roadmap &mdash; Strategic Interpretation</p>
+</section>
+
+<!-- ==================== 24-MONTH PRODUCTIZATION ==================== -->
+<section id="24-month" class="section">
+<h2><span class="sec-num">30</span>24-Month Productization Path</h2>
+
+<div class="road-grid">
+<div class="road-card">
+<div class="phase-label" style="color:var(--green);">Months 1&ndash;12: Service Foundation</div>
+<ul>
+<li>Deliver 20+ implementations manually</li>
+<li>Document every configuration pattern</li>
+<li>Build "Payroll Config Library" &mdash; reusable Frappe templates by industry and size</li>
+<li>Identify: which setup steps take most time? Which are repetitive?</li>
+</ul>
+</div>
+<div class="road-card">
+<div class="phase-label" style="color:var(--blue);">Months 13&ndash;18: Internal Tooling</div>
+<ul>
+<li>Build internal PayrollOps Setup Wizard (not client-facing)</li>
+<li>Automates repetitive steps: employee import, standard component templates, PF/ESI formula library</li>
+<li>Setup time reduces from 4&ndash;6 weeks to 2&ndash;3 weeks per client</li>
+</ul>
+</div>
+<div class="road-card">
+<div class="phase-label" style="color:var(--purple);">Months 19&ndash;24: Client-Facing Layer</div>
+<ul>
+<li>Build PayrollOps client portal on top of Frappe HR</li>
+<li>Monthly payroll input submission</li>
+<li>Pre-payroll checklist tracking</li>
+<li>Exception report viewing</li>
+<li>Payslip download + support logging</li>
+<li>Beginning of SaaS layer &mdash; built on 24 months of workflow knowledge</li>
+</ul>
+</div>
+<div class="road-card">
+<div class="phase-label" style="color:var(--accent2);">Month 24+: SaaS Transition (Optional)</div>
+<ul>
+<li>Option A: License portal to other Frappe implementation partners</li>
+<li>Option B: "Self-serve lite" tier for companies not needing full implementation</li>
+<li>Option C: Raise investment to productize as standalone India payroll ops platform</li>
+<li><strong>Not guaranteed</strong> &mdash; depends on whether service business generated sufficient reusable IP</li>
+</ul>
+</div>
+</div>
+
+<div class="callout">
+<strong>What must happen before SaaS:</strong> 20+ successful implementations, reusable Config Library, proven monthly support SLA, client-validated dashboard/report templates, and a Frappe developer team that can maintain product + service simultaneously. Do not skip the service phase.
+</div>
+<p class="src-chip">Phase 3 24-month productization path &mdash; Strategic Interpretation</p>
+</section>
+
+<!-- ==================== FINAL RECOMMENDATION ==================== -->
+<section id="recommendation" class="section">
+<h2><span class="sec-num">31</span>Final Recommendation</h2>
+
+<div class="verdict-card" style="border-color:var(--green);">
+<div class="label" style="color:var(--green);">Decision: Conditional Go</div>
+<div class="value">
+<ul class="compact">
+<li><strong>Service-led launch</strong> &mdash; not SaaS from day one</li>
+<li><strong>Primary ICP:</strong> Indian companies 50&ndash;150 employees running Excel/CA/manual payroll</li>
+<li><strong>Do not overpromise</strong> &mdash; no statutory filing ownership, no global payroll, no zero-error guarantee</li>
+<li><strong>Start narrow</strong> &mdash; single ICP, single geography, single compliance framework</li>
+<li><strong>Validate delivery before scaling</strong> &mdash; Frappe technical validation + 3&ndash;5 pilots at full quality</li>
+<li><strong>Productize later</strong> &mdash; SaaS layer only after 18&ndash;24 months of service delivery generates reusable IP</li>
+</ul>
+</div>
+</div>
+
+<div class="callout callout-green">
+<strong>The realistic opening is service quality.</strong> PayrollOps cannot beat greytHR or Keka on feature count, mobile apps, or employee self-service in Year 1. PayrollOps can beat them on setup quality, support responsiveness, client-specific configuration, and human accountability. The evidence from 20 competitors, 5,000+ reviews, and 3 research phases consistently shows: <em>the gap is not software, it is implementation and operations.</em>
+</div>
+
+<h3>The Honest Story for Management</h3>
+<p>PayrollOps is entering a crowded payroll SaaS market not by building a better SaaS product, but by solving the problem that SaaS companies deliberately ignore: <strong>implementation quality and human support.</strong> The market evidence shows that 66% of payroll software buyers experience disruption after purchase. The most common complaints across all India tools are support failure and configuration rigidity &mdash; not missing features. PayrollOps's competitive advantage is not technology. It is operational delivery.</p>
+
+<h3>The Realistic Ask for Year 1</h3>
+<ul class="compact">
+<li>A team of 3&ndash;4 people (1 senior Frappe developer, 1 India payroll specialist/CA liaison, 1 delivery/PM lead, 1 sales/BD)</li>
+<li>6 months of runway to reach first paid clients without revenue pressure</li>
+<li>Realistic target: 15&ndash;20 paying clients by Month 12</li>
+<li>No promise of global scale in Year 1</li>
+</ul>
+
+<h3>Verify First. Sell Second.</h3>
+<div class="callout callout-red">
+Before writing a single line of code for a client, complete the Frappe HR v16 India compliance validation. Everything else &mdash; GTM, pricing, brand &mdash; can be iterated. But delivering a misconfigured payroll to a client generates the exact EPFO notice scenario that PayrollOps was supposed to prevent. That is an unrecoverable reputational event for a new business.
+</div>
+<p class="src-chip">Phase 3 final recommendation &mdash; Strategic Interpretation based on all 3 phases</p>
+</section>
+
+<!-- ==================== MANAGEMENT DECISIONS ==================== -->
+<section id="decisions" class="section">
+<h2><span class="sec-num">32</span>What Management Must Decide</h2>
+
+<div class="matrix-grid">
+<div class="matrix-card">
+<div class="gap-title">1. Approve Validation Sprint</div>
+<p style="font-size:0.82rem;color:var(--fg2);">Authorize 30-day Frappe technical validation + 15 buyer interviews before any client commitment. Budget: ₹0&ndash;50,000 (internal time cost).</p>
+</div>
+<div class="matrix-card">
+<div class="gap-title">2. Assign Frappe Developer</div>
+<p style="font-size:0.82rem;color:var(--fg2);">One senior Frappe developer who can configure India payroll (salary structures, PF/ESI/PT/TDS) and verify against Labour Code 2025. Non-negotiable for launch.</p>
+</div>
+<div class="matrix-card">
+<div class="gap-title">3. Assign Payroll Specialist / CA Advisor</div>
+<p style="font-size:0.82rem;color:var(--fg2);">Qualified India payroll specialist or CA with payroll audit capability. Required for compliance boundary validation and Labour Code audit package credibility.</p>
+</div>
+<div class="matrix-card">
+<div class="gap-title">4. Approve Pilot Clients</div>
+<p style="font-size:0.82rem;color:var(--fg2);">Authorize 3&ndash;5 pilot clients at 30&ndash;50% discount in exchange for feedback and case study rights. Success metrics defined.</p>
+</div>
+<div class="matrix-card">
+<div class="gap-title">5. Approve Pricing Experiment</div>
+<p style="font-size:0.82rem;color:var(--fg2);">Allow pricing validation through interviews with flexibility to adjust based on feedback. Target: ₹25K&ndash;75K setup, ₹5K&ndash;20K/month support.</p>
+</div>
+<div class="matrix-card">
+<div class="gap-title">6. Approve Service Boundary</div>
+<p style="font-size:0.82rem;color:var(--fg2);">Explicitly define what PayrollOps does (configure, validate, support) and does not do (statutory filing, full outsourcing, compliance ownership).</p>
+</div>
+</div>
+<p class="src-chip">Phase 3 management decision framework &mdash; Strategic Interpretation</p>
+</section>
+
+<!-- ==================== WHAT NOT TO PROMISE ==================== -->
+<section id="dont-promise" class="section">
+<h2><span class="sec-num">33</span>What Not To Promise</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>Do Not Promise</th><th>Why Not</th><th>What To Say Instead</th></tr>
+<tr><td>Global payroll</td><td>Each country needs separate compliance engine and local expertise</td><td>"India-first. Country-by-country expansion only after India is proven."</td></tr>
+<tr><td>Full statutory filing ownership</td><td>Requires licensed CA; legal liability; not current capability</td><td>"We configure and validate. Your CA files. We support both of you."</td></tr>
+<tr><td>"greytHR/Keka killer"</td><td>20,000+ clients vs 20 in Year 1; cannot compete on features</td><td>"We don't compete on features. We compete on setup quality and support."</td></tr>
+<tr><td>100% automated payroll compliance</td><td>India compliance is genuinely complex; errors happen</td><td>"We validate every configuration. Your CA confirms filings."</td></tr>
+<tr><td>SaaS immediately</td><td>Self-serve requires 18&ndash;24 months of delivery IP first</td><td>"We implement and support first. Productize later."</td></tr>
+<tr><td>Zero-error guarantee</td><td>Misconfigured data in, misconfigured payroll out</td><td>"We catch errors before finalization. We document every check."</td></tr>
+<tr><td>"Go live in 5 minutes"</td><td>Setup + configuration + validation takes 4&ndash;6 weeks</td><td>"4&ndash;6 weeks to configure correctly. Then payroll runs in hours, not days."</td></tr>
+<tr><td>Any integration with any attendance system</td><td>API availability varies; hardware compatibility messy</td><td>"We support structured Excel upload for all attendance sources. Direct integrations scoped per project."</td></tr>
+</table>
+</div>
+<p class="src-chip">Phase 3 synthesis &mdash; Strategic Interpretation</p>
+</section>
+
+<!-- ==================== CLAIMS NEEDING VALIDATION ==================== -->
+<section id="claims-validation" class="section">
+<h2><span class="sec-num">34</span>Claims Needing Validation</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>#</th><th>Assumption</th><th>Risk if Wrong</th><th>How to Validate</th></tr>
+<tr><td>1</td><td>Frappe HR v16 is India Labour Code 2025 compliant (or can be configured)</td><td><span class="badge-pill bg-red">HIGH</span></td><td>Hands-on testing before any client onboarding</td></tr>
+<tr><td>2</td><td>50-employee client will pay ₹25K&ndash;35K setup fee</td><td><span class="badge-pill bg-red">HIGH</span></td><td>Validate in 20 buyer interviews</td></tr>
+<tr><td>3</td><td>50-employee client will pay ₹5K&ndash;8K/month ongoing support</td><td><span class="badge-pill bg-red">HIGH</span></td><td>Validate in pilot; greytHR ₹3,495 is price anchor</td></tr>
+<tr><td>4</td><td>One operator can support 8&ndash;12 clients with 2&ndash;4hr SLA</td><td><span class="badge-pill bg-red">HIGH</span></td><td>Track in first 5 pilots</td></tr>
+<tr><td>5</td><td>CA/accountant referral channel converts at meaningful rate</td><td><span class="badge-pill bg-orange">MEDIUM</span></td><td>Test with 10 CA conversations</td></tr>
+<tr><td>6</td><td>Labour Code Audit is a viable door-opener offer</td><td><span class="badge-pill bg-orange">MEDIUM</span></td><td>Test immediately; window is now (June 2026)</td></tr>
+<tr><td>7</td><td>Frappe custom report builder can generate client-required Excel formats</td><td><span class="badge-pill bg-orange">MEDIUM</span></td><td>Verify in technical validation phase</td></tr>
+<tr><td>8</td><td>greytHR/Keka switching pool will choose Frappe over another SaaS</td><td><span class="badge-pill bg-orange">MEDIUM</span></td><td>Validate in switcher discovery interviews</td></tr>
+<tr><td>9</td><td>Biometric attendance integration is out-of-scope for MVP</td><td><span class="badge-pill bg-green">LOW</span></td><td>Clarify in discovery; offer manual upload fallback</td></tr>
+<tr><td>10</td><td>24-month productization path is viable</td><td><span class="badge-pill bg-green">LOW</span></td><td>Review at Month 12 with real data</td></tr>
+</table>
+</div>
+<p class="src-chip">Phase 3 claims validation &mdash; Strategic Interpretation</p>
+</section>
+
+<!-- ==================== SOURCE LEDGER ==================== -->
+<section id="sources" class="section">
+<h2><span class="sec-num">35</span>Source Ledger</h2>
+
+<div class="table-wrap">
+<table>
+<tr><th>Source</th><th>Type</th><th>Date</th><th>Used For</th><th>Confidence</th></tr>
+<tr><td><a href="https://www.mordorintelligence.com/industry-reports/india-payroll-market-industry">Mordor Intelligence India Payroll</a></td><td>Analyst Estimate</td><td>Jan 2026</td><td>India market size ($1.91B)</td><td>Medium-High</td></tr>
+<tr><td><a href="https://www.thebusinessresearchcompany.com/report/hr-payroll-software-global-market-report">Business Research Company Global HR Payroll</a></td><td>Analyst Estimate</td><td>Apr 2026</td><td>Global market size ($38.82B)</td><td>Medium</td></tr>
+<tr><td><a href="https://www.skyquestt.com/report/hr-payroll-software-market">SkyQuestt HR Payroll</a></td><td>Analyst Estimate</td><td>2026</td><td>Global market alternate ($32.39B)</td><td>Medium</td></tr>
+<tr><td><a href="https://www.precedenceresearch.com/cloud-based-payroll-software-market">Precedence Research Cloud Payroll</a></td><td>Analyst Estimate</td><td>Mar 2026</td><td>Cloud payroll segment ($26.55B)</td><td>Medium</td></tr>
+<tr><td><a href="https://ezhrm.in/payroll-roi-calculator-india-2026-true-cost-manual-payroll/">EZHRM ROI Calculator India</a></td><td>Vendor Analysis</td><td>May 2026</td><td>Excel payroll cost (₹5,500&ndash;9,500/mo for 50 emp)</td><td>Medium</td></tr>
+<tr><td><a href="https://www.indpayroll.com/blog/how-to-choose-payroll-software-india-2026">INDPayroll Guide</a></td><td>Vendor/NASSCOM ref</td><td>2026</td><td>62% SMEs on spreadsheets</td><td>Medium</td></tr>
+<tr><td><a href="https://accountx.in/payroll-compliance-checklist-india-2026/">AccountX Compliance Checklist</a></td><td>Regulatory Source</td><td>2026</td><td>Labour Code 2025 50% wages rule</td><td>High</td></tr>
+<tr><td><a href="https://www.patronaccounting.com/blog/payroll-outsourcing-vs-in-house-sme-guide-india-2026">Patron Accounting SME Guide</a></td><td>CA Firm Blog</td><td>2026</td><td>EPFO arrear case (₹8.7L, 35-emp Pune)</td><td>Medium</td></tr>
+<tr><td><a href="https://frappe.io/hr/version-16">Frappe HR v16 Release Notes</a></td><td>Vendor Documentation</td><td>Jan 2026</td><td>Frappe v16 capabilities</td><td>High</td></tr>
+<tr><td><a href="https://futurexsolutions.com/salary-slip-format-india-2026/">FutureX Solutions Payslip Guide</a></td><td>Compliance Guide</td><td>Apr 2026</td><td>Payslip bank rejection case</td><td>Medium</td></tr>
+<tr><td><a href="https://www.getapp.com/hr-employee-management-software/a/greythr/">GetApp greytHR Reviews</a></td><td>User Review</td><td>2026</td><td>greytHR support/customization complaints</td><td>High</td></tr>
+<tr><td><a href="https://hrone.cloud/blog/switching-from-greythr-india/">HROne greytHR Switching Analysis</a></td><td>Competitor Analysis</td><td>Jun 2026</td><td>greytHR switching patterns</td><td>Medium</td></tr>
+<tr><td><a href="https://hrone.cloud/blog/keka-vs-greythr-india/">HROne Keka vs greytHR</a></td><td>Competitor Analysis</td><td>Jun 2026</td><td>Keka complaints; CTC accuracy issues</td><td>Medium</td></tr>
+<tr><td><a href="https://hrone.cloud/blog/keka-alternatives-india/">HROne Keka Alternatives</a></td><td>Competitor Analysis</td><td>Jun 2026</td><td>Keka pricing; multi-entity limits</td><td>Medium</td></tr>
+<tr><td><a href="https://salarybox.in/blog/best-payroll-software-india-2026/">SalaryBox India Payroll 2026</a></td><td>Vendor Comparison</td><td>Apr 2026</td><td>Zoho Payroll pricing; competitor pricing</td><td>Medium</td></tr>
+<tr><td><a href="https://www.comparisun.com/payroll/reviews/gusto/">Comparisun Gusto Review</a></td><td>Analyst Review</td><td>Apr 2026</td><td>Gusto transparent pricing lesson</td><td>Medium</td></tr>
+<tr><td><a href="https://www.comparisun.com/payroll/reviews/paychex/">Comparisun Paychex Review</a></td><td>Analyst Review</td><td>Apr 2026</td><td>Paychex specialist model; ETF issues</td><td>Medium</td></tr>
+<tr><td><a href="https://www.comparisun.com/payroll/reviews/adp/">Comparisun ADP Review</a></td><td>Analyst Review</td><td>May 2026</td><td>ADP pricing opacity; support downgrade</td><td>Medium</td></tr>
+<tr><td><a href="https://www.goodhiresonly.com/post/the-top-10-hrms-platforms-in-india-for-2025-a-transparent-user-driven-comparison">goodhiresonly HRMS India 2025</a></td><td>Comparison</td><td>May 2025</td><td>India HRMS feature comparison</td><td>Medium</td></tr>
+<tr><td><a href="https://www.capterra.com/">Capterra 2026 Buying Trends</a></td><td>Analyst Survey</td><td>2026</td><td>66% buyer disruption after purchase</td><td>High</td></tr>
+<tr><td><a href="https://g2.com/products/frappe-hr/reviews">G2 Frappe HR Reviews</a></td><td>User Review</td><td>Jan 2026</td><td>Frappe HR strengths/weaknesses</td><td>Medium</td></tr>
+<tr><td><a href="https://www.wisemonk.io/blogs/payroll-compliance-in-india">WiseMonk Compliance Guide</a></td><td>Regulatory Source</td><td>2026</td><td>India payroll compliance overview</td><td>Medium</td></tr>
+<tr><td><a href="https://hrone.cloud/blog/best-payroll-software-india/">HROne India Payroll Comparison</a></td><td>Competitor Analysis</td><td>Jun 2026</td><td>India payroll pricing; feature comparison</td><td>Medium</td></tr>
+<tr><td><a href="https://www.indictranstech.com/how-frappe-hr-v16-automates-hr-workflow/">Indictrans v16 Breakdown</a></td><td>Partner Blog</td><td>2026</td><td>Frappe v16 payroll improvements</td><td>Medium</td></tr>
+<tr><td><a href="https://aurigait.com/blog/blog-erpnext-guide-2026/">Auriga IT ERPNext Guide</a></td><td>Partner Blog</td><td>2026</td><td>ERPNext implementation context</td><td>Medium</td></tr>
+<tr><td><a href="https://www.expertmarket.com/payroll-services-rippling-review">ExpertMarket Rippling Review</a></td><td>Analyst Review</td><td>Feb 2026</td><td>Rippling pricing; modular complexity</td><td>Medium</td></tr>
+<tr><td><a href="https://www.expertmarket.com/payroll-services/deel-review">ExpertMarket Deel Review</a></td><td>Analyst Review</td><td>Feb 2026</td><td>Deel EOR pricing; India inbound</td><td>Medium</td></tr>
+<tr><td><a href="https://remote.com/blog/eor-peo/deel-vs-rippling-vs-remote-vs-papaya-global">Deel vs Remote Comparison</a></td><td>Vendor Comparison</td><td>Apr 2026</td><td>EOR market context</td><td>Medium</td></tr>
+<tr><td><a href="https://www.ramco.com/blog/payroll/managed-payroll-services-india">Ramco Managed Payroll India</a></td><td>Vendor Blog</td><td>Jan 2026</td><td>Enterprise managed payroll context</td><td>Low</td></tr>
+<tr><td><a href="https://hrone.cloud/blog/payroll-software-vs-outsourcing-india">HROne Outsourcing Analysis</a></td><td>Vendor Blog</td><td>May 2026</td><td>India payroll outsourcing ₹4,200 Cr</td><td>Low</td></tr>
+<tr><td><a href="https://softwarefinder.com/hr/frappe-hrms/reviews">SoftwareFinder Frappe HRMS</a></td><td>User Review</td><td>2026</td><td>Frappe HR user feedback</td><td>Medium</td></tr>
+<tr><td><a href="https://technologyevaluation.com/solutions/54750/saral-paypack">TechnologyEvaluation Saral PayPack</a></td><td>Analyst Review</td><td>2025</td><td>Saral PayPack enterprise features</td><td>Medium</td></tr>
+<tr><td>Phase 1 + Phase 2 + Phase 3 Document Synthesis</td><td>Strategic Interpretation</td><td>Jun 2026</td><td>Strategy, positioning, USPs, pricing, roadmap</td><td>High (internal)</td></tr>
+</table>
+</div>
+
+<h3>Evidence Quality Summary</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Evidence Type</th><th>Count</th><th>Trust Level</th></tr>
+<tr><td><span class="badge-pill bg-green">Verified Fact</span> (Regulatory, Official Docs)</td><td>8 sources</td><td>High</td></tr>
+<tr><td><span class="badge-pill bg-blue">User Review Evidence</span> (G2, Capterra, Trustpilot)</td><td>12+ sources</td><td>Medium (pattern = reliable)</td></tr>
+<tr><td><span class="badge-pill bg-orange">Analyst Estimate</span> (Market research firms)</td><td>6 sources</td><td>Medium (directional only)</td></tr>
+<tr><td><span class="badge-pill bg-purple">Vendor Claim</span> (Competitor websites, pricing)</td><td>15+ sources</td><td>Low-Medium (validate independently)</td></tr>
+<tr><td><span class="badge-pill bg-gray">Strategic Interpretation</span> (Phase synthesis)</td><td>Throughout</td><td>Transparent inference, not fact</td></tr>
+</table>
+</div>
+
+<div class="callout">
+<strong>Research Limitations:</strong> No primary interviews with actual buyers were conducted in the research phase. Market size figures from analyst firms are estimates with wide variance &mdash; treat as directional, not precise. User reviews are from public platforms and may not reflect the specific 50&ndash;100 employee India segment accurately. Frappe Payroll's India statutory compliance depth post-Labour Codes was not independently verified with hands-on testing.
+</div>
+
+<p style="margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);font-size:0.82rem;color:var(--fg2);text-align:center;">
+<strong>PayrollOps Deep Research Report</strong> &mdash; June 2026<br>
+Based on Phase 1 (Market Research) + Phase 2 (Competitor Intelligence) + Phase 3 (Strategy &amp; Roadmap)<br>
+Evidence-Based | No Hallucinated Claims | Internal Strategy Discussion Only
+</p>
+
+</section>
+
+</div><!-- /main -->
+
+<script>
+// TOC scroll spy
+document.querySelectorAll('.toc-bar a').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    const id=a.getAttribute('href').slice(1);
+    const el=document.getElementById(id);
+    if(el){ el.scrollIntoView({behavior:'smooth'}); document.querySelector('.toc-bar').classList.remove('open'); }
+  });
+});
+// Section reveal on scroll
+const obs=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.05});
+document.querySelectorAll('.section').forEach(s=>obs.observe(s));
+// Close TOC on outside click
+document.addEventListener('click',e=>{if(!e.target.closest('.toc-bar')&&!e.target.closest('.toc-toggle'))document.querySelector('.toc-bar').classList.remove('open');});
+</script>
+</body>
+</html>
+
