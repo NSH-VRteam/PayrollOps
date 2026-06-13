@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PayrollOps CR Executive Training Manual</title>
+  <style>
+    :root {
+      --navy: #071827;
+      --navy2: #0d2637;
+      --ink: #17212b;
+      --muted: #607080;
+      --line: #dfe8ee;
+      --soft: #f5f8fa;
+      --card: #ffffff;
+      --teal: #0d9488;
+      --teal2: #14b8a6;
+      --gold: #c8a968;
+      --gold2: #e8d8ad;
+      --red: #b42318;
+      --green: #067647;
+      --orange: #b54708;
+      --shadow: 0 24px 55px rgba(7, 24, 39, .12);
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      margin: 0;
+      background: #eaf0f4;
+      color: var(--ink);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      line-height: 1.35;
+    }
+
+    .deck {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 28px 0 60px
+    }
+
+    .slide {
+      position: relative;
+      width: 1188px;
+      min-height: 840px;
+      margin: 0 auto 30px;
+      background: linear-gradient(135deg, #ffffff 0%, #f8fbfc 100%);
+      border: 1px solid rgba(13, 38, 55, .08);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      padding: 56px 64px 48px;
+    }
+
+    .slide.dark {
+      background:
+        radial-gradient(circle at 78% 16%, rgba(20, 184, 166, .18), transparent 34%),
+        radial-gradient(circle at 20% 92%, rgba(200, 169, 104, .18), transparent 32%),
+        linear-gradient(135deg, #071827 0%, #0d2637 100%);
+      color: #fff;
+    }
+
+    .slide.dark .eyebrow,
+    .slide.dark .kicker,
+    .slide.dark .footer,
+    .slide.dark .muted {
+      color: #b8c7d1
+    }
+
+    .slide.dark .title {
+      color: #fff
+    }
+
+    .slide.dark .card,
+    .slide.dark .stat,
+    .slide.dark .script,
+    .slide.dark .tablebox {
+      background: rgba(255, 255, 255, .08);
+      border-color: rgba(255, 255, 255, .14);
+      color: #fff;
+      box-shadow: none
+    }
+
+    .slide.dark .card p,
+    .slide.dark .card li,
+    .slide.dark .script p {
+      color: #dce8ee
+    }
+
+    .slide.dark .pill {
+      background: rgba(255, 255, 255, .09);
+      border-color: rgba(255, 255, 255, .16);
+      color: #fff
+    }
+
+    .slide.dark .badge {
+      background: rgba(200, 169, 104, .16);
+      color: #f7e8bf;
+      border-color: rgba(200, 169, 104, .32)
+    }
+
+    .topline {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 8px;
+      background: linear-gradient(90deg, var(--teal), var(--gold))
+    }
+
+    .brandbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      gap: 18px
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: .02em;
+      color: var(--navy)
+    }
+
+    .dark .brand {
+      color: #fff
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, var(--teal), #0b6b62);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 900;
+      box-shadow: 0 10px 24px rgba(13, 148, 136, .28)
+    }
+
+    .tag {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      color: var(--muted);
+      font-weight: 750
+    }
+
+    .dark .tag {
+      color: #aab9c2
+    }
+
+    .slide-no {
+      font-size: 12px;
+      color: #8b9aa5;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase
+    }
+
+    .title {
+      font-size: 56px;
+      line-height: 1.02;
+      margin: 0 0 18px;
+      color: var(--navy);
+      letter-spacing: -.045em;
+      font-weight: 850;
+      max-width: 930px
+    }
+
+    .title.small {
+      font-size: 44px;
+      max-width: 980px
+    }
+
+    .subtitle {
+      font-size: 21px;
+      color: #4b5f6f;
+      max-width: 820px;
+      margin: 0 0 24px;
+      font-weight: 450
+    }
+
+    .dark .subtitle {
+      color: #d0dce4
+    }
+
+    .eyebrow {
+      font-size: 13px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--teal);
+      font-weight: 850;
+      margin-bottom: 18px
+    }
+
+    .kicker {
+      font-size: 15px;
+      color: var(--muted);
+      font-weight: 650;
+      margin-top: 8px
+    }
+
+    .grid {
+      display: grid;
+      gap: 22px
+    }
+
+    .grid.two {
+      grid-template-columns: 1fr 1fr
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, 1fr)
+    }
+
+    .grid.four {
+      grid-template-columns: repeat(4, 1fr)
+    }
+
+    .card {
+      background: rgba(255, 255, 255, .92);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 14px 35px rgba(7, 24, 39, .06);
+    }
+
+    .card h3 {
+      margin: 0 0 12px;
+      font-size: 21px;
+      color: var(--navy);
+      letter-spacing: -.02em
+    }
+
+    .dark .card h3 {
+      color: #fff
+    }
+
+    .card p {
+      margin: 0;
+      color: #526675;
+      font-size: 16px
+    }
+
+    ul {
+      margin: 12px 0 0;
+      padding-left: 20px
+    }
+
+    li {
+      margin: 7px 0;
+      color: #445766;
+      font-size: 16px
+    }
+
+    .large-li li {
+      font-size: 19px;
+      margin: 12px 0;
+      color: #344858
+    }
+
+    .dark li {
+      color: #d7e3ea
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #e8f7f5;
+      color: #075e56;
+      border: 1px solid #ccefeb;
+      font-weight: 800;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 9px 13px;
+      margin: 4px 5px 4px 0;
+      background: #fff;
+      color: #344858;
+      font-weight: 700;
+      font-size: 14px
+    }
+
+    .callout {
+      padding: 28px 32px;
+      border-radius: 26px;
+      background: linear-gradient(135deg, #ecfffc, #f9fbfc);
+      border: 1px solid #ccefeb;
+      margin: 26px 0;
+      box-shadow: 0 18px 40px rgba(13, 148, 136, .10)
+    }
+
+    .callout h2 {
+      font-size: 32px;
+      margin: 0 0 10px;
+      color: #083f3a;
+      letter-spacing: -.03em
+    }
+
+    .callout p {
+      font-size: 20px;
+      margin: 0;
+      color: #31545b
+    }
+
+    .quote {
+      font-size: 27px;
+      line-height: 1.35;
+      color: var(--navy);
+      font-weight: 700;
+      letter-spacing: -.03em;
+      background: #fff;
+      border-left: 6px solid var(--teal);
+      border-radius: 20px;
+      padding: 26px 30px;
+      box-shadow: 0 16px 38px rgba(7, 24, 39, .07)
+    }
+
+    .dark .quote {
+      background: rgba(255, 255, 255, .10);
+      color: #fff;
+      border-left-color: var(--gold)
+    }
+
+    .stat {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 24px;
+      min-height: 150px
+    }
+
+    .stat .num {
+      font-size: 44px;
+      color: var(--teal);
+      font-weight: 900;
+      letter-spacing: -.04em
+    }
+
+    .stat .label {
+      font-size: 15px;
+      color: var(--muted);
+      font-weight: 650;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-top: 6px
+    }
+
+    .flow {
+      display: flex;
+      align-items: stretch;
+      gap: 16px;
+      margin-top: 24px
+    }
+
+    .step {
+      flex: 1;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 22px;
+      position: relative;
+      box-shadow: 0 12px 30px rgba(7, 24, 39, .06)
+    }
+
+    .step strong {
+      display: block;
+      font-size: 18px;
+      color: var(--navy);
+      margin-bottom: 8px
+    }
+
+    .step span {
+      font-size: 15px;
+      color: #526675
+    }
+
+    .step .n {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      margin-bottom: 14px
+    }
+
+    .dark .step {
+      background: rgba(255, 255, 255, .08);
+      border-color: rgba(255, 255, 255, .14);
+      box-shadow: none
+    }
+
+    .dark .step strong {
+      color: #fff
+    }
+
+    .dark .step span {
+      color: #d3e0e7
+    }
+
+    .dark .step .n {
+      background: var(--gold);
+      color: #071827
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 34px;
+      align-items: start
+    }
+
+    .tablebox {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 14px 35px rgba(7, 24, 39, .06)
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px
+    }
+
+    th {
+      background: #eef6f5;
+      color: #0f4d47;
+      text-align: left;
+      padding: 15px 16px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em
+    }
+
+    td {
+      padding: 14px 16px;
+      border-top: 1px solid var(--line);
+      vertical-align: top;
+      color: #344858
+    }
+
+    .dark td {
+      color: #dce8ee;
+      border-top-color: rgba(255, 255, 255, .14)
+    }
+
+    .dark th {
+      background: rgba(255, 255, 255, .10);
+      color: #fff
+    }
+
+    .danger {
+      border-left: 5px solid var(--red)
+    }
+
+    .success {
+      border-left: 5px solid var(--green)
+    }
+
+    .warning {
+      border-left: 5px solid var(--orange)
+    }
+
+    .danger h3 {
+      color: var(--red)
+    }
+
+    .success h3 {
+      color: var(--green)
+    }
+
+    .warning h3 {
+      color: var(--orange)
+    }
+
+    .script {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 14px 35px rgba(7, 24, 39, .06)
+    }
+
+    .script .label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-weight: 850;
+      color: var(--teal);
+      margin-bottom: 10px
+    }
+
+    .script p {
+      font-size: 19px;
+      color: #263a49;
+      margin: 0;
+      line-height: 1.45
+    }
+
+    .dosdonts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-top: 20px
+    }
+
+    .mini-title {
+      font-size: 17px;
+      text-transform: uppercase;
+      letter-spacing: .10em;
+      font-weight: 850;
+      color: var(--navy);
+      margin-bottom: 14px
+    }
+
+    .footer {
+      position: absolute;
+      left: 64px;
+      right: 64px;
+      bottom: 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #8b9aa5;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase
+    }
+
+    .watermark {
+      position: absolute;
+      right: 52px;
+      bottom: 54px;
+      font-size: 110px;
+      line-height: 1;
+      color: rgba(13, 38, 55, .035);
+      font-weight: 950;
+      letter-spacing: -.08em;
+      pointer-events: none
+    }
+
+    .dark .watermark {
+      color: rgba(255, 255, 255, .045)
+    }
+
+    .compact li {
+      font-size: 15px;
+      margin: 6px 0
+    }
+
+    .compact p {
+      font-size: 15px
+    }
+
+    .qrbox {
+      height: 112px;
+      border-radius: 18px;
+      border: 2px dashed #cbd8df;
+      display: grid;
+      place-items: center;
+      color: #8797a2;
+      font-weight: 800;
+      background: #fafcfd;
+      text-align: center;
+      padding: 14px
+    }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px
+    }
+
+    .grade {
+      padding: 21px;
+      border-radius: 22px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: 0 12px 30px rgba(7, 24, 39, .05)
+    }
+
+    .grade h3 {
+      margin: 0 0 8px;
+      font-size: 24px
+    }
+
+    .grade p {
+      margin: 0;
+      color: #536777;
+      font-size: 15px
+    }
+
+    .grade .action {
+      margin-top: 12px;
+      color: #071827;
+      font-weight: 850
+    }
+
+    .grade.a {
+      border-top: 7px solid #067647
+    }
+
+    .grade.b {
+      border-top: 7px solid #0d9488
+    }
+
+    .grade.c {
+      border-top: 7px solid #b54708
+    }
+
+    .grade.d {
+      border-top: 7px solid #b42318
+    }
+
+    .sectionlabel {
+      font-size: 96px;
+      font-weight: 950;
+      letter-spacing: -.08em;
+      color: rgba(13, 148, 136, .12);
+      position: absolute;
+      right: 58px;
+      top: 56px
+    }
+
+    .narrow {
+      max-width: 760px
+    }
+
+    .center {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 690px
+    }
+
+    .bigline {
+      font-size: 64px;
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: -.055em;
+      color: var(--navy);
+      margin: 0
+    }
+
+    .dark .bigline {
+      color: #fff
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--line);
+      margin: 22px 0
+    }
+
+    .dark .divider {
+      background: rgba(255, 255, 255, .16)
+    }
+
+    @page {
+      size: A4 landscape;
+      margin: 0
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact
+      }
+
+      .deck {
+        max-width: none;
+        padding: 0;
+        margin: 0
+      }
+
+      .slide {
+        width: 297mm;
+        min-height: 210mm;
+        height: 210mm;
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+        border: 0;
+        page-break-after: always;
+        break-after: page;
+        padding: 14mm 17mm 12mm;
+        overflow: hidden
+      }
+
+      .title {
+        font-size: 43px
+      }
+
+      .title.small {
+        font-size: 35px
+      }
+
+      .subtitle {
+        font-size: 17px
+      }
+
+      .card h3 {
+        font-size: 18px
+      }
+
+      .card p,
+      li,
+      td {
+        font-size: 13px
+      }
+
+      .script p {
+        font-size: 15px
+      }
+
+      .quote {
+        font-size: 21px
+      }
+
+      .bigline {
+        font-size: 48px
+      }
+
+      .footer {
+        left: 17mm;
+        right: 17mm;
+        bottom: 7mm
+      }
+
+      .brandbar {
+        margin-bottom: 18px
+      }
+
+      .slide-no {
+        font-size: 10px
+      }
+
+      .watermark {
+        font-size: 78px;
+        right: 14mm;
+        bottom: 16mm
+      }
+
+      .topline {
+        height: 5px
+      }
+
+      .card,
+      .script,
+      .tablebox,
+      .step,
+      .stat,
+      .grade {
+        box-shadow: none
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="deck">
+
+    <section class="slide dark">
+      <div class="topline"></div>
+      <div class="watermark">CR</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">CR Training Manual</div>
+      </div>
+      <div class="center">
+        <div class="eyebrow">Novel Office Client Relations Team</div>
+        <h1 class="title">PayrollOps CR Executive Training Manual</h1>
+        <p class="subtitle">A professional field guide for introducing PayrollOps, identifying client payroll pain,
+          qualifying interest, and safely handing over leads.</p>
+        <div style="margin-top:22px"><span class="badge">CR Use Only</span> <span class="badge">Lead Discovery</span>
+          <span class="badge">Trust First</span>
+        </div>
+      </div>
+      <div class="footer"><span>PayrollOps</span><span>Confidential training material</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="topline"></div>
+      <div class="sectionlabel">01</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">01 / Mission</div>
+      </div>
+      <div class="eyebrow">Your role</div>
+      <h2 class="title small">CR Executives are not payroll salespeople. You are trusted discovery partners.</h2>
+      <div class="callout">
+        <h2>Your mission</h2>
+        <p>Introduce PayrollOps professionally, identify basic payroll pain, collect interest, and pass qualified leads
+          to the PayrollOps team.</p>
+      </div>
+      <div class="grid three">
+        <div class="card">
+          <h3>Protect trust</h3>
+          <p>Payroll is sensitive. Use approved language and never overpromise.</p>
+        </div>
+        <div class="card">
+          <h3>Find the right person</h3>
+          <p>Identify HR, finance, founder, admin, or operations contact.</p>
+        </div>
+        <div class="card">
+          <h3>Hand over cleanly</h3>
+          <p>Collect only lead details and request a callback or form submission.</p>
+        </div>
+      </div>
+      <div class="footer"><span>CR role clarity</span><span>PayrollOps</span></div>
+    </section>
+
+    <section class="slide dark">
+      <div class="topline"></div>
+      <div class="sectionlabel">02</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">02 / What It Is</div>
+      </div>
+      <div class="eyebrow">Simple definition</div>
+      <h2 class="title small">PayrollOps helps companies move from messy payroll operations to a cleaner, structured,
+        supported payroll workflow.</h2>
+      <div class="grid four" style="margin-top:34px">
+        <div class="card">
+          <h3>Setup</h3>
+          <p>Payroll setup and salary structure configuration support.</p>
+        </div>
+        <div class="card">
+          <h3>Dashboard</h3>
+          <p>Payroll dashboard setup for better workflow visibility.</p>
+        </div>
+        <div class="card">
+          <h3>Payslips & reports</h3>
+          <p>Custom payslip formats, reports, and Excel outputs.</p>
+        </div>
+        <div class="card">
+          <h3>Specialist support</h3>
+          <p>Support when payroll feels confusing, broken, or manual.</p>
+        </div>
+      </div>
+      <div class="footer"><span>What PayrollOps is</span><span>Setup - Dashboard - Payslips - Reports - Support</span>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="topline"></div>
+      <div class="sectionlabel">03</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">03 / Boundaries</div>
+      </div>
+      <div class="eyebrow">Very important</div>
+      <h2 class="title small">What PayrollOps is not</h2>
+      <div class="dosdonts">
+        <div class="card danger">
+          <h3>Do not position PayrollOps as</h3>
+          <ul>
+            <li>Full payroll outsourcing</li>
+            <li>Statutory filing service</li>
+            <li>CA replacement</li>
+            <li>Employer of record</li>
+            <li>Free tool or mandatory service</li>
+            <li>Global payroll company</li>
+            <li>A guarantee of error-free payroll</li>
+          </ul>
+        </div>
+        <div class="card success">
+          <h3>Correct positioning</h3>
+          <ul>
+            <li>Payroll operations support service</li>
+            <li>Supports HR and finance teams</li>
+            <li>Improves setup, dashboards, payslips, reports</li>
+            <li>Client still owns payroll approval and decisions</li>
+            <li>PayrollOps makes the process smoother</li>
+          </ul>
+        </div>
+      </div>
+      <div class="quote" style="margin-top:24px">Your HR/finance team keeps control. PayrollOps helps structure and
+        support the workflow.</div>
+      <div class="footer"><span>Boundaries protect trust</span><span>PayrollOps</span></div>
+    </section>
+
+    <section class="slide dark">
+      <div class="topline"></div>
+      <div class="sectionlabel">04</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">04 / Positioning</div>
+      </div>
+      <div class="eyebrow">Use this explanation</div>
+      <h2 class="title small">Final positioning statement for client conversations</h2>
+      <div class="quote">PayrollOps is a payroll operations support service for Novel Office clients. It helps HR and
+        finance teams set up cleaner payroll workflows with dashboards, payslips, reports, and specialist support for
+        payroll workflow or technical issues. Your team continues to review, approve, and roll payroll. PayrollOps helps
+        make the process smoother.</div>
+      <div class="footer"><span>Approved positioning</span><span>Use this core line</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="topline"></div>
+      <div class="sectionlabel">05</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">05 / Why It Exists</div>
+      </div>
+      <div class="eyebrow">Client pain</div>
+      <h2 class="title small">Payroll problems CRs should recognize</h2>
+      <div class="grid two">
+        <div class="card">
+          <h3>Manual process pain</h3>
+          <ul>
+            <li>Payroll still happens in Excel</li>
+            <li>HR spends too much time checking data manually</li>
+            <li>Attendance, LOP, revisions, and deductions are manually reconciled</li>
+            <li>Payroll errors are found too late</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Visibility and support pain</h3>
+          <ul>
+            <li>CA output gives no dashboard visibility</li>
+            <li>Payslip format is not professional or customized</li>
+            <li>Reports are not in management format</li>
+            <li>Software support is slow or configuration is confusing</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout">
+        <h2>When you hear pain, move to callback</h2>
+        <p>Do not try to solve payroll. Collect the right details and hand over the lead.</p>
+      </div>
+      <div class="footer"><span>Why PayrollOps exists</span><span>Listen for pain</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="topline"></div>
+      <div class="sectionlabel">06</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">06 / Best-fit Clients</div>
+      </div>
+      <div class="eyebrow">Who to prioritize</div>
+      <h2 class="title small">Three client types to focus on</h2>
+      <div class="grid three">
+        <div class="card success">
+          <h3>1. Excel / Manual</h3>
+          <p>Strongest lead. Payroll is handled manually, in Excel, or through salary sheets.</p>
+        </div>
+        <div class="card warning">
+          <h3>2. CA / Accountant</h3>
+          <p>Good lead. CA handles output, but client lacks dashboard visibility and internal control.</p>
+        </div>
+        <div class="card">
+          <h3>3. Existing Software</h3>
+          <p>Valuable lead. They already use software but still need reports, support, or customization.</p>
+        </div>
+      </div>
+
+      <div class="grid four" style="margin-top:24px; grid-template-columns: repeat(4, minmax(0, 1fr));">
+        <div class="stat">
+          <div class="num">A</div>
+          <div class="label">High priority: clear pain + callback requested</div>
+        </div>
+
+        <div class="stat">
+          <div class="num">B</div>
+          <div class="label">Good lead: interested but needs follow-up</div>
+        </div>
+
+        <div class="stat">
+          <div class="num">C</div>
+          <div class="label">Low urgency: curious, small team, or no clear pain yet</div>
+        </div>
+
+        <div class="stat">
+          <div class="num">D</div>
+          <div class="label">Not suitable now: no interest or outside current scope</div>
+        </div>
+      </div>
+      <div class="footer"><span>Best-fit clients</span><span>Prioritize pain + decision-maker</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="topline"></div>
+      <div class="sectionlabel">07</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">07 / Priority 1</div>
+      </div>
+      <div class="eyebrow">Priority 1</div>
+      <h2 class="title small">Excel / Manual payroll users</h2>
+      <div class="split">
+        <div class="card">
+          <h3>Signs to listen for</h3>
+          <ul class="large-li">
+            <li>Payroll is managed in Excel</li>
+            <li>HR manually calculates salary</li>
+            <li>CA or accountant sends salary sheet</li>
+            <li>Payslips are prepared manually</li>
+            <li>Reports are not available quickly</li>
+            <li>Payroll takes multiple days every month</li>
+          </ul>
+        </div>
+        <div class="script">
+          <div class="label">Best message</div>
+          <p>PayrollOps may help your team move to a cleaner payroll workflow with dashboards, payslips, reports, and
+            specialist support.</p>
+          <div class="divider"></div>
+          <div class="label">Next action</div>
+          <p>Ask for callback permission and share the enquiry form.</p>
+        </div>
+      </div>
+      <div class="footer"><span>Priority 1</span><span>Excel/manual = strongest fit</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="topline"></div>
+      <div class="sectionlabel">08</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">08 / Priority 2</div>
+      </div>
+      <div class="eyebrow">Priority 2</div>
+      <h2 class="title small">CA / Accountant managed payroll</h2>
+      <div class="split">
+        <div class="card">
+          <h3>Signs to listen for</h3>
+          <ul class="large-li">
+            <li>CA manages payroll once a month</li>
+            <li>HR sends attendance and salary changes to CA</li>
+            <li>Company receives output but lacks dashboard visibility</li>
+            <li>Reports and payslips depend on CA format</li>
+            <li>HR or founder wants more control</li>
+          </ul>
+        </div>
+        <div class="script">
+          <div class="label">Best message</div>
+          <p>PayrollOps does not replace your CA. It can help your HR or finance team get better payroll visibility,
+            dashboards, payslips, and reports while your CA continues to support filings if required.</p>
+          <div class="divider"></div>
+          <div class="label">CR reminder</div>
+          <p>Do not say PayrollOps replaces CA or takes over filings.</p>
+        </div>
+      </div>
+      <div class="footer"><span>Priority 2</span><span>CA stays; visibility improves</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="topline"></div>
+      <div class="sectionlabel">09</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">09 / Priority 3</div>
+      </div>
+      <div class="eyebrow">Priority 3</div>
+      <h2 class="title small">Existing payroll software users</h2>
+      <div class="grid two">
+        <div class="card">
+          <h3>Signs to listen for</h3>
+          <ul>
+            <li>Uses Zoho Payroll, greytHR, Keka, RazorpayX, factoHR, HROne, Qandle, or another system</li>
+            <li>Still exports data manually</li>
+            <li>Needs custom reports or payslip formats</li>
+            <li>Support is slow</li>
+            <li>Dashboard visibility is weak</li>
+            <li>Configuration changes are confusing</li>
+          </ul>
+        </div>
+        <div class="script">
+          <div class="label">Best message</div>
+          <p>PayrollOps is not only for companies without payroll software. Some teams already use software but still
+            need better reports, custom payslips, workflow support, or configuration help. Our PayrollOps team can check
+            if there is a useful gap we can support.</p>
+        </div>
+      </div>
+      <div class="footer"><span>Priority 3</span><span>Do not say replace software</span></div>
+    </section>
+
+    <section class="slide dark">
+      <div class="topline"></div>
+      <div class="sectionlabel">10</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">10 / Contact Map</div>
+      </div>
+      <div class="eyebrow">Who to approach</div>
+      <h2 class="title small">Find the person connected to payroll decisions</h2>
+      <div class="grid five"></div>
+      <div class="grid three" style="margin-top:24px">
+        <div class="card">
+          <h3>HR</h3>
+          <p>HR Manager, HR Executive, Admin Manager, Office Manager</p>
+        </div>
+        <div class="card">
+          <h3>Finance</h3>
+          <p>Finance Manager, Accounts Manager, Operations Manager</p>
+        </div>
+        <div class="card">
+          <h3>Leadership</h3>
+          <p>Founder, CEO, Business Owner, decision-maker or influencer</p>
+        </div>
+      </div>
+      <div class="quote" style="margin-top:32px">If a common employee asks, identify the HR or finance person instead of
+        explaining payroll details.</div>
+      <div class="footer"><span>Contact map</span><span>Right person = stronger lead</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="topline"></div>
+      <div class="sectionlabel">11</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">11 / CR Workflow</div>
+      </div>
+      <div class="eyebrow">Five steps only</div>
+      <h2 class="title small">CR Executive workflow</h2>
+      <div class="flow">
+        <div class="step">
+          <div class="n">1</div><strong>Introduce</strong><span>Use one approved PayrollOps line.</span>
+        </div>
+        <div class="step">
+          <div class="n">2</div><strong>Identify</strong><span>Find who handles payroll.</span>
+        </div>
+        <div class="step">
+          <div class="n">3</div><strong>Understand</strong><span>Ask current payroll method.</span>
+        </div>
+        <div class="step">
+          <div class="n">4</div><strong>Capture</strong><span>Basic pain or interest only.</span>
+        </div>
+        <div class="step">
+          <div class="n">5</div><strong>Hand over</strong><span>Send lead to PayrollOps team.</span>
+        </div>
+      </div>
+      <div class="callout">
+        <h2>Discover, Qualify, Connect</h2>
+        <p>Identify the right contact, understand basic payroll pain points, and hand over qualified interest to the
+          PayrollOps team.</p>
+      </div>
+      <div class="footer"><span>CR workflow</span><span>Introduce - Identify - Understand - Capture - Handover</span>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="topline"></div>
+      <div class="sectionlabel">12</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">12 / Data Safety</div>
+      </div>
+      <div class="eyebrow">Confidentiality rule</div>
+      <h2 class="title small">Never ask for payroll files or employee data</h2>
+      <div class="grid two">
+        <div class="card danger">
+          <h3>Do not ask for</h3>
+          <ul>
+            <li>Salary sheet or employee salary data</li>
+            <li>PAN, Aadhaar, bank details</li>
+            <li>PF/ESI numbers</li>
+            <li>Employee master file</li>
+            <li>Attendance file</li>
+            <li>Payroll register or tax declaration files</li>
+            <li>Payslip samples before formal discussion</li>
+          </ul>
+        </div>
+        <div class="card success">
+          <h3>Collect only lead details</h3>
+          <ul>
+            <li>Company name and property</li>
+            <li>Contact person and role</li>
+            <li>Phone / WhatsApp and work email</li>
+            <li>Approximate employee count</li>
+            <li>Current payroll method</li>
+            <li>Main challenge</li>
+            <li>Permission for callback</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer"><span>Data safety</span><span>Lead details only</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="topline"></div>
+      <div class="sectionlabel">13</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">13 / Lead Grading</div>
+      </div>
+      <div class="eyebrow">Qualification score</div>
+      <h2 class="title small">Classify every lead clearly</h2>
+      <div class="matrix">
+        <div class="grade a">
+          <h3>A-Grade</h3>
+          <p>50-150 employees, right contact identified, clear pain, wants callback, decision-maker or influencer
+            available.</p>
+          <div class="action">Action: Send form and schedule PayrollOps callback.</div>
+        </div>
+        <div class="grade b">
+          <h3>B-Grade</h3>
+          <p>20-50 employees or growing, current method unclear, interested but not urgent, right person not available
+            yet.</p>
+          <div class="action">Action: Send form and follow up once.</div>
+        </div>
+        <div class="grade c">
+          <h3>C-Grade</h3>
+          <p>No clear pain, casually curious, employee asked but HR contact unknown, very small team, not ready.</p>
+          <div class="action">Action: Share brochure only.</div>
+        </div>
+        <div class="grade d">
+          <h3>D-Grade</h3>
+          <p>No interest, already satisfied, wants full outsourcing/statutory filing only, wants free tool, or highly
+            complex scope.</p>
+          <div class="action">Action: Do not push. Mark future/not suitable.</div>
+        </div>
+      </div>
+      <div class="footer"><span>Lead grading</span><span>A/B/C/D clarity</span></div>
+    </section>
+
+    <section class="slide dark">
+      <div class="topline"></div>
+      <div class="sectionlabel">14</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">14 / Opening Scripts</div>
+      </div>
+      <div class="eyebrow">Start professionally</div>
+      <h2 class="title small">Approved opening scripts</h2>
+      <div class="grid two">
+        <div class="script">
+          <div class="label">General introduction</div>
+          <p>Hi [Name], Novel Office has introduced PayrollOps for our clients. It helps HR and finance teams improve
+            payroll setup, dashboards, payslips, reports, and specialist support for payroll workflow or technical
+            issues. Would you like our PayrollOps team to contact the right person from your company?</p>
+        </div>
+        <div class="script">
+          <div class="label">HR / Admin contact</div>
+          <p>Hi [Name], we are introducing PayrollOps for Novel Office clients. It is designed to help HR teams reduce
+            manual payroll work through better setup, dashboards, payslips, reports, and specialist support. Are you
+            currently handling payroll internally, through Excel, a CA, or payroll software?</p>
+        </div>
+      </div>
+      <div class="footer"><span>Opening scripts</span><span>Keep it simple</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="topline"></div>
+      <div class="sectionlabel">15</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">15 / More Scripts</div>
+      </div>
+      <div class="eyebrow">By contact type</div>
+      <h2 class="title small">Use the right script for the right person</h2>
+      <div class="grid three compact">
+        <div class="script">
+          <div class="label">Founder / CEO / Owner</div>
+          <p>PayrollOps helps companies get better payroll visibility and smoother payroll operations. Your HR or
+            finance team continues to control payroll, but PayrollOps helps with setup, dashboards, reports, payslips,
+            and issue support.</p>
+        </div>
+        <div class="script">
+          <div class="label">Finance / Accounts</div>
+          <p>PayrollOps helps improve payroll visibility, reports, payslips, and workflow support. It may be useful if
+            payroll is dependent on Excel, CA outputs, manual reports, or software limitations.</p>
+        </div>
+        <div class="script">
+          <div class="label">Employee enquiry</div>
+          <p>PayrollOps is mainly for HR or finance teams. If your company is interested, I can connect our PayrollOps
+            team with your HR/admin/finance person for a quick discussion.</p>
+        </div>
+      </div>
+      <div class="footer"><span>Contact-based scripts</span><span>Adjust without overexplaining</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="topline"></div>
+      <div class="sectionlabel">16</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">16 / Discovery Questions</div>
+      </div>
+      <div class="eyebrow">Ask only five questions</div>
+      <h2 class="title small">Discovery questions CRs should ask</h2>
+      <div class="flow">
+        <div class="step">
+          <div class="n">1</div><strong>Responsibility</strong><span>Who currently handles payroll?</span>
+        </div>
+        <div class="step">
+          <div class="n">2</div><strong>Method</strong><span>Excel, CA, software, or in-house?</span>
+        </div>
+        <div class="step">
+          <div class="n">3</div><strong>Size</strong><span>How many employees in payroll?</span>
+        </div>
+        <div class="step">
+          <div class="n">4</div><strong>Pain</strong><span>Any issues with reports, payslips, manual work,
+            support?</span>
+        </div>
+        <div class="step">
+          <div class="n">5</div><strong>Callback</strong><span>Can PayrollOps contact the right person?</span>
+        </div>
+      </div>
+      <div class="callout">
+        <h2>These five are enough</h2>
+        <p>Do not ask for salary details, payroll files, or confidential employee information.</p>
+      </div>
+      <div class="footer"><span>Discovery questions</span><span>Keep it controlled</span></div>
+    </section>
+
+    <section class="slide dark">
+      <div class="topline"></div>
+      <div class="sectionlabel">17</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">17 / Pain Triggers</div>
+      </div>
+      <div class="eyebrow">Words that signal opportunity</div>
+      <h2 class="title small">When you hear these, move to callback</h2>
+      <div>
+        <span class="pill">Excel</span><span class="pill">Manual</span><span class="pill">CA handles</span><span
+          class="pill">Too much time</span><span class="pill">Reports problem</span><span class="pill">Payslip
+          format</span><span class="pill">Payroll errors</span><span class="pill">Support problem</span><span
+          class="pill">Ticket not resolved</span><span class="pill">Dashboard needed</span><span class="pill">Attendance
+          mismatch</span><span class="pill">LOP issue</span><span class="pill">Salary revision confusion</span><span
+          class="pill">Founder wants visibility</span><span class="pill">Finance wants report</span><span
+          class="pill">Not happy with vendor</span><span class="pill">Need custom report</span><span class="pill">Need
+          HR dashboard</span>
+      </div>
+      <div class="quote" style="margin-top:42px">Pain trigger heard = do not pitch more. Ask for callback permission.
+      </div>
+      <div class="footer"><span>Pain triggers</span><span>Listen more than you speak</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="topline"></div>
+      <div class="sectionlabel">18</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">18 / Client Responses</div>
+      </div>
+      <div class="eyebrow">What to say</div>
+      <h2 class="title small">Responses by client situation</h2>
+      <div class="grid two compact">
+        <div class="script">
+          <div class="label">Client: We use Excel</div>
+          <p>That is exactly where PayrollOps may help. Many growing teams start with Excel, but after a point payroll
+            becomes difficult to track. PayrollOps can help your HR or finance team move to a cleaner payroll workflow
+            with dashboards, payslips, reports, and specialist support. Shall I arrange a callback?</p>
+        </div>
+        <div class="script">
+          <div class="label">Client: Our CA handles payroll</div>
+          <p>That is fine. PayrollOps does not have to replace your CA. It can help your internal team get better
+            visibility, dashboards, payslips, reports, and a more structured payroll workflow. Our team can speak with
+            your HR or finance person and see if it is useful.</p>
+        </div>
+      </div>
+      <div class="footer"><span>Client responses</span><span>Excel and CA</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="topline"></div>
+      <div class="sectionlabel">19</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">19 / Client Responses</div>
+      </div>
+      <div class="eyebrow">What to say</div>
+      <h2 class="title small">Existing software users</h2>
+      <div class="grid two compact">
+        <div class="script">
+          <div class="label">Client: We already use payroll software</div>
+          <p>That is completely fine. PayrollOps is not only for companies without software. Some teams use software but
+            still struggle with custom reports, payslip formats, manual exports, configuration changes, or support
+            delays. Our PayrollOps team can understand your current workflow and check whether we can support any gaps.
+          </p>
+        </div>
+        <div class="script">
+          <div class="label">Client: We are happy with our current software</div>
+          <p>That is good. PayrollOps may not be needed immediately. If you ever need custom reports, payslip formats,
+            dashboard visibility, or support around payroll workflow, we can connect you with our PayrollOps team.</p>
+        </div>
+      </div>
+      <div class="footer"><span>Client responses</span><span>Do not say replace software</span></div>
+    </section>
+
+    <section class="slide dark">
+      <div class="topline"></div>
+      <div class="sectionlabel">20</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">20 / Sensitive Questions</div>
+      </div>
+      <div class="eyebrow">Handle carefully</div>
+      <h2 class="title small">Sensitive questions require safe answers</h2>
+      <div class="grid three compact">
+        <div class="script">
+          <div class="label">Do you run payroll for us?</div>
+          <p>PayrollOps supports payroll setup, dashboards, payslips, reports, and workflow or technical issues. Your HR
+            or finance team continues to review, approve, and roll payroll. Our PayrollOps team can explain the exact
+            scope clearly.</p>
+        </div>
+        <div class="script">
+          <div class="label">Do you handle PF/ESI/TDS?</div>
+          <p>Our PayrollOps team will clarify the service scope properly. CR team does not confirm statutory filing
+            ownership. PayrollOps mainly supports setup, configuration, dashboards, reports, payslips, and workflow
+            support.</p>
+        </div>
+        <div class="script">
+          <div class="label">Can we send salary data now?</div>
+          <p>Please do not share salary data at this stage. First, our PayrollOps team will schedule a discussion,
+            understand your requirement, and explain the secure process.</p>
+        </div>
+      </div>
+      <div class="footer"><span>Sensitive questions</span><span>Do not overpromise</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="topline"></div>
+      <div class="sectionlabel">21</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">21 / Price Questions</div>
+      </div>
+      <div class="eyebrow">Pricing and free questions</div>
+      <h2 class="title small">Do not invent pricing. Escalate politely.</h2>
+      <div class="grid three compact">
+        <div class="script">
+          <div class="label">Is this free?</div>
+          <p>The first enquiry or discussion can be arranged by our team. The PayrollOps service itself depends on the
+            scope, company size, setup effort, and support requirement. Our PayrollOps team will explain the details.
+          </p>
+        </div>
+        <div class="script">
+          <div class="label">How much does it cost?</div>
+          <p>Pricing depends on your current payroll process, employee count, reports, payslip requirements, and support
+            needs. Our PayrollOps team will first understand your setup and then share the suitable package.</p>
+        </div>
+        <div class="script">
+          <div class="label">We are a small team</div>
+          <p>No problem. PayrollOps is more useful for growing teams where payroll is becoming difficult to manage. I
+            can still arrange a discussion if your team expects to grow or if payroll is already taking too much time.
+          </p>
+        </div>
+      </div>
+      <div class="footer"><span>Price questions</span><span>Do not quote pricing unless approved</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="topline"></div>
+      <div class="sectionlabel">22</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">22 / Language Control</div>
+      </div>
+      <div class="eyebrow">Words matter</div>
+      <h2 class="title small">Approved words vs words to avoid</h2>
+      <div class="dosdonts">
+        <div class="card success">
+          <h3>Use these words</h3>
+          <p><span class="pill">Payroll operations</span><span class="pill">Payroll workflow</span><span
+              class="pill">Payroll setup</span><span class="pill">Dashboard</span><span class="pill">Payslip</span><span
+              class="pill">Reports</span><span class="pill">Specialist support</span><span class="pill">Technical
+              support</span><span class="pill">Configuration support</span><span class="pill">Cleaner
+              process</span><span class="pill">Better visibility</span><span class="pill">Callback</span></p>
+        </div>
+        <div class="card danger">
+          <h3>Avoid these words</h3>
+          <p><span class="pill">Outsourcing</span><span class="pill">We run payroll</span><span class="pill">Compliance
+              guaranteed</span><span class="pill">Statutory filing</span><span class="pill">Fully managed
+              payroll</span><span class="pill">Replace CA</span><span class="pill">Replace software</span><span
+              class="pill">Free</span><span class="pill">Global payroll</span><span class="pill">End-to-end
+              ownership</span></p>
+        </div>
+      </div>
+      <div class="footer"><span>Language control</span><span>Professional, safe, accurate</span></div>
+    </section>
+
+    <section class="slide dark">
+      <div class="topline"></div>
+      <div class="sectionlabel">23</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">23 / Never Say</div>
+      </div>
+      <div class="eyebrow">Red lines</div>
+      <h2 class="title small">CR must never say these lines</h2>
+      <div class="grid two compact">
+        <div class="card danger">
+          <ul>
+            <li>We will run your payroll completely.</li>
+            <li>We will handle all statutory compliance.</li>
+            <li>We will replace your CA.</li>
+            <li>We will replace Zoho/Keka/greytHR.</li>
+            <li>We guarantee no payroll errors.</li>
+            <li>This is the best payroll software.</li>
+            <li>This is free or compulsory.</li>
+          </ul>
+        </div>
+        <div class="card danger">
+          <ul>
+            <li>Send your salary sheet to me.</li>
+            <li>Share employee details with me.</li>
+            <li>We will file PF/ESI/TDS for you.</li>
+            <li>We will make you compliant automatically.</li>
+            <li>We can support all countries.</li>
+            <li>We can support any company size immediately.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="quote" style="margin-top:26px">Wrong promises can create legal, trust, and delivery issues.</div>
+      <div class="footer"><span>Never say</span><span>Protect Novel Office trust</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="topline"></div>
+      <div class="sectionlabel">24</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">24 / WhatsApp Templates</div>
+      </div>
+      <div class="eyebrow">After client shows interest</div>
+      <h2 class="title small">Approved WhatsApp follow-up templates</h2>
+      <div class="grid two compact">
+        <div class="script">
+          <div class="label">General interest</div>
+          <p>Hi [Name],<br>As discussed, Novel Office has introduced PayrollOps for our clients.<br><br>PayrollOps helps
+            HR and finance teams improve payroll setup, dashboards, payslips, reports, and specialist support for
+            payroll workflow or technical issues.<br><br>Please fill this short enquiry form and our PayrollOps team
+            will contact you:<br>[Form Link]<br><br>Regards,<br>[CR Name]<br>Novel Office</p>
+        </div>
+        <div class="script">
+          <div class="label">HR/Finance contact shared</div>
+          <p>Hi [Name],<br>I am [CR Name] from Novel Office.<br><br>Your team showed interest in PayrollOps, a payroll
+            operations support service for Novel Office clients.<br><br>Please share your interest here:<br>[Form
+            Link]<br><br>Our PayrollOps team will contact you shortly.<br><br>Regards,<br>[CR Name]</p>
+        </div>
+      </div>
+      <div class="footer"><span>WhatsApp templates</span><span>Use approved wording</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="topline"></div>
+      <div class="sectionlabel">25</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">25 / Segment Templates</div>
+      </div>
+      <div class="eyebrow">Share the right message</div>
+      <h2 class="title small">Templates by client type</h2>
+      <div class="grid three compact">
+        <div class="script">
+          <div class="label">Existing software user</div>
+          <p>PayrollOps may be useful even if your company already uses payroll software. Our team helps with payroll
+            workflow improvements such as dashboards, custom reports, payslip formats, configuration support, and
+            specialist assistance during payroll issues.</p>
+        </div>
+        <div class="script">
+          <div class="label">Excel / CA payroll user</div>
+          <p>PayrollOps helps companies move from Excel or CA-dependent payroll workflows to a cleaner process with
+            dashboards, payslips, reports, and specialist support.</p>
+        </div>
+        <div class="script">
+          <div class="label">Gentle follow-up</div>
+          <p>Just checking if your HR/finance team would like to explore PayrollOps. It is a support service for cleaner
+            payroll setup, dashboards, payslips, reports, and payroll workflow support.</p>
+        </div>
+      </div>
+      <div class="footer"><span>Segment templates</span><span>Keep follow-up professional</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="topline"></div>
+      <div class="sectionlabel">26</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">26 / Lead Handover</div>
+      </div>
+      <div class="eyebrow">What CR must submit</div>
+      <h2 class="title small">Lead handover format</h2>
+      <div class="tablebox">
+        <table>
+          <tr>
+            <th>Field</th>
+            <th>What to enter</th>
+            <th>Rule</th>
+          </tr>
+          <tr>
+            <td>Company + Property</td>
+            <td>Company name and Novel Office location</td>
+            <td>Mandatory</td>
+          </tr>
+          <tr>
+            <td>Contact Person</td>
+            <td>Name, role, phone/WhatsApp, work email</td>
+            <td>Only with permission</td>
+          </tr>
+          <tr>
+            <td>Payroll Context</td>
+            <td>Employee count, current method, main pain point</td>
+            <td>No payroll files</td>
+          </tr>
+          <tr>
+            <td>Lead Quality</td>
+            <td>A / B / C / D grade</td>
+            <td>Use qualification score</td>
+          </tr>
+          <tr>
+            <td>Callback</td>
+            <td>Decision-maker identified, permission, preferred time</td>
+            <td>Required for A-grade</td>
+          </tr>
+          <tr>
+            <td>CR Details</td>
+            <td>CR name and remarks</td>
+            <td>For tracking</td>
+          </tr>
+        </table>
+      </div>
+      <div class="footer"><span>Lead handover</span><span>Clean data = faster callback</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="topline"></div>
+      <div class="sectionlabel">27</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">27 / Daily Reporting</div>
+      </div>
+      <div class="eyebrow">End-of-day discipline</div>
+      <h2 class="title small">Daily CR reporting format</h2>
+      <div class="grid two">
+        <div class="card">
+          <h3>Daily numbers</h3>
+          <ul class="large-li">
+            <li>Total clients spoken to</li>
+            <li>Interested leads</li>
+            <li>A-grade leads</li>
+            <li>B-grade leads</li>
+            <li>Callbacks requested</li>
+            <li>Forms submitted</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Daily learning</h3>
+          <ul class="large-li">
+            <li>Top client pain heard today</li>
+            <li>Difficult questions asked</li>
+            <li>Support needed from PayrollOps team</li>
+            <li>Follow-up required</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer"><span>Daily reporting</span><span>Measure quality, not only quantity</span></div>
+    </section>
+
+    <section class="slide dark">
+      <div class="topline"></div>
+      <div class="sectionlabel">28</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">28 / Roleplay</div>
+      </div>
+      <div class="eyebrow">Practice situations</div>
+      <h2 class="title small">Roleplay practice</h2>
+      <div class="grid two compact">
+        <div class="script">
+          <div class="label">Excel payroll client</div>
+          <p><strong>Client:</strong> We are still using Excel, but it is working okay.<br><br><strong>CR:</strong> That
+            is good. Many teams start with Excel, but as the team grows, payroll reports, payslips, approvals, and
+            salary changes become harder to manage. PayrollOps may help your HR team move to a cleaner payroll workflow.
+            Would you like our PayrollOps team to contact you and understand your process?</p>
+        </div>
+        <div class="script">
+          <div class="label">Existing software client</div>
+          <p><strong>Client:</strong> We already use Zoho Payroll.<br><br><strong>CR:</strong> That is completely fine.
+            PayrollOps is not only for companies without software. Some companies use payroll software but still need
+            better reports, payslip formats, dashboards, or specialist support for configuration and workflow issues.
+          </p>
+        </div>
+      </div>
+      <div class="footer"><span>Roleplay</span><span>Practice before outreach</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="topline"></div>
+      <div class="sectionlabel">29</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">29 / Self-check</div>
+      </div>
+      <div class="eyebrow">Before outreach</div>
+      <h2 class="title small">CR self-check checklist</h2>
+      <div class="grid two">
+        <div class="card">
+          <h3>You must know</h3>
+          <ul>
+            <li>What PayrollOps is</li>
+            <li>What PayrollOps is not</li>
+            <li>Who the ideal client is</li>
+            <li>The five discovery questions</li>
+            <li>What details to collect</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>You must be able to handle</h3>
+          <ul>
+            <li>Already using software</li>
+            <li>CA handles payroll</li>
+            <li>Compliance question</li>
+            <li>Salary data request</li>
+            <li>Free/pricing question</li>
+            <li>Lead classification and handover</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout">
+        <h2>Ready means safe, clear, and consistent</h2>
+        <p>CRs should start outreach only after the boundaries and scripts are clear.</p>
+      </div>
+      <div class="footer"><span>Self-check</span><span>Consistency creates trust</span></div>
+    </section>
+
+    <section class="slide dark">
+      <div class="topline"></div>
+      <div class="watermark">PO</div>
+      <div class="brandbar">
+        <div class="brand">
+          <div class="logo">P</div>
+          <div>PayrollOps</div>
+        </div>
+        <div class="slide-no">30 / Final Reminder</div>
+      </div>
+      <div class="center">
+        <div class="eyebrow">Final CR reminder</div>
+        <h2 class="bigline">Find interest. Identify pain. Protect trust. Hand over cleanly.</h2>
+        <div class="grid four" style="margin-top:42px">
+          <div class="card">
+            <h3>Do not sell payroll software</h3>
+          </div>
+          <div class="card">
+            <h3>Do not take over payroll</h3>
+          </div>
+          <div class="card">
+            <h3>Do not replace CA</h3>
+          </div>
+          <div class="card">
+            <h3>Do not collect salary data</h3>
+          </div>
+        </div>
+        <div class="quote" style="margin-top:36px">Would you like our PayrollOps team to contact your HR or finance
+          person and understand your current payroll process?</div>
+      </div>
+      <div class="footer"><span>PayrollOps</span><span>CR Executive Training Manual</span></div>
+    </section>
+
+  </div>
+</body>
+
+</html>
